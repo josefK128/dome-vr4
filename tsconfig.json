@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "strictPropertyInitialization": false,
+    "target": "es2020",
+    "module": "es2020",
+    "outDir": "./dist/app2020",
+    "sourceMap": true,
+    "lib":[
+      "dom",
+      "dom.iterable",
+      "es2020"
+    ]
+  },
+  "include": ["./src/app/**/*"],
+  "exclude": ["./src/index.tsx", "./src/systemjs"]
+}
+

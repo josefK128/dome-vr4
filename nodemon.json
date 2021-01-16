@@ -1,0 +1,5 @@
+{
+  "watch": "src/app/**/*",
+  "ext": "ts, json",
+  "exec": "npm run lint-tsc-log"
+}
