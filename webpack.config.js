@@ -1,8 +1,8 @@
 // webpack.config.js
 module.exports = {
-  entry: './dist/app2020/narrative.js',
+  entry: './dist/app/narrative.js',
   output: {
-    filename: 'index.js'
+    filename: 'app.js'
   },
   devtool: 'source-map'
 };

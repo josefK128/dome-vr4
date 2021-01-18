@@ -2,17 +2,17 @@
   "compilerOptions": {
     "noImplicitAny": false,
     "strictPropertyInitialization": false,
-    "target": "es2020",
-    "module": "es2020",
-    "outDir": "./dist/app2020",
+    "target": "esnext",
+    "module": "esnext",
+    "outDir": "./dist/app",
     "sourceMap": true,
     "lib":[
       "dom",
       "dom.iterable",
-      "es2020"
+      "esnext"
     ]
   },
   "include": ["./src/app/**/*"],
-  "exclude": ["./src/index.tsx", "./src/systemjs"]
+  "exclude": ["./test/**/*"]
 }
 

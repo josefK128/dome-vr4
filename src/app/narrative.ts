@@ -24,6 +24,18 @@ import {State} from './scenes/state.interface';
 //import TWEEN from '../libs/tween.js/tween.esm';
 
 
+
+// ***
+// tmp expt !!!!!!
+// NOTE: scene is scene.ts - tsc will import but leave .js-extension intact,
+// which is needed to run code in browser  !!!!!
+import {config, state} from './scenes/@current/scene.js';
+console.log(`import expt: config = ${config}`); 
+console.log(`import expt: state = ${state}`); 
+// ***
+
+
+
 // singleton closure-instance variable
 let narrative:Narrative;
 
@@ -35,7 +47,7 @@ class Narrative {
   } 
 
   static create(){
-    console.log(`\n\n\n\n\n narrative.create !!!!!!!!!!!!!!!!!!!!!!!`);
+    console.log(`\n\nnarrative.create !!!!!!!!!!!!!!!!!!!!!!!`);
     if(narrative === undefined){
       narrative = new Narrative();
     }

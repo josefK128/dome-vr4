@@ -1,6 +1,7 @@
 {
   "name": "dome-vr4",
   "version": "1.0.0",
+  "main":"./dist/narrative.js",
   "type":"module",
   "private": "true",
   "description": "",
@@ -19,6 +20,9 @@
     "tsc": "tsc|sed '/TS2307/d;/TS2304/d;/TS2503/d' ",
     "tsc-log": "tsc|sed '/TS2307/d;/TS2304/d;/TS2503/d' > ./logs/tsc.log",
     "tsc-log-name-errors": "tsc > ./logs/tsc-name-errors.log",
+    "nodej": "node ./test/test.js",
+    "nodet": "node --experimental-modules ./test/test.ts",
+    "nodetf": "node --experimental-modules ./test/app/narrative.spec.ts",
     "webpack": "webpack --mode=production"
   },
   "dependencies": {
