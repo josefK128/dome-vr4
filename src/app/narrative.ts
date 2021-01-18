@@ -41,6 +41,9 @@ class Narrative {
     }
   }
 
+  foo(){
+    return 'foo';
+  }
 
   // set up rendering framework and initialize services and state 
   //bootstrap(_config:Config, state:State){
