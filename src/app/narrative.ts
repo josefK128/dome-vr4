@@ -30,8 +30,8 @@ import {State} from './scenes/state.interface';
 // NOTE: scene is scene.ts - tsc will import but leave .js-extension intact,
 // which is needed to run code in browser  !!!!!
 import {config, state} from './scenes/@current/scene.js';
-console.log(`import expt: config = ${config}`); 
-console.log(`import expt: state = ${state}`); 
+//console.log(`import expt: config = ${config}`); 
+//console.log(`import expt: state = ${state}`); 
 // ***
 
 
@@ -47,7 +47,7 @@ class Narrative {
   } 
 
   static create(){
-    console.log(`\n\nnarrative.create !!!!!!!!!!!!!!!!!!!!!!!`);
+    //console.log(`\n\nnarrative.create !!!!!!!!!!!!!!!!!!!!!!!`);
     if(narrative === undefined){
       narrative = new Narrative();
     }

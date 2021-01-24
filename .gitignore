@@ -1,4 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# main saved directories are /src and /test
+# also saves root level config files, etc.
+
 
 # Vim swp-files
 *.swp
