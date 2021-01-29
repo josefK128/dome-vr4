@@ -3,8 +3,20 @@
 
 
 // scene
+// first 2 imports are compile-time only so don't need to use js-ext
 import {Config} from './scenes/config.interface';
 import {State} from './scenes/state.interface';
+
+// other runtime imports must use .js-ext for correct runtime browser execution
+// NOTE: at compile-time tsc will import the correct ts-file even though in the
+// import statement the file has a .js-ext
+import {config, state} from './scenes/@current/scene.js';
+
+// just to use defined names config, state
+console.log(`import expt: config = ${config}`); 
+console.log(`import expt: state = ${state}`); 
+
+
 //// services
 //import {mediator} from './services/actions/mediator';
 //import {director} from './services/actions/director';
@@ -22,17 +34,6 @@ import {State} from './scenes/state.interface';
 //import {vrkeymap} from './models/camera/keymaps/vrkeymap';  
 //// for actors/cloud/spritecloud.ts
 //import TWEEN from '../libs/tween.js/tween.esm';
-
-
-
-// ***
-// tmp expt !!!!!!
-// NOTE: scene is scene.ts - tsc will import but leave .js-extension intact,
-// which is needed to run code in browser  !!!!!
-import {config, state} from './scenes/@current/scene.js';
-//console.log(`import expt: config = ${config}`); 
-//console.log(`import expt: state = ${state}`); 
-// ***
 
 
 

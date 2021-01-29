@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <base href="/dist/"> <!-- all urls relative to base href='./dist/'> -->
+    <title>
+      R124-webGL2-es300:dist-runtime
+    </title>
+    <!--<link href="./index.css" rel="stylesheet"> - same as below -->
+    <style>
+      body { margin: 0;
+             padding: 0;
+             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 
+               'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 
+               'Droid Sans', 'Helvetica Neue', sans-serif;
+               -webkit-font-smoothing: antialiased;
+               -moz-osx-font-smoothing: grayscale;
+      }
+      canvas { width: 100%; height: 100% }
+      code {
+        font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+          monospace;
+      }    
+    </style>
+
+  </head>
+
+
+
+  <body>
+    <!-- NOTE:canvas is styled exactly as Singularity.css -->
+    <canvas id='webgl' style='width:100vw; height:100vh; background-color:black; position:absolute; left:0px; top:0px;'/>
+
+    <script type='module'> 
+      //imports
+      import * as THREE from '../node_modules/three/build/three.module.js';
+      //import { WEBVR } from '../node_modules/three/examples/jsm/vr/WebVR.js';
+
+
+      // SCENE and BOOTSTRAP-CONTROLLER modules - variable by url
+      // NOTE: modules imported by html-files are from dist/**/*.js
+      // i.e. they are never ts-files
+      const _scene = './app/scenes/@current/scene.js',
+            _narrative = './app/narrative.js';
+
+            // FAILS - these are dynamic imports but same for static imports
+            //_narrative = '../src/app/narrative.ts'; // incorrect mime type 
+            //_narrative = '../src/app/narrative';   // 404
+            //_narrative = '../src/app/narrative.js'; // 404
+
+      
+      // load needed fundamental application modules - these are the exports 
+      // from the varaible scene and bootstrap-controller (urls above)
+      async function load() {
+        let a = await Promise.all([
+          import(_scene),
+          import(_narrative)
+        ]).catch((e) => {
+          console.error(`error loading module: ${e.toString()}`);
+        });
+
+        // diagnostics
+        console.log(`a is type ${typeof(a)}`);
+        console.log(`a is an Array is ${Array.isArray(a)}`);
+        console.log(`dynamically loaded module-array a:`);
+        console.dir(a);
+        for(let p in a){
+          console.log(`\na[${p}] is type ${typeof(a[p])}`);
+          console.log(`module[${p}] has value:`)
+          console.dir(a[p]);
+        }
+
+        let config = a[0].config;
+        let state = a[0].state;
+        let narrative = a[1].narrative;
+
+        // load config.imports
+        //loadImports(config, state, narrative);
+      };
+
+
+      // load needed node_module modules - urls listed in config.imports
+      async function loadImports(config, state, narrative) {
+        let a = await Promise.all(
+          config.imports.map(url => import(url))
+        ).catch((e) => {
+          console.error(`error loading module: ${e}`);
+        });
+
+
+        // make globals of the ctors and/or namespaces
+//        console.log(`imported ctors and/or namespaces are:`);
+//        console.dir(a);
+//        window['System'] = System;        
+//        window['io'] = a[0];        
+//        //window['THREE'] = a[1];        
+//        window['Stats'] = a[1];  //a[2]        
+//        //window['WEBVR'] = a[3];        
+//        window['TweenMax'] = a[2];  //a[4]
+//        window['TimelineMax'] = a[2]['TimelineMax']; //a[4]
+//        window['Quad'] = a[2]['Quad'];  //a[4]
+//
+//        // for possible dynamic loading by actors, services
+//        window['System'] = System;
+//
+//        //THREE,WEBVR
+//        window['THREE'] = THREE;        
+//        window['WEBVR'] = WEBVR;        
+
+
+//        // test-diagnostics
+//        console.log(`diagnostics:`);
+//        console.log(`System = ${System}`);
+//        console.log(`io.connect = ${io.connect}`);
+//        console.log(`THREE.Color = ${THREE.Color}`);
+//        console.log(`Stats.Panel = ${Stats.Panel}`);
+//        console.log(`WEBVR = ${WEBVR}`);
+//        console.log(`TweenMax = ${TweenMax}`);
+//        console.log(`TimelineMax = ${TimelineMax}`);
+//        console.log(`Quad = ${Quad}`);
+     
+        // bootstrap application
+        narrative.bootstrap(config, state);
+      }
+
+      console.log(`\n*** src/*.html starting scene ${_scene} using controller ${_narrative}`);
+      console.log(`*** NOTE: <base href='/dist/'> so src/*.html imports ./dist/**/*.js\n\n`);
+      load();
+    </script>
+  </body>
+</html>
