@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <base href="/dist/"> <!-- all urls relative to base href='./dist/'> -->
     <title>
-      R124-webGL2-es300:dist-runtime
+      R124-webGL2-es300:base-href-dist
     </title>
     <!--<link href="./index.css" rel="stylesheet"> - same as below -->
     <style>
@@ -35,7 +35,6 @@
     <script type='module'> 
       //imports
       import * as THREE from '../node_modules/three/build/three.module.js';
-      //import { WEBVR } from '../node_modules/three/examples/jsm/vr/WebVR.js';
 
 
       // SCENE and BOOTSTRAP-CONTROLLER modules - variable by url
@@ -76,7 +75,7 @@
         let narrative = a[1].narrative;
 
         // load config.imports
-        //loadImports(config, state, narrative);
+        loadImports(config, state, narrative);
       };
 
 
@@ -90,8 +89,19 @@
 
 
         // make globals of the ctors and/or namespaces
-//        console.log(`imported ctors and/or namespaces are:`);
-//        console.dir(a);
+        // TEMP !!!
+        console.log(`\nimported ctors and/or namespaces are:`);
+        console.dir(a);
+        console.log(`a.length = ${a.length}`);
+        console.log(`imported Stats: `);
+        for(let p in a[0]){
+          window['Stats'] = a[0][p];  
+          console.log(`Stats contains property ${p}`);
+          console.log(`typeof a[0][${p}] = ${typeof a[0][p]}`);
+          console.dir(a[0][p])
+        }
+
+
 //        window['System'] = System;        
 //        window['io'] = a[0];        
 //        //window['THREE'] = a[1];        
@@ -121,6 +131,7 @@
 //        console.log(`Quad = ${Quad}`);
      
         // bootstrap application
+        console.log('\nindex.html calling narrative.bootstrap()');
         narrative.bootstrap(config, state);
       }
 

@@ -53,13 +53,14 @@ import {State} from '../state.interface';
 // for initialization
 const config:Config = {
 
-  // imports - needed node_module libraries
+  // imports - needed node_module/jsm libraries urls - relative to
+  // index.html <base href='/dist/'
   imports:[
-    '../node_modules/socket.io-client/dist/socket.io.js',
+    //'../node_modules/socket.io-client/dist/socket.io.js',
     //'../node_modules/three/build/three.module.js',
-    '../node_modules/three/examples/js/libs/stats.min.js',
+    '../src/jsm/stats/stats.module.js'
     //'../node_modules/three/examples/js/vr/WebVR.js',
-    '../node_modules/gsap/umd/Tweenmax.js'
+    //'../node_modules/gsap/umd/Tweenmax.js'
   ],
 
 
