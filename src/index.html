@@ -35,6 +35,13 @@
     <script type='module'> 
       //imports
       import * as THREE from '../node_modules/three/build/three.module.js';
+      import {VRButton} from '../src/jsm/webxr/VRButton.js';
+      import Stats from '../src/jsm/stats/stats.module.js'; //default export
+
+      // make available globally
+      window['THREE'] = THREE;
+      window['VRButton'] = VRButton;
+      window['Stats'] = Stats;
 
 
       // SCENE and BOOTSTRAP-CONTROLLER modules - variable by url
@@ -87,45 +94,15 @@
           console.error(`error loading module: ${e}`);
         });
 
-
-        // make globals of the ctors and/or namespaces
-        // TEMP !!!
-        console.log(`\nimported ctors and/or namespaces are:`);
-        console.dir(a);
-        console.log(`a.length = ${a.length}`);
-        console.log(`imported Stats: `);
-        for(let p in a[0]){
-          window['Stats'] = a[0][p];  
-          console.log(`Stats contains property ${p}`);
-          console.log(`typeof a[0][${p}] = ${typeof a[0][p]}`);
-          console.dir(a[0][p])
-        }
-
-
 //        window['System'] = System;        
 //        window['io'] = a[0];        
-//        //window['THREE'] = a[1];        
-//        window['Stats'] = a[1];  //a[2]        
-//        //window['WEBVR'] = a[3];        
-//        window['TweenMax'] = a[2];  //a[4]
-//        window['TimelineMax'] = a[2]['TimelineMax']; //a[4]
-//        window['Quad'] = a[2]['Quad'];  //a[4]
-//
-//        // for possible dynamic loading by actors, services
-//        window['System'] = System;
-//
-//        //THREE,WEBVR
-//        window['THREE'] = THREE;        
-//        window['WEBVR'] = WEBVR;        
-
+//        window['TweenMax'] = a[1]; 
+//        window['TimelineMax'] = a[2]['TimelineMax']; 
+//        window['Quad'] = a[2]['Quad'];  
 
 //        // test-diagnostics
 //        console.log(`diagnostics:`);
-//        console.log(`System = ${System}`);
 //        console.log(`io.connect = ${io.connect}`);
-//        console.log(`THREE.Color = ${THREE.Color}`);
-//        console.log(`Stats.Panel = ${Stats.Panel}`);
-//        console.log(`WEBVR = ${WEBVR}`);
 //        console.log(`TweenMax = ${TweenMax}`);
 //        console.log(`TimelineMax = ${TimelineMax}`);
 //        console.log(`Quad = ${Quad}`);

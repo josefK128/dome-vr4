@@ -2,8 +2,6 @@
 // bootstrap controller
 
 
-// Stats
-//import Stats from '../src/jsm/stats/stats.module.js';
 
 // scene
 // first 2 imports are compile-time only so don't need to use js-ext
@@ -42,10 +40,23 @@ import {State} from './scenes/state.interface';
 // singleton closure-instance variable
 let narrative:Narrative,
     config:Config,
-    //canvas:HTMLCanvasElement,       // DOM singularity 
-    //context:Object,                //webGL context
+    canvas:HTMLCanvasElement,       // DOM singularity 
+    context:WebGLRenderingContext|CanvasRenderingContext2D, //webGL(2) context
     renderer:THREE.WebGLRenderer, // from state/stage
                                  // NOTE:renderer.render(sgscene,lens)
+    // cameras, controls
+    //lens:THREE.PerspectiveCamera,      // from state/camera
+                   // NOTE:TBD 'csphere' is whole apparatus - lens, lights etc
+    //lens_offset:THREE.Object3D,      // _webvr:t => lower camera by 1.6
+    vrlens:THREE.PerspectiveCamera, // separate camera for rendering vrscene
+    aspect = 1.0,                  // window.innerW/window.innerH
+    //vrlens_offset:THREE.Object3D, // _webvr:t => lower camera by 1.6
+    //_controls:boolean = false,   // use controls/keymap? 
+                                // set by config.controls:boolean? default false
+    //controls:Object,           // vrcontrols
+    //keymap:Object,            // vrcontrols-keymap - vrkeymap
+
+    //clock and time
     //clock:THREE.Clock,          // uses perfomance.now() - fine grain
     //et:number = 0,             // elapsed time - clock starts at render start
     //frame:number = 0,         // frame index (as in rendered frames - fps)
@@ -84,9 +95,9 @@ class Narrative {
 
   // set up rendering framework and initialize services and state 
   //bootstrap(_config:Config, state:State){
+   
   bootstrap(_config:Config, state:State):void{
     console.log(`\nnarrative.bootstrap:`);
-    console.log(`_config = ${_config} state = ${state}`);
 
     // initialize config
     config = _config;
@@ -95,13 +106,53 @@ class Narrative {
     //console.log(`Stats = ${Stats}`);
     _stats = state['stage']['frame']['_stats'];
     console.log(`_stats = ${state['stage']['frame']['_stats']}`);
+    //stats = new window['Stats']();
     stats = new window['Stats']();
     document.body.appendChild(stats.dom);
     if(_stats){
+      console.log('setting stats display style to block');
       stats.dom.style.display = 'block';  // show
     }else{
+      console.log('setting stats display style to none');
       stats.dom.style.display = 'none';  // hide
     }
+
+
+    // initialize scene and camera, i.e lens
+    vrscene = new THREE.Scene();
+    aspect = window.innerWidth/window.innerHeight;
+    vrlens = new THREE.PerspectiveCamera(90, aspect, 0.1, 1000); 
+
+
+    // canvas and gl-context
+    canvas = <HTMLCanvasElement>document.getElementById(config.canvas_id);
+    //as of Oct 2019 webgl2 cannot render antialiasing - when supported
+    //change false to config.antialias - done! jan30_2021
+    context = canvas.getContext('webgl2', {antialias:true});
+
+
+    // initialize renderer
+    renderer = new THREE.WebGLRenderer({
+      canvas:canvas,
+      context:context,
+      alpha:config.alpha,
+    });
+    if(renderer.capabilities.isWebGL2){
+      console.log(`webGL2 renderer created !!!!!!!`);
+    }else{
+      console.log(`webGL1 renderer created !!!!!!!`);
+    }
+
+    renderer.setClearColor(new THREE.Color(config.clearColor), 
+      config.clearAlpha);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    
+    // webXR
+    renderer.xr.enabled = true;
+    renderer.xr.setReferenceSpaceType('local');
+
+    // webXR VRButton
+    document.body.append(VRButton.createButton(renderer));
 
 
     // initialize state 
@@ -196,7 +247,7 @@ class Narrative {
   // animate-render loop - et holds current elapsed time
   animate():void {
     console.log('narrative.animate()');
-    //renderer.setAnimationLoop(narrative.render);
+    renderer.setAnimationLoop(narrative.render);
     narrative.render();
   }
 
@@ -204,8 +255,13 @@ class Narrative {
 
   // render current frame - frame holds current frame number
   render():void {
-    console.log('narrative.render()');
+    //console.log('narrative.render()');
+    if(_stats){
+      stats.update();
+    }    
+
     //renderer.render( scene, camera );
+    renderer.render(vrscene, vrlens);
   }
 
 

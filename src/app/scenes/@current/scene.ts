@@ -1,5 +1,5 @@
 // scene: scene.ts
-// webGL2, es300 three.js >=R109
+// webGL2, es300 three.js >=0.124.0
 // 
 // [1] config:Config (interface) is used once for initialization
 // [2] substates are dynamic - used for initialization AND subsequent variation
@@ -56,10 +56,8 @@ const config:Config = {
   // imports - needed node_module/jsm libraries urls - relative to
   // index.html <base href='/dist/'
   imports:[
+    //'../src/jsm/stats/stats.module.js',
     //'../node_modules/socket.io-client/dist/socket.io.js',
-    //'../node_modules/three/build/three.module.js',
-    '../src/jsm/stats/stats.module.js'
-    //'../node_modules/three/examples/js/vr/WebVR.js',
     //'../node_modules/gsap/umd/Tweenmax.js'
   ],
 
