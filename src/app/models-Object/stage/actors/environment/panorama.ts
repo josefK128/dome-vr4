@@ -24,6 +24,16 @@
 //          factory:'Panorama',
 //          url:'./app/models/stage/actors/environment/panorama',
 //          options:{
+//              size:10000,        // default=10000
+//             *opacity: 1.0,    // default 1.0
+//             *textures:[      // string[] - default space - see below
+//                posX.png,
+//                negX.png,
+//                posY.png,
+//                negY.png,
+//                posZ.png,
+//                negZ.png,
+//              ],
 //             *transform:{t:[0.0,2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
 //          }
 //        }
@@ -67,11 +77,11 @@ function getTexturesFromAtlasFile(atlasImgUrl:string, tilesNum:number ):THREE.Te
 // class Panorama - Factory
 export const Panorama:ActorFactory = class {
 
-  static create(options:Record<string|symbol,unknown>={}):Promise<Actor>{
+  static create(options:Record<string,unknown>={}):Promise<Actor>{
 
     return new Promise((resolve, reject) => {
 
-      const panorama:Actor = {delta: (options:Record<string|symbol,unknown>={}):void => {console.log(`panorama.delta(): options=${options}`);}},
+      const panorama:Actor = {delta: ():void => {console.log('delta');}},
             camera = options['camera'],
             layers:THREE.Mesh = [];
 

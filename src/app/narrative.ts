@@ -38,7 +38,7 @@ import {Panorama} from './models/stage/actors/environment/Panorama.js';
 
 
 
-// singleton closure-instance variable
+// singleton closure variables
 let narrative:Narrative,
     config:Config,
     canvas:HTMLCanvasElement,       // DOM singularity 
