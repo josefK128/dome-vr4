@@ -28,7 +28,8 @@ import {State} from './scenes/state.interface';
 //import {camera} from './state/camera';
 //import {actions} from './state/actions';
 //// models
-//import {Actor} from './models/stage/actors/actor.interface';  
+import {Actor} from './models/stage/actors/actor.interface';  
+import {Panorama} from './models/stage/actors/environment/Panorama.js';  
 //import {Action} from './models/actions/action.interface';
 //import {vrcontrols} from './models/camera/controls/vrcontrols';  
 //import {vrkeymap} from './models/camera/keymaps/vrkeymap';  
@@ -173,7 +174,22 @@ class Narrative {
     console.log(`\nnarrative.changeState state:`);
     console.dir(state);
 
+    // prepare for rendering scene
     narrative.prerender();
+
+    // panorama - Promise resolves to Actor instance - contains
+    // delta() and layers:THREE.Mesh[]  (layers.length = 2)
+    Panorama.create({'camera': vrlens}).then((panorama) => {
+      console.log(`Panorama.create returns panorama containing layers - length = ${panorama['layers'].length}`);
+      console.log(`panorama['layers'][0] = ${panorama['layers'][0]}`);
+      vrscene.add(panorama['layers'][0]);
+      console.log(`panorama['layers'][1] = ${panorama['layers'][1]}`);
+      vrscene.add(panorama['layers'][1]);
+    }).catch((e) => {
+      console.log(`error creating panorama: ${e}`);
+    });
+
+    // begin render-loop
     narrative.animate();
   }
 
@@ -362,7 +378,8 @@ class Narrative {
     console.log('\nnarrative.reportActors()');
     if(display){
       for(const [k,v] of Object.entries(cast)){
-        console.log(`cast contains actor ${v} with name ${k} and actor.name ${v.name}`);
+        console.log(`cast contains actor ${v} with name ${k}`); 
+          // and actor.name ${v.name}`);
       }
     }
     return cast;
