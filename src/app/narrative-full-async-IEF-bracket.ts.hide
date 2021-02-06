@@ -131,38 +131,48 @@ class Narrative {
     //as of Oct 2019 webgl2 cannot render antialiasing - when supported
     //change false to config.antialias - done! jan30_2021
     context = canvas.getContext('webgl2', {antialias:true});
+    (async () => {
+      try {
+        await context.makeXRCompatible();
 
-    // initialize renderer
-    renderer = new THREE.WebGLRenderer({
-      canvas:canvas,
-      context:context,
-      alpha:config.alpha,
-    });
-    if(renderer.capabilities.isWebGL2){
-      console.log(`webGL2 renderer created !!!!!!!`);
-    }else{
-      console.log(`webGL1 renderer created !!!!!!!`);
-    }
-
-    renderer.setClearColor(new THREE.Color(config.clearColor), 
-      config.clearAlpha);
-    renderer.setSize(window.innerWidth, window.innerHeight);
+        // initialize renderer
+        renderer = new THREE.WebGLRenderer({
+          canvas:canvas,
+          context:context,
+          alpha:config.alpha
+        });
+        if(renderer.capabilities.isWebGL2){
+          console.log(`webGL2 renderer created !!!!!!!`);
+        }else{
+          console.log(`webGL1 renderer created !!!!!!!`);
+        }
     
-    // webXR
-    renderer.xr.enabled = true;
-    renderer.xr.setReferenceSpaceType('local');
+        renderer.setClearColor(new THREE.Color(config.clearColor), 
+          config.clearAlpha);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        
+        // webXR
+        renderer.xr.enabled = true;
+        renderer.xr.setReferenceSpaceType('local');
+    
+        // webXR VRButton
+        document.body.append(VRButton.createButton(renderer));
+    
+    
+        // initialize state 
+        narrative.changeState(state);
+    
+        // connect to server?
+        if(config.server_connect){
+          //mediator.connect();
+        }
 
-    // webXR VRButton
-    document.body.append(VRButton.createButton(renderer));
+      } catch(err) {
+        console.log(`could not make rendering context XR compatible: ${err}`);
+      }
 
+    })();
 
-    // initialize state 
-    narrative.changeState(state);
-
-    // connect to server?
-    if(config.server_connect){
-      //mediator.connect();
-    }
   }
 
 

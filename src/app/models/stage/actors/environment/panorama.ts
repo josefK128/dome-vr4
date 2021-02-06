@@ -85,22 +85,28 @@ export const Panorama:ActorFactory = class {
         geometry.scale( 1, 1, - 1 );
         
         const textures = getTexturesFromAtlasFile( "../../../../../../../media/images/cube/sun_temple_stripe_stereo.jpg", 12 );
-        const materials = [];
-        for ( let i = 0; i < 6; i ++ ) {
-          materials.push( new THREE.MeshBasicMaterial( { map: textures[ i ] } ) );
-        }
-        const skyBox = new THREE.Mesh( geometry, materials );
-        skyBox.layers.set( 1 );
-        layers[0] = skyBox;
 
-        // layerR
+
+
+        // skyBoxL - geometry to be SHARED with skyBoxR
+        const materialsL = [];
+        for ( let i = 0; i < 6; i ++ ) {
+          materialsL.push( new THREE.MeshBasicMaterial( { map: textures[ i ] } ) );
+        }
+        const skyBoxL = new THREE.Mesh( geometry, materialsL );
+        skyBoxL.layers.set( 1 );
+        layers[0] = skyBoxL;
+
+
+        // skyBoxR - geometry shared; material NOT shared - distinct materialsR
         const materialsR = [];
         for ( let i = 6; i < 12; i ++ ) {
           materialsR.push( new THREE.MeshBasicMaterial( { map: textures[ i ] } ) );
         }
         const skyBoxR = new THREE.Mesh( geometry, materialsR );
         skyBoxR.layers.set( 2 );
-        layers[1] = skyBox;
+        layers[1] = skyBoxR;
+
 
         // panorama - Actor
         panorama['layers'] = layers;
