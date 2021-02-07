@@ -123,7 +123,6 @@ class Narrative {
     vrscene = new THREE.Scene();
     aspect = window.innerWidth/window.innerHeight;
     vrlens = new THREE.PerspectiveCamera(90, aspect, 0.1, 1000); 
-    vrlens.layers.enable(1);
 
 
     // canvas and gl-context
@@ -131,6 +130,7 @@ class Narrative {
     //as of Oct 2019 webgl2 cannot render antialiasing - when supported
     //change false to config.antialias - done! jan30_2021
     context = canvas.getContext('webgl2', {antialias:true});
+
 
     // initialize renderer
     renderer = new THREE.WebGLRenderer({

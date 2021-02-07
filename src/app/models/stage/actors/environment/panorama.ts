@@ -9,7 +9,6 @@
 // export interface Actor {
 //   delta(Object):void;   
 //
-//
 // declarative specification in context of the stage:actors Object:
 // NOTE: urls are relative to app/scenes directory
 // NOTE: _actors:true (create) => name, factory, url and options are needed
@@ -32,7 +31,6 @@
 import {ActorFactory} from '../actorfactory.interface';
 import {Actor} from '../actor.interface';
 //import {transform3d} from '../../../../services/transform3d';
-
 
 
 // closure function
@@ -85,7 +83,6 @@ export const Panorama:ActorFactory = class {
         geometry.scale( 1, 1, - 1 );
         
         const textures = getTexturesFromAtlasFile( "../../../../../../../media/images/cube/sun_temple_stripe_stereo.jpg", 12 );
-
 
 
         // skyBoxL - geometry to be SHARED with skyBoxR
