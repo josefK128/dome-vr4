@@ -11,7 +11,7 @@ and sourcemap obviating the need for webpack:
 In tsconfig TRY: 
 
 ``` 
-    "out": "index.js"
+    "out": "./dist/index.js"
     "outDir": "./dist",
     "sourceMap": true,
 ```
