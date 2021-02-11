@@ -18,12 +18,13 @@ import {VRButton} from '../jsm/three/webxr/VRButton.js';
 import Stats from '../jsm/three/stats/stats.module.js'; //default export
 
 // gsap
-import {TweenMax, TimelineMax, Power1} from '../jsm/gsap/all.js';
+import {gsap, TweenMax, TimelineMax, Power1} from '../jsm/gsap/all.js';
 
 // make exterior modules available globally 
 window['THREE'] = THREE;
 window['VRButton'] = VRButton;
 window['Stats'] = Stats;
+window['gsap'] = gsap;
 window['TweenMax'] = TweenMax;
 window['TimelineMax'] = TimelineMax;
 window['Power1'] = Power1;
@@ -67,6 +68,7 @@ import {Panorama} from './models/stage/actors/environment/Panorama.js';
 
 
 // singleton closure variables
+// const but uninitialized
 let narrative:Narrative,
     config:Config,
     canvas:HTMLCanvasElement,       // DOM singularity 
@@ -78,18 +80,14 @@ let narrative:Narrative,
                    // NOTE:TBD 'csphere' is whole apparatus - lens, lights etc
     //lens_offset:THREE.Object3D,      // _webvr:t => lower camera by 1.6
     vrlens:THREE.PerspectiveCamera, // separate camera for rendering vrscene
-    aspect = 1.0,                  // window.innerW/window.innerH
     //vrlens_offset:THREE.Object3D, // _webvr:t => lower camera by 1.6
     //_controls:boolean = false,   // use controls/keymap? 
                                 // set by config.controls:boolean? default false
     //controls:Object,           // vrcontrols
     //keymap:Object,            // vrcontrols-keymap - vrkeymap
 
-    //clock and time
-    //clock:THREE.Clock,          // uses perfomance.now() - fine grain
-    //et:number = 0,             // elapsed time - clock starts at render start
-    //frame:number = 0,         // frame index (as in rendered frames - fps)
-    _stats = false,            // performance meter - update stats in render 
+    //clock and performance meter
+    clock:THREE.Clock,    // uses perfomance.now() - fine grain
     stats:Stats,
 
     // actors
@@ -101,6 +99,25 @@ let narrative:Narrative,
     sgscene:THREE.Scene,
     rmscene:THREE.Scene,
     vrscene:THREE.Scene;
+
+// const - initialized
+const tl = gsap.timeline({paused:true}),
+    timer = (t:number, dt:number, fr:number) => {
+      if(fr % 1000 === 0){
+        console.log(`timer:frame=${frame} et=${et} fr=${fr} t=${t} dt=${dt}`);
+      }
+    };
+
+
+//dynamic
+let _stats = false,            // performance meter - update stats in render 
+    aspect = 1.0,             // window.innerW/window.innerH
+    animating = false,       // animation => render-loop running
+    et = 0,                 // elapsed time - clock starts at render start
+    frame = 0;             // frame index (as in rendered frames - fps)
+   
+
+
 
 
 class Narrative {
@@ -216,8 +233,19 @@ class Narrative {
       console.log(`error creating panorama: ${e}`);
     });
 
-    // begin render-loop
-    narrative.animate();
+    if(!animating){
+      // initialize clock, timeline
+      clock = new THREE.Clock();
+      clock.start();
+      tl.play();
+
+      // set timer to report time passage - t, dt, frames
+      gsap.ticker.add(timer);
+  
+      // animate => begin render-loop
+      animating = true;
+      narrative.animate();
+    }
   }
 
 
@@ -299,13 +327,18 @@ class Narrative {
 
   // render current frame - frame holds current frame number
   render():void {
+
+    // time
+    et = clock.getElapsedTime();
+
     //console.log('narrative.render()');
     if(_stats){
       stats.update();
-    }    
+    } 
 
     //renderer.render( scene, camera );
     renderer.render(vrscene, vrlens);
+    frame++;
   }
 
 
