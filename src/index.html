@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <base href="/dist/"> <!-- all urls relative to base href='./dist/'> -->
     <title>
-      R124-webGL2-es300:base-href-dist
+      three0.125.02-webGL2-es300:base-href-dist
     </title>
     <!--<link href="./index.css" rel="stylesheet"> - same as below -->
     <style>
@@ -23,7 +23,6 @@
           monospace;
       }    
     </style>
-
   </head>
 
 
@@ -33,28 +32,16 @@
     <canvas id='webgl' style='width:100vw; height:100vh; background-color:black; position:absolute; left:0px; top:0px;'/>
 
     <script type='module'> 
-      //imports
-      import * as THREE from '../src/jsm/three/build/three.module.js';
-      import {VRButton} from '../src/jsm/three/webxr/VRButton.js';
-      import Stats from '../src/jsm/three/stats/stats.module.js'; //default export
-
-      // make available globally
-      window['THREE'] = THREE;
-      window['VRButton'] = VRButton;
-      window['Stats'] = Stats;
-
 
       // SCENE and BOOTSTRAP-CONTROLLER modules - variable by url
       // NOTE: modules imported by html-files are from dist/**/*.js
       // i.e. they are never ts-files
       const _scene = './app/scenes/@current/scene.js',
             _narrative = './app/narrative.js';
-
             // FAILS - these are dynamic imports but same for static imports
             //_narrative = '../src/app/narrative.ts'; // incorrect mime type 
             //_narrative = '../src/app/narrative';   // 404
             //_narrative = '../src/app/narrative.js'; // 404
-
       
       // load needed fundamental application modules - these are the exports 
       // from the varaible scene and bootstrap-controller (urls above)
@@ -67,50 +54,23 @@
         });
 
         // diagnostics
-        console.log(`\nindex: a is type ${typeof(a)}`);
-        console.log(`a is an Array is ${Array.isArray(a)}`);
-        console.log(`dynamically loaded module-array a:`);
-        console.dir(a);
-        for(let p in a){
-          console.log(`\na[${p}] is type ${typeof(a[p])}`);
-          console.log(`module[${p}] has value:`)
-          console.dir(a[p]);
-        }
+        //console.log(`\nindex: a is type ${typeof(a)}`);
+        //console.log(`a is an Array is ${Array.isArray(a)}`);
+        //console.log(`dynamically loaded module-array a:`);
+        //console.dir(a);
+        //for(let p in a){
+          //console.log(`\na[${p}] is type ${typeof(a[p])}`);
+          //console.log(`module[${p}] has value:`)
+          //console.dir(a[p]);
+        //}
 
         let config = a[0].config;
         let state = a[0].state;
         let narrative = a[1].narrative;
 
         // load config.imports
-        loadImports(config, state, narrative);
-      };
-
-
-      // load needed node_module modules - urls listed in config.imports
-      async function loadImports(config, state, narrative) {
-        let a = await Promise.all(
-          config.imports.map(url => import(url))
-        ).catch((e) => {
-          console.error(`error loading module: ${e}`);
-        });
-
-//        window['System'] = System;        
-//        window['io'] = a[0];        
-//        window['TweenMax'] = a[1]; 
-//        window['TimelineMax'] = a[2]['TimelineMax']; 
-//        window['Quad'] = a[2]['Quad'];  
-
-//        // test-diagnostics
-//        console.log(`diagnostics:`);
-//        console.log(`io.connect = ${io.connect}`);
-//        console.log(`TweenMax = ${TweenMax}`);
-//        console.log(`TimelineMax = ${TimelineMax}`);
-//        console.log(`Quad = ${Quad}`);
-     
-        // bootstrap application
-        console.log('\nindex.html calling narrative.bootstrap()');
         narrative.bootstrap(config, state);
-      }
+      };
 
       console.log(`\n*** src/*.html starting scene ${_scene} using controller ${_narrative}`);
       console.log(`*** NOTE: <base href='/dist/'> so src/*.html imports ./dist/**/*.js\n\n`);

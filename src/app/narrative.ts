@@ -1,33 +1,61 @@
 // narrative.ts
-// bootstrap controller
+// bootstrap controller-application
+// RECALL: src/app/narrative.ts is transpiled to dist/app/narrative.js
+// and index.html <base href='/dist/'>  
+// so all js-files referenced in narrative.ts are loaded relative to 
+// dome-vr4/dist/app
+// RECALL: jsm-lib is at dome-vr4/dist/jsm, 
+// so the path to the jsm-lib relative to dist/app/narrative is ../jsm
+// exp: import {VRButton} from '../jsm/three/webxr/VRButton.js
 
 
 
-// scene
+// modules exterior to dome-vr4
+
+// Three.js
+import * as THREE from '../jsm/three/build/three.module.js';
+import {VRButton} from '../jsm/three/webxr/VRButton.js';
+import Stats from '../jsm/three/stats/stats.module.js'; //default export
+
+// gsap
+import {TweenMax, TimelineMax, Power1} from '../jsm/gsap/all.js';
+
+// make exterior modules available globally 
+window['THREE'] = THREE;
+window['VRButton'] = VRButton;
+window['Stats'] = Stats;
+window['TweenMax'] = TweenMax;
+window['TimelineMax'] = TimelineMax;
+window['Power1'] = Power1;
+
+
+
+// dome-vr4 modules
+
 // first 2 imports are compile-time only so don't need to use js-ext
+// interfaces for scene
 import {Config} from './scenes/config.interface';
 import {State} from './scenes/state.interface';
 
-// other runtime imports must use .js-ext for correct runtime browser execution
-// NOTE: at compile-time tsc will import the correct ts-file even though in the
-// import statement the file has a .js-ext
-//import {config, state} from './scenes/@current/scene.js';
-// just to use defined names config, state
-//console.log(`import expt: config = ${config}`); 
-//console.log(`import expt: state = ${state}`); 
+// at compile time tsc is smart enough to load <module>.ts even though the 
+// file-extension is .js - note that .js is needed for runtime usage
 
-
-//// services
+// services
 //import {mediator} from './services/actions/mediator';
 //import {director} from './services/actions/director';
-//import {queue} from './services/actions/queue';
+import {queue} from './services/actions/queue.js';
 //import {transform3d} from './services/transform3d';
 //import {animation} from './services/animation';
-//// state
+if(typeof queue !== undefined){
+  //console.log(`queue is defined!`);  //otherwise queue is NOT used - tsc warn
+}
+
+// state
 //import {stage} from './state/stage';
 //import {camera} from './state/camera';
 //import {actions} from './state/actions';
-//// models
+
+// models
 import {Actor} from './models/stage/actors/actor.interface';  
 import {Panorama} from './models/stage/actors/environment/Panorama.js';  
 //import {Action} from './models/actions/action.interface';
@@ -98,7 +126,7 @@ class Narrative {
   //bootstrap(_config:Config, state:State){
    
   bootstrap(_config:Config, state:State):void{
-    console.log(`\nnarrative.bootstrap:`);
+    console.log(`\n@@@ narrative.bootstrap:`);
 
     // initialize config
     config = _config;
@@ -106,15 +134,14 @@ class Narrative {
     // TEMP !!!!!
     //console.log(`Stats = ${Stats}`);
     _stats = state['stage']['frame']['_stats'];
-    console.log(`_stats = ${state['stage']['frame']['_stats']}`);
-    //stats = new window['Stats']();
-    stats = new window['Stats']();
+    //console.log(`_stats = ${state['stage']['frame']['_stats']}`);
+    stats = new Stats();
     document.body.appendChild(stats.dom);
     if(_stats){
-      console.log('setting stats display style to block');
+      //console.log('setting stats display style to block');
       stats.dom.style.display = 'block';  // show
     }else{
-      console.log('setting stats display style to none');
+      //console.log('setting stats display style to none');
       stats.dom.style.display = 'none';  // hide
     }
 
@@ -171,7 +198,7 @@ class Narrative {
   // change state of framework states
   //async changeState(state:State):void{
   changeState(state:State):void{
-    console.log(`\nnarrative.changeState state:`);
+    console.log(`\n@@@ narrative.changeState state:`);
     console.dir(state);
 
     // prepare for rendering scene
@@ -181,9 +208,9 @@ class Narrative {
     // delta() and layers:THREE.Mesh[]  (layers.length = 2)
     Panorama.create({'camera': vrlens}).then((panorama) => {
       console.log(`Panorama.create returns panorama containing layers - length = ${panorama['layers'].length}`);
-      console.log(`panorama['layers'][0] = ${panorama['layers'][0]}`);
+      //console.log(`panorama['layers'][0] = ${panorama['layers'][0]}`);
       vrscene.add(panorama['layers'][0]);
-      console.log(`panorama['layers'][1] = ${panorama['layers'][1]}`);
+      //console.log(`panorama['layers'][1] = ${panorama['layers'][1]}`);
       vrscene.add(panorama['layers'][1]);
     }).catch((e) => {
       console.log(`error creating panorama: ${e}`);
@@ -227,7 +254,7 @@ class Narrative {
   // prepare render-loop actors, cameras, controls
   prerender(){
     // diagnostics - list all actors
-    console.log(`\nprerender: reportActors():`);
+    //console.log(`\nprerender: reportActors():`);
     narrative.reportActors(true);
 
     // if _webxr adjust y-coord of displayed scene to adjust for webxr
@@ -252,8 +279,10 @@ class Narrative {
 
   // reset params based on window resize event
   onWindowResize():void {
-    //camera.aspect = window.innerWidth / window.innerHeight;
-    //camera.updateProjectionMatrix();
+    //sglens.aspect = window.innerWidth / window.innerHeight;
+    //sglens.updateProjectionMatrix();
+    //vrlens.aspect = window.innerWidth / window.innerHeight;
+    //vrlens.updateProjectionMatrix();
 
     renderer.setSize( window.innerWidth, window.innerHeight );
   }
@@ -262,7 +291,6 @@ class Narrative {
 
   // animate-render loop - et holds current elapsed time
   animate():void {
-    console.log('narrative.animate()');
     renderer.setAnimationLoop(narrative.render);
     narrative.render();
   }
@@ -375,7 +403,7 @@ class Narrative {
 
   // following two functions are for actor report and fetch
   reportActors(display=false):Record<string, Actor>{
-    console.log('\nnarrative.reportActors()');
+    //console.log('\nnarrative.reportActors()');
     if(display){
       for(const [k,v] of Object.entries(cast)){
         console.log(`cast contains actor ${v} with name ${k}`); 
