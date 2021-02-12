@@ -2,10 +2,6 @@
 
 export interface Config {
 
-  // imports - needed node_module libraries
-  imports:string[];
-
-
   // rendering topology
   //webVR?
   // NOTE!: webvr:true => lens.position = [0, 1.6, 0] - avatar head position,
@@ -14,7 +10,7 @@ export interface Config {
   webvr:boolean;
   displayed_scene:string;        //'sg'|'vr'
 
-  // sg-stage
+  // sgscene
   sg?:boolean;                // skip sgscene rendering
   sgfog?:{                   //sgscene.fog = new Fog(color,near,far)-default:f
     color?:number,          //default:0xffffff
@@ -28,7 +24,8 @@ export interface Config {
                               //or image url OR undefined => NO sgpost/sghud
   sgTargetNames?:string[];   //actor names to be textured by sgTarget.texture
 
-  // rm-stage and vr-stage
+
+  // rmscene
   rm?:boolean;               //render to rmTarget for raymarch texture in vr
                             //NOTE! true=>must define rmquad and rmTargetName(s)
   rmTargetNames?:string[]; //actor names to be textured by rmTarget.texture
@@ -43,7 +40,10 @@ export interface Config {
                         //be animated using declarative actions in sequences
                        //NOTE! <=1000 - more effects performance but positions
                       //defined in animation with pos.z=0 are ignored
-  // vr
+
+  
+  // vrscene
+  // vrfog -> actor [?]
   vrfog?:{          //vrscene.fog = new Fog(color,near,far) - default:false
     color?:number, //hex - default:0xffffff
     near?:number, //default:.01
@@ -55,12 +55,15 @@ export interface Config {
   // canvas = document.createElement(canvas_id);
   // renderer = new THREE.WebGLRenderer( { canvas: canvas, antialias:antialias, alpha:alpha} );
   // renderer.setClearColor(clearColor-rgb, clearAlpha);
+  // -> renderer object [?]
   canvas_id:string;
   clearColor:string;    // background color - exp THREE.Color('black')
   clearAlpha:number;   // 0.0 to 1.0 =>  1 opaque, 0 transparent - background
   alpha:boolean;      // true => canvas can be made transparent/semi-transp.
   antialias:boolean; // caution - true will slow performance
 
+
+  // cut [?]
   // test? Uses mockmediator or server-mediator
   // best to set false if sequence:true
   test: boolean;

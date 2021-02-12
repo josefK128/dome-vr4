@@ -21,6 +21,7 @@ export interface State {
     }
   }
 
+
   // stage - default stage is empty. 
   // booleans are in sub-states frame/_stats, cast/_actors
   stage:{
@@ -81,8 +82,24 @@ export interface State {
         }
       }
     }
-  },
-      
+  }//stage,
+
+
+  audio:{
+    _audio?:boolean,
+    url?:string,
+    refDistance?:number,
+    maxDistance?:number,
+    playbackRate?:number,
+    volume?:number,
+    loop?:boolean,
+    delay?:number,
+    play?:boolean,
+    pause?:boolean,
+    stop?:boolean
+  }
+
+
   actions:{
     _actions?:boolean,
     sequence_url?:string

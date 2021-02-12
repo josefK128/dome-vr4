@@ -29,69 +29,88 @@
 // CONFIG
 // for initialization
 const config = {
-    // imports - needed node_module/jsm libraries urls - relative to
-    // index.html <base href='/dist/'
-    imports: [
-    //'../src/jsm/stats/stats.module.js',
-    //'../node_modules/socket.io-client/dist/socket.io.js',
-    //'../node_modules/gsap/umd/Tweenmax.js'
-    ],
+
     //rendering topology
-    // webVR?
+    // webxr  [*]
     webvr: true,
-    displayed_scene: 'vr',
-    // sg-stage
+
+    // displayed_scene = 'sg|rm|vr'
+    displayed_scene: 'vr',  
+
+
+    // render sgscene to sgTarget offscreen for background texturing in rmscene
+    // or texturing in vrscene
     sg: false,
-    sgpost: undefined,
+    
     //'sg'|'rm'|'texture'|undefined
     //use frame n-1 sgTarget.tex ('sg') 
     //or rmTarget.tex ('rm') in sghud frame n
     //or image url OR undefined => NO sgpost/sghud
+    sgpost: undefined,
+
+    // rmstage or vrstage actors 
     sgTargetNames: [],
-    // rm-stage and vr-stage
-    rm: true,
+
+
+    // render rmscene to rmTarget offscreen for texturing in vrscene
     //NOTE! true=>must define rmquad and rmTargetName(s)
+    rm: true,
+
     rmTargetNames: ['vrcube'],
     //skyfaces:string[];     //used if actor 'skyfaces' exists and is rmTgtName
     //value is some subset of ['f','b','l','r','t','g']
     //order-independent: front,back,left,right,top,ground
     // raymarch - via fragment shader in rmquad ShaderMaterial
     // NOTE! obviously requires rm:t and a vr-actor name in rmTargetNames
-    rm_npositions: 100,
+  
     //these are positions of raymarch objects which can
     //be animated using declarative actions in sequences
     //NOTE! <=1000 - more effects performance but positions
     //defined in animation with pos.z=0 are ignored
-    // vr
+    rm_npositions: 100,
+
+
+    // vr 
+    // vrfog should be actor [?]
     vrfog: {
         color: 0x00ff00,
         near: 0.1,
         far: 1000 //default:100
     },
+  
+  
     // initialization of canvas and renderer
     // canvas = document.createElement(canvas_id);
     // renderer = new THREE.WebGLRenderer( { canvas: canvas, antialias:antialias, alpha:alpha} );
-    //�renderer.setClearColor(clearColor-rgb, clearAlpha);
+    // renderer.setClearColor(clearColor-rgb, clearAlpha);
+    // put in rendering object [?]
     canvas_id: 'webgl',
     clearColor: 'black',
     clearAlpha: 1.0,
     alpha: true,
-    antialias: false,
+    antialias: false
+  ,
     // test? Uses mockmediator or server-mediator
     // best to set false if sequence:true
-    test: false,
+    test: false,    // [?]
+
+
     // actions targets - for director service
     // NOTE: 'narrative' and 'animation' are ALWAYS targets
     // narrative.bootstrap sets config.targets
     targets: { narrative: {},
         animation: {} },
-    // acions/log/etc. communications
+
+    // actions/log/etc. server communications
     server_connect: false,
     server_host: 'localhost',
     server_port: 8081,
     log: false,
     channels: ['actions', 'log']
 };
+
+
+
 // STATE
 // for initialization AND subsequent changeState actions 
 const state = {
@@ -113,6 +132,7 @@ const state = {
             controls: 'vr'
         }
     },
+
     // stage - initialization and management of stats performance meter,
     // and actors in one of two possible scenes, sgscene and/or vrscene
     stage: {
@@ -131,8 +151,9 @@ const state = {
         // Each follows the following syntax:
         // _actors:true=>create actors; false=>remove actors, undefined=>modify 
         // actors object non-empty => iterate through actors by key 'names'
-        //    sgscene: {
-        //    },
+        sgscene: {
+        },
+
         rmscene: {
             _actors: true,
             actors: {
@@ -190,6 +211,14 @@ const state = {
             } //actors
         } //vrscene
     },
+
+
+    // audio
+    audio:{
+      _audio:false
+    },
+
+
     // actions - default fifo=[] in queue
     // _actions = t/f/undefined => load seq/remove seq:load []/append seq
     // sequence is array of actions {t:, f:, o:, ms:}
@@ -203,5 +232,8 @@ const state = {
         sequence_url: './app/models/actions/sequences/bezier/rmbezier-actorbezier'
     } //actions:{}
 };
+
+
+
 export { config, state };
 //# sourceMappingURL=scene.js.map
