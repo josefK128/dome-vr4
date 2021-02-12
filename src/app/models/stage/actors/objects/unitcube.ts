@@ -43,10 +43,8 @@ import {transform3d} from '../../../../services/transform3d';
 export const Unitcube:ActorFactory = class {
 
   static create(options:Record<string,unknown>={}):Promise<Actor>{
-    let cube_g:THREE.Geometry,
-        cube_m:THREE.Material,
-        cube:THREE.Mesh;
-        // options
+
+    // options
     const wireframe = options['wireframe'] || false,
         material = options['material'] || 'basic',
         color = options['color'] || 'red',
@@ -54,8 +52,11 @@ export const Unitcube:ActorFactory = class {
         map = options['map'],
         loader = new THREE.TextureLoader(),
         transform = options['transform'] || {};
-      
 
+    let cube_g:THREE.Geometry,
+        cube_m:THREE.Material,
+        cube:THREE.Mesh;
+      
     //diagnostics
     //console.log(`&&& Unitcube options:`);
     //console.dir(options);

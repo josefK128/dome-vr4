@@ -223,12 +223,25 @@ class Narrative {
 
     // panorama - Promise resolves to Actor instance - contains
     // delta() and layers:THREE.Mesh[]  (layers.length = 2)
-    Panorama.create({'camera': vrlens}).then((panorama) => {
-      console.log(`Panorama.create returns panorama containing layers - length = ${panorama['layers'].length}`);
-      //console.log(`panorama['layers'][0] = ${panorama['layers'][0]}`);
-      vrscene.add(panorama['layers'][0]);
-      //console.log(`panorama['layers'][1] = ${panorama['layers'][1]}`);
-      vrscene.add(panorama['layers'][1]);
+//    Panorama.create({'camera': vrlens}).then((panorama) => {
+//      console.log(`Panorama.create returns panorama containing layers - length = ${panorama['layers'].length}`);
+//      //console.log(`panorama['layers'][0] = ${panorama['layers'][0]}`);
+//      vrscene.add(panorama['layers'][0]);
+//      //console.log(`panorama['layers'][1] = ${panorama['layers'][1]}`);
+//      vrscene.add(panorama['layers'][1]);
+//    }).catch((e) => {
+//      console.log(`error creating panorama: ${e}`);
+//    });
+
+    Panorama.create({'camera': vrlens}).then((actor) => {
+      console.log(`Panorama.create returns panorama containing layers - length = ${actor['layers'].length}`);
+      if(actor['layers']){
+        for(const layer of actor['layers']){
+          vrscene.add(layer);
+        }
+      }else{
+        vrscene.add(actor);
+      }
     }).catch((e) => {
       console.log(`error creating panorama: ${e}`);
     });
