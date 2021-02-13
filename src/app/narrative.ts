@@ -52,7 +52,7 @@ if(typeof queue !== undefined){
 }
 
 // state
-//import {stage} from './state/stage';
+import {stage} from './state/stage';
 //import {camera} from './state/camera';
 //import {actions} from './state/actions';
 
