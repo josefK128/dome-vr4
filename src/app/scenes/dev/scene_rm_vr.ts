@@ -150,8 +150,22 @@ const state = {
         },
 
         rmscene: {
+            _actors: true,
+            actors: {
+                'rmquad': {
+                    factory: 'Rmquad',
+                    url: './app/models/stage/actors/raymarch/rmquad',
+                    options: {
+                        color: 'white',
+                        opacity: 1.0,
+                        vsh: './app/models/stage/shaders/webgl2/vertex/vsh_rm_texquad.glsl',
+                        fsh: './app/models/stage/shaders/webgl2/fragment/fsh_rm_positions_texquad.glsl',
+                        transform: { t: [0.0, 0.0, -1.0] },
+                        texture: './app/assets/images/glad.png' // test ONLY!   
+                    }
+                }
+            } //actors
         },
-
         vrscene: {
             _actors: true,
             actors: {
@@ -164,14 +178,6 @@ const state = {
                         transform: { t: [0.0, -0.01, -0.99] }
                     }
                 },
-                'panorama':{
-                    factory:'Panorama',
-                    url:'./app/models/stage/actors/environment/panorama',
-                    options:{
-                      texture_url:'../media/images/cube/sun_temple_stripe__stereo.jpg',
-                      ntextures:12
-                    }
-                },
                 'unitcube': {
                     factory: 'Unitcube',
                     url: './app/models/stage/actors/objects/unitcube',
@@ -182,6 +188,12 @@ const state = {
                         transform: { t: [0.0, 0.0, -0.5], e: [0.0, 0.0, 0.0], s: [0.05, 0.05, 0.05] }
                     }
                 },
+                //'vrskybox':{
+                //   factory:'Skybox',
+                //   url:'',
+                //   options:{}
+                // }
+             
             } //actors
         } //vrscene
     },

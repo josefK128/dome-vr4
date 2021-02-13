@@ -23,8 +23,9 @@
 //          factory:'Panorama',
 //          url:'./app/models/stage/actors/environment/panorama',
 //          options:{
-//             *transform:{t:[0.0,2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
-//          }
+//            texture_url:'../media/images/cube/sun_temple_stripe__stereo.jpg',
+//            ntextures:12
+//          } 
 //        }
 //      }//actors
 //};
@@ -65,18 +66,21 @@ function getTexturesFromAtlasFile(atlasImgUrl:string, tilesNum:number ):THREE.Te
 // class Panorama - Factory
 export const Panorama:ActorFactory = class {
 
-  static create(options:Record<string|symbol,unknown>={}):Promise<Actor>{
+  static create(options:Record<string,unknown>={}):Promise<Actor>{
 
     return new Promise((resolve, reject) => {
 
-      const panorama:Actor = {delta: (options:Record<string|symbol,unknown>={}):void => {console.log(`panorama.delta(): options=${options}`);}},
-            camera = options['camera'],
-            layers:THREE.Mesh = [];
+      const panorama:Actor = <Actor>{delta: (options:Record<string,unknown>={}):void => {console.log(`panorama.delta(): options=${options}`);}},
+            texture_url = <string>options['texture_url'] ||
+        '../../../../../../../media/images/cube/sun_temple_stripe_stereo.jpg',
+            ntextures = <number>options['ntextures'] || 12,
+            lens = <THREE.Camera>options['lens'],
+            layers:THREE.Mesh[] = [];
 
       try{
         // layerL === layer
         // prepare camera for two layers of panorama
-        <THREE.Camera>camera['layers'].enable( 1 );
+        lens['layers'].enable( 1 );
 
         // geometry
         const geometry = new THREE.BoxGeometry( 100, 100, 100 );

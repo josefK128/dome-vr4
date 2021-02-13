@@ -102,11 +102,14 @@ let narrative:Narrative,
 
 // const - initialized
 const tl = gsap.timeline({paused:true}),
-    timer = (t:number, dt:number, fr:number) => {
-      if(fr % 1000 === 0){
-        console.log(`timer:frame=${frame} et=${et} fr=${fr} t=${t} dt=${dt}`);
-      }
-    };
+      targetNames:Record<string,unknown> = {
+        'narrative':narrative
+      },
+      timer = (t:number, dt:number, fr:number) => {
+        if(fr % 1000 === 0){
+          console.log(`timer:frame=${frame} et=${et} fr=${fr} t=${t} dt=${dt}`);
+        }
+      };
 
 
 //dynamic
@@ -170,9 +173,9 @@ class Narrative {
 
 
     // canvas and gl-context
-    canvas = <HTMLCanvasElement>document.getElementById(config.canvas_id);
+    canvas = <HTMLCanvasElement>document.getElementById(config.renderer.canvas_id);
     //as of Oct 2019 webgl2 cannot render antialiasing - when supported
-    //change false to config.antialias - done! jan30_2021
+    //change false to config.renderer.antialias - done! jan30_2021
     context = canvas.getContext('webgl2', {antialias:true});
 
 
@@ -180,7 +183,7 @@ class Narrative {
     renderer = new THREE.WebGLRenderer({
       canvas:canvas,
       context:context,
-      alpha:config.alpha,
+      alpha:config.renderer.alpha,
     });
     if(renderer.capabilities.isWebGL2){
       console.log(`webGL2 renderer created !!!!!!!`);
@@ -188,8 +191,8 @@ class Narrative {
       console.log(`webGL1 renderer created !!!!!!!`);
     }
 
-    renderer.setClearColor(new THREE.Color(config.clearColor), 
-      config.clearAlpha);
+    renderer.setClearColor(new THREE.Color(config.renderer.clearColor), 
+      config.renderer.clearAlpha);
     renderer.setSize(window.innerWidth, window.innerHeight);
     
     // webXR
@@ -204,7 +207,7 @@ class Narrative {
     narrative.changeState(state);
 
     // connect to server?
-    if(config.server_connect){
+    if(config.server.server_connect){
       //mediator.connect();
     }
   }
@@ -233,7 +236,7 @@ class Narrative {
 //      console.log(`error creating panorama: ${e}`);
 //    });
 
-    Panorama.create({'camera': vrlens}).then((actor) => {
+    Panorama.create({'lens': vrlens}).then((actor) => {
       console.log(`Panorama.create returns panorama containing layers - length = ${actor['layers'].length}`);
       if(actor['layers']){
         for(const layer of actor['layers']){
@@ -259,7 +262,7 @@ class Narrative {
       animating = true;
       narrative.animate();
     }
-  }
+  }//changeState
 
 
 
