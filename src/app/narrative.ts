@@ -143,6 +143,8 @@ class Narrative {
     return 'foo';
   }
 
+
+
   // set up rendering framework and initialize services and state 
   //bootstrap(_config:Config, state:State){
   bootstrap(_config:Config, state:State):void{
@@ -151,10 +153,48 @@ class Narrative {
     // initialize config
     config = _config;
 
-    // TEMP !!!!!
-    //console.log(`Stats = ${Stats}`);
+
+    // canvas and gl-context
+    canvas = <HTMLCanvasElement>document.getElementById(config.renderer.canvas_id);
+    //as of Oct 2019 webgl2 cannot render antialiasing - when supported
+    //change false to config.renderer.antialias - done! jan30_2021
+    context = canvas.getContext('webgl2', {antialias:true});
+
+    // initialize renderer
+    renderer = new THREE.WebGLRenderer({
+      canvas:canvas,
+      context:context,
+      alpha:config.renderer.alpha,
+    });
+
+    renderer.setClearColor(new THREE.Color(config.renderer.clearColor), 
+      config.renderer.clearAlpha);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    if(renderer.capabilities.isWebGL2){
+      console.log(`webGL2 renderer created !!!!!!!`);
+    }else{
+      console.log(`webGL1 renderer created !!!!!!!`);
+    }
+
+
+    // initialize scenes 
+    if(config.topology._sg){
+      sgscene = new THREE.Scene();
+      console.log(`_sg = ${config.topology._sg} so creating sgscene`);
+    }
+    if(config.topology._rm){
+      rmscene = new THREE.Scene();
+      console.log(`_rm = ${config.topology._rm} so creating rmscene`);
+    }
+    if(config.topology._vr){
+      vrscene = new THREE.Scene();
+      console.log(`_vr = ${config.topology._vr} so creating vrscene`);
+    }
+
+
+    // stats
     _stats = state['stage']['frame']['_stats'];
-    //console.log(`_stats = ${state['stage']['frame']['_stats']}`);
     stats = new Stats();
     document.body.appendChild(stats.dom);
     if(_stats){
@@ -165,40 +205,17 @@ class Narrative {
       stats.dom.style.display = 'none';  // hide
     }
 
+    // webxr
+    if(config.topology._webxr){
+      renderer.xr.enabled = true;
+      renderer.xr.setReferenceSpaceType('local');
 
-    // initialize scene 
-    vrscene = new THREE.Scene();
-
-    // canvas and gl-context
-    canvas = <HTMLCanvasElement>document.getElementById(config.renderer.canvas_id);
-    //as of Oct 2019 webgl2 cannot render antialiasing - when supported
-    //change false to config.renderer.antialias - done! jan30_2021
-    context = canvas.getContext('webgl2', {antialias:true});
-
-
-    // initialize renderer
-    renderer = new THREE.WebGLRenderer({
-      canvas:canvas,
-      context:context,
-      alpha:config.renderer.alpha,
-    });
-    if(renderer.capabilities.isWebGL2){
-      console.log(`webGL2 renderer created !!!!!!!`);
+      // webXR VRButton
+      document.body.append(VRButton.createButton(renderer));
+      console.log(`_webxr = ${config.topology._webxr} so rendering in webXR`);
     }else{
-      console.log(`webGL1 renderer created !!!!!!!`);
+      console.log(`_webxr = ${config.topology._webxr} so rendering in webGL`);
     }
-
-    renderer.setClearColor(new THREE.Color(config.renderer.clearColor), 
-      config.renderer.clearAlpha);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-
-
-    // webXR
-    renderer.xr.enabled = true;
-    renderer.xr.setReferenceSpaceType('local');
-
-    // webXR VRButton
-    document.body.append(VRButton.createButton(renderer));
 
 
     // connect to server?
