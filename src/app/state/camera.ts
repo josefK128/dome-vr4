@@ -5,13 +5,14 @@
 //var controls = new THREE.OrbitControls( camera );
 //import {OrbitControls} from '../models/camera/controls/OrbitControls';
 import {transform3d} from '../services/transform3d';
+import {Controls} from '../models/camera/controls/Controls.interface';
 
 
 // singleton closure-instance variable
 let camera:Camera,
     lens:THREE.PerspectiveCamera,
     controls:THREE.OrbitContols,
-    transform:Record<string,unknown>;
+    transform:Record<string,number[]>;
 
 class Camera {
 
@@ -34,13 +35,13 @@ class Camera {
 
     return new Promise((resolve, reject) => {
       const result:Record<string,unknown> = {'camera':{}},
-            o = result['camera'];
+            o = <Record<string,unknown>>result['camera'];
 
       // process state
       if(state && Object.keys(state).length > 0){
 
         // lens - _lens:t|f - os contain 'lens':lens or nothing(undefined)
-        if(state['lens'] && Object.keys(state['lens']).length > 0){
+        if(state['lens'] && Object.keys(<THREE.Camera>state['lens']).length > 0){
           const l = <Record<string,unknown>>state['lens'],
                 _lens = <boolean>l['_lens'];
           if(_lens){  // create
@@ -66,7 +67,7 @@ class Camera {
           }
 
           // transform camera position and/or orientation
-          transform = l['transform'];
+          transform = <Record<string,number[]>>l['transform'];
           if(transform){
             transform3d.apply(transform, lens);
           }
@@ -75,9 +76,9 @@ class Camera {
 
         // controls
         // return state - controls now created in narrative since canvas needed
-        if(state['controls'] && Object.keys(state['controls']).length > 0){
-          o['_controls'] = state['controls']['_controls'] || false;
-          o['controls'] = state['controls']['controls'];
+        if(state['controls'] && Object.keys(<string>state['controls']).length > 0){
+          o['_controls'] = (<string>state['controls'])['_controls'] || false;
+          o['controls'] = (<string>state['controls'])['controls'];
         }else{
           o['_controls'] = false;
         }

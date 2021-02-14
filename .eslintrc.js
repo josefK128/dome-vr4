@@ -39,7 +39,16 @@ module.exports = {
       // rules specified from the extended configs
       // e.g. "@typescript-eslint/explicit-function-return-type": "off",
       "@typescript-eslint/no-unused-vars": "off",
-      "no-var": "warn",            // warn if var is used
-      "semi": ["error", "always"]  // error for missing semi-colon
+      "no-var": "warn",              // warn if var is used
+      "semi": ["error", "always"],  // error for missing semi-colon
+
+      "no-unreachable": "warn",    // disallow unreachable code
+      "no-dupe-keys": "warn",     // disallow duplicate properties in container
+      "no-duplicate-case": "warn",    // disallow duplicate cases in switch
+      "default-case": "warn",   // require default case in switch
+      "eqeqeq": "warn",        // require === and !== (not == and !=)
+      "wrap-iife": "warn",    // require (()=>{})() not ()=>{}()
+      "no-tabs": "warn",    // enforce spaces for tabs
+      "no-multi-assign": "warn"    // no a=b=c
     }
 };

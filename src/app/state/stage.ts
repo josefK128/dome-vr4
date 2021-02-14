@@ -21,17 +21,17 @@ class Stage {
   }
 
 
-  delta(state:Record<string,unknown>, narrative:Narrative):Promise<Record<string,unknown>>{
+  delta(state:Record<string,unknown>, narrative:Record<string,unknown>):Promise<Record<string,unknown>>{
     console.log(`\nstate/stage.delta state:`);
     console.dir(state);
 
     return new Promise((resolve, reject) => {
-      const frame = <Record<string,unknown>>state['frame'],
-          sg = state['sgscene'],
-          rm = state['rmscene'],
-          vr = state['vrscene'],
+      const frame = <Record<string,boolean>>state['frame'],
+          sg = <Record<string,unknown>>state['sgscene'],
+          rm = <Record<string,unknown>>state['rmscene'],
+          vr = <Record<string,unknown>>state['vrscene'],
           result:Record<string,unknown> = {'stage':{}},
-          o = result['stage'];   // initially {}
+          o:Record<string,unknown> = <Record<string,unknown>>result['stage'];   // initially {}
 
 
       // process state
@@ -40,15 +40,15 @@ class Stage {
         // frame
         // toggle visibility of stats performance meter 
         if(frame && Object.keys(frame).length > 0){
-          if(frame['_stats'] !== undefined){
+          if(<boolean>frame['_stats'] !== undefined){
             o['_stats'] = frame['_stats'];
           }
         }
 
         // sgscene
-        if( sg && Object.keys(sg).length > 0){
-          const _actors:boolean = sg['_actors'],
-                actors:Record<string,unknown> = sg['actors'];
+        if(sg && Object.keys(sg).length > 0){
+          const _actors:boolean = <boolean>sg['_actors'],
+                actors:Record<string,unknown> = <Record<string,unknown>>sg['actors'];
 
           // _actors can be t or f or undefined 
           // t/f => create/remove actor(s)
@@ -61,10 +61,10 @@ class Stage {
                 console.log(`### sg-actor name = ${name}`);
 
                 if(_actors){                // t => add actor(s)
-                  const descriptor = actors[name] || {},
-                        options = descriptor['options'] || {},
-                        factory = descriptor['factory'],
-                        url = descriptor['url'];
+                  const descriptor = <Record<string,unknown>>actors[name] || {},
+                        options = <Record<string,unknown>>descriptor['options'] || {},
+                        factory = <string>descriptor['factory'],
+                        url = <string>descriptor['url'];
 
                   // diagnostics
                   //console.log(`url = ${url}`);
@@ -73,7 +73,7 @@ class Stage {
                   //console.dir(options);
 
                   if(url){
-                    System.import(url).then((m) => {
+                    import(url).then((m) => {
                       //diagnostics
                       //console.log(`imported module ${m}:`);
                       //console.dir(m);
@@ -113,7 +113,7 @@ class Stage {
                    
                       m[factory].create(options,narrative).then((actor) => {
                         console.log(`### stage: adding sg actor ${name}`);
-                        narrative['addSGActor'](name, actor);
+                        (<(n:string,a:Record<string,unknown>)=>void>narrative['addSGActor'])(name, actor);
                         //let cast = narrative['reportActors'](true);
                         //console.dir(cast);
                       }).catch((e) => {
@@ -125,7 +125,7 @@ class Stage {
                   }//if(url
                 }else{                    // f => remove actor 
                   console.log(`### stage: removing sg actor ${name}`);
-                  narrative['removeSGActor'](name);
+                  (<(n:string)=>void>narrative['removeSGActor'])(name);
                 }//actors name-iteration
                 resolve(result); 
               }
@@ -139,10 +139,10 @@ class Stage {
             // actor to provide modification method 'delta(Record<string,unknown>):void'
             if(actors && Object.keys(actors).length >0){
               for(const name of Object.keys(actors)){
-                const actor = narrative['findActor'](name);
+                const actor = (<(n:string)=>Record<string,unknown>>narrative['findActor'])(name);
                 if(actor){
-                  const options = actors[name]['options'];
-                  actor.delta(options);
+                  const options = <Record<string,unknown>>(<Record<string,unknown>>actors[name])['options'];
+                  (<(o:Record<string,unknown>)=>void>(actor.delta))(options);
                 }
               }//actors name-iteration
             }else{
@@ -158,8 +158,8 @@ class Stage {
 
         // rmscene
         if( rm && Object.keys(rm).length > 0){
-          const _actors:boolean = rm['_actors'],
-                actors:Record<string,unknown> = rm['actors'];
+          const _actors:boolean = <boolean>rm['_actors'],
+                actors:Record<string,unknown> = <Record<string,unknown>>rm['actors'];
 
           // _actors can be t or f or undefined 
           // t/f => create/remove actor(s)
@@ -172,9 +172,9 @@ class Stage {
                 console.log(`### rm-actor name = ${name}`);
                 if(_actors){                // t => add actor(s)
                   const descriptor = actors[name] || {},
-                        options = descriptor['options'] || {},
-                        factory = descriptor['factory'],
-                        url = descriptor['url'];
+                        options = (<Record<string,unknown>>descriptor)['options'] || {},
+                        factory = (<Record<string,unknown>>descriptor)['factory'],
+                        url = (<Record<string,unknown>>descriptor)['url'];
 
                   // diagnostics
                   //console.log(`url = ${url}`);
@@ -183,16 +183,16 @@ class Stage {
                   //console.dir(options);
 
                   if(url){
-                    System.import(url).then((m) => {
+                    import(<string>url).then((m) => {
                       //diagnostics
                       //console.log(`imported module ${m}:`);
                       //console.dir(m);
 
-                      m[factory].create(options,narrative).then((actor) => {
+                      m[<string>factory].create(options,narrative).then((actor) => {
                         //console.log(`\n\n!!!!!! url = ${url}`);
                         //console.log(`!!!factory.create resolved to ${actor}`);
 
-                        narrative['addRMActor'](name, actor);
+                        (<(n:string,a:Record<string,unknown>)=>void>narrative['addRMActor'])(name, actor);
                         //console.log(`stage:adding rm actor ${name}=${actor}`);
                       }).catch((e) => {
                         console.error(`actor fetch error: ${e}`);
@@ -203,7 +203,7 @@ class Stage {
                   }//if(url
                 }else{                    // f => remove actor 
                   console.log(`### stage: removing rm actor ${name}`);
-                  narrative['removeRMActor'](name);
+                  (<(n:string)=>void>narrative['removeRMActor'])(name);
                 }//actors name-iteration
               }
             }else{ 
@@ -216,10 +216,10 @@ class Stage {
             // actor to provide modification method 'delta(Record<string,unknown>):void'
             if(actors && Object.keys(actors).length >0){
               for(const name of Object.keys(actors)){
-                const actor = narrative['findActor'](name);
+                const actor = (<(n:string)=>Record<string,unknown>>narrative['findActor'])(name);
                 if(actor){
-                  const options = actors[name]['options'];
-                  actor.delta(options);
+                  const options = <Record<string,unknown>>(<Record<string,unknown>>actors[name])['options'];
+                  (<(o:Record<string,unknown>)=>void>(actor.delta))(options);
                 }
               }//actors name-iteration
             }else{
@@ -235,8 +235,8 @@ class Stage {
 
         // vrscene
         if( vr && Object.keys(vr).length > 0){
-          const _actors:boolean = vr['_actors'],
-                actors:Record<string,unknown> = vr['actors'];
+          const _actors:boolean = <boolean>vr['_actors'],
+                actors:Record<string,unknown> = <Record<string,unknown>>vr['actors'];
 
           // _actors can be t or f or undefined 
           // t/f => create/remove actor(s)
@@ -249,9 +249,9 @@ class Stage {
                 console.log(`### vr-actor name = ${name}`);
                 if(_actors){                // t => add actor(s)
                   const descriptor = actors[name] || {},
-                        options = descriptor['options'] || {},
-                        factory = descriptor['factory'],
-                        url = descriptor['url'];
+                        options = (<Record<string,unknown>>descriptor)['options'] || {},
+                        factory = (<Record<string,unknown>>descriptor)['factory'],
+                        url = (<Record<string,unknown>>descriptor)['url'];
 
                   // diagnostics
                   //console.log(`url = ${url}`);
@@ -259,17 +259,17 @@ class Stage {
                   //console.log(`options = ${options}:`);
                   //console.dir(options);
 
-                  if(url){
-                    System.import(url).then((m) => {
+                  if(<string>url){
+                    import(<string>url).then((m) => {
                       //diagnostics
                       //console.log(`imported module ${m}:`);
                       //console.dir(m);
 
-                      m[factory].create(options,narrative).then((actor) => {
+                      m[<string>factory].create(options,narrative).then((actor) => {
                         //console.log(`\n\n!!!!!! url = ${url}`);
                         //console.log(`!!!factory.create resolved to ${actor}`);
 
-                        narrative['addVRActor'](name, actor);
+                        (<(n:string,a:Record<string,unknown>)=>void>narrative['addVRActor'])(name, actor);
                         //console.log(`stage:adding vr actor ${name}=${actor}`);
                       }).catch((e) => {
                         console.error(`actor fetch error: ${e}`);
@@ -280,7 +280,7 @@ class Stage {
                   }//if(url
                 }else{                    // f => remove actor 
                   console.log(`### stage: removing vr actor ${name}`);
-                  narrative['removeVRActor'](name);
+                  (<(n:string)=>void>narrative['removeVRActor'])(name);
                 }//actors name-iteration
               }
             }else{ 
@@ -293,10 +293,10 @@ class Stage {
             // actor to provide modification method 'delta(Record<string,unknown>):void'
             if(actors && Object.keys(actors).length >0){
               for(const name of Object.keys(actors)){
-                const actor = narrative['findActor'](name);
+                const actor = (<(n:string)=>Record<string,unknown>>narrative['findActor'])(name);
                 if(actor){
-                  const options = actors[name]['options'];
-                  actor.delta(options);
+                  const options = <Record<string,unknown>>(<Record<string,unknown>>actors[name])['options'];
+                  (<(o:Record<string,unknown>)=>void>(actor.delta))(options);
                 }
               }//actors name-iteration
             }else{

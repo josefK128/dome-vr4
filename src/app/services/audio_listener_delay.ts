@@ -8,7 +8,8 @@
 //import { AudioContext } from './AudioContext';
 
 
-let listener:AudioListenerDelay;
+//let listener:AudioListenerDelay;
+let listener:unknown;
 const delayTime = 0.0;
 
 
@@ -19,15 +20,15 @@ function AudioListenerDelay() {
   this.context = THREE.AudioContext.getContext();
   this.gain = this.context.createGain();
 
-        // delay
-        this.delay = this.context.createDelay(10);
-        this.delay.delayTime.value = delayTime;
+  // delay
+  this.delay = this.context.createDelay(10);
+  this.delay.delayTime.value = delayTime;
         
-        // integrate delay
-        this.gain.connect(this.delay);
-        this.delay.connect(this.context.destination); 
+  // integrate delay
+  this.gain.connect(this.delay);
+  this.delay.connect(this.context.destination); 
 
-        // undelayed output
+  // undelayed output
   this.gain.connect( this.context.destination );
   this.filter = null;
 }
@@ -35,9 +36,9 @@ function AudioListenerDelay() {
 AudioListenerDelay.prototype = Object.assign( Object.create( THREE.Object3D.prototype ), {
   constructor: AudioListener,
 
-        setDelay(d:number){
-          this.delay.delayTime.value = d;
-        },
+  setDelay(d:number){
+    this.delay.delayTime.value = d;
+  },
 
   getInput: function () {
     return this.gain;
@@ -77,7 +78,7 @@ AudioListenerDelay.prototype = Object.assign( Object.create( THREE.Object3D.prot
     this.gain.gain.value = value;
   },
 
-  updateMatrixWorld: ( function () {
+  updateMatrixWorld: (function(){
       const position = new THREE.Vector3(),
             quaternion = new THREE.Quaternion(),
             scale = new THREE.Vector3(),
@@ -110,8 +111,8 @@ AudioListenerDelay.prototype = Object.assign( Object.create( THREE.Object3D.prot
 
       }
     };
-  } )()
-} );
+  }())
+});
 
 
 if(!listener){

@@ -57,7 +57,7 @@ class Transform3d {
     //console.log(`transform = ${transform}:`);
     //console.dir(transform);
 
-    if(actor == undefined){
+    if(actor === undefined){
       return;
     }
 
