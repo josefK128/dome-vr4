@@ -1,5 +1,6 @@
-// scene: scene.ts
-// webGL2, es300 three.js >=0.124.0
+// @current/scene.ts
+// webGL2, es300 three.js ==0.125.2
+
 // 
 // [1] config:Config (interface) is used once for initialization
 // [2] substates are dynamic - used for initialization AND subsequent variation
@@ -28,20 +29,25 @@
 // NOTE: initial_camera is a configuration object - not a substate
 // CONFIG
 // for initialization
-const config = {
 
+import {Config} from '../config.interface';
+import {State} from '../state.interface';
+
+
+
+const config:Config = {
 
     // rendering topology
     topology:{
       // webxr?
-      webvr: true,
+      _webxr: true,
      
       // displayed_scene = 'sg|rm|vr'
       displayed_scene: 'vr', 
 
       // render sgscene to sgTarget offscreen for bg texturing in rmscene
       // or texturing in vrscene
-      sg: false,
+      _sg: false,
       
       //'sg'|'rm'|'texture'|undefined
       //use frame n-1 sgTarget.tex ('sg') 
@@ -55,7 +61,7 @@ const config = {
   
       // render rmscene to rmTarget offscreen for texturing in vrscene
       // NOTE! true=>must define rmquad and rmTargetName(s)
-      rm: true,
+      _rm: false,
   
       rmTargetNames: ['vrcube'],
       //skyfaces:string[];  //used if actor 'skyfaces' exists and is rmTgtName
@@ -70,7 +76,7 @@ const config = {
       //defined in animation with pos.z=0 are ignored
       rm_npositions: 100,
 
-      _vr_:true
+      _vr:true
 
     },//topology
 
@@ -103,28 +109,31 @@ const config = {
 
 // STATE
 // for initialization AND subsequent changeState actions 
-const state = {
+const state:State = {
     // NOTE: after initial creation of the camera, only modifications are 
     // allowed to camera - _camera is ignored
-    // NOTE!: webvr:true => lens.position = [0, 1.6, 0] - avatar head position,
+    // NOTE!: webxr:true => lens.position = [0, 1.6, 0] - avatar head position,
     // 1.6 meters 'tall'
     // since sgscene,vrscene are translated by 1.6 in y, in all
     // cases the scene and camera coincide at camera coords (0,0,0)
     camera: {
-        vrlens: {
+        vr:{
+          lens: {
             _lens: true,
             fov: 90,
             near: 0.001,
             far: 100000,
-        },
-        fog: {
-          color: 'white', //0x00ff00,
-          near: 0.1,
-          far: 1000 //default:100
-        },
-        controls: {
+            transform:{t:[0,0,0]}
+          },
+          fog: {
+            color: 'white', //0x00ff00,
+            near: 0.1,
+            far: 1000 //default:100
+          },
+          controls: {
             _controls: true,
             controls: 'vr'
+          }
         }
     },
 
@@ -189,7 +198,7 @@ const state = {
 
     // audio
     audio:{
-      _audio:false
+        _audio:false
     },
 
 

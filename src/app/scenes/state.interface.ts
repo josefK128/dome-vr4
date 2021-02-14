@@ -5,7 +5,7 @@
 
 export interface State {
   // NOTE: an initial camera is created so only modifications are allowed.
-  // NOTE!: webvr:true => lens.position = [0, 1.6, 0] - avatar head position,
+  // NOTE!: webxr:true => lens.position = [0, 1.6, 0] - avatar head position,
   camera:{
     sg?:{
       lens?:{

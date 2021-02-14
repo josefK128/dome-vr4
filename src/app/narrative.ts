@@ -78,9 +78,9 @@ let narrative:Narrative,
     // cameras, controls
     //lens:THREE.PerspectiveCamera,      // from state/camera
                    // NOTE:TBD 'csphere' is whole apparatus - lens, lights etc
-    //lens_offset:THREE.Object3D,      // _webvr:t => lower camera by 1.6
+    //lens_offset:THREE.Object3D,      // _webxr:t => lower camera by 1.6
     vrlens:THREE.PerspectiveCamera, // separate camera for rendering vrscene
-    //vrlens_offset:THREE.Object3D, // _webvr:t => lower camera by 1.6
+    //vrlens_offset:THREE.Object3D, // _webxr:t => lower camera by 1.6
     //_controls:boolean = false,   // use controls/keymap? 
                                 // set by config.controls:boolean? default false
     //controls:Object,           // vrcontrols
@@ -145,7 +145,6 @@ class Narrative {
 
   // set up rendering framework and initialize services and state 
   //bootstrap(_config:Config, state:State){
-   
   bootstrap(_config:Config, state:State):void{
     console.log(`\n@@@ narrative.bootstrap:`);
 

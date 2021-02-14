@@ -4,19 +4,21 @@
 // NOTE: unknowns must be narrowed before assignment to variables
 
 export interface Config {
-  // webxr? true => lens.position=[0, 1.6, 0] - avatar 1.6 meters 'tall'
-  webvr:boolean;
-  displayed_scene:string;         //'sg'|'rm'|'vr'
-
 
   // topology - rendering topology
   topology:{
+    // webxr? true => lens.position=[0, 1.6, 0] - avatar 1.6 meters 'tall'
+    _webxr:boolean;
+    displayed_scene:string;         //'sg'|'rm'|'vr'
+
+    // sgscene
     _sg?:boolean,                  // render to sgTarget
     sgpost?:string,               //post-pr with prv frame 
                                  //'sg'|'rm'|'texture'|nothing
                                 //use frame n-1 sgTarget.tex ('sg') 
                                //or rmTarget.tex ('rm') in sghud frame n
     sgTargetNames?:string[], //actor names to be textured by sgTarget.texture
+
 
     // rmscene
     _rm?:boolean,             //render to rmTarget for raymarch texture in vr
@@ -34,7 +36,8 @@ export interface Config {
                       //defined in animation with pos.z=0 are ignored
 
     // vrscene
-    _vr:boolean
+    _vr?:boolean
+
   },//stage
   
 
