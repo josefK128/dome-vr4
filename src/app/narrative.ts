@@ -106,8 +106,10 @@ const tl = gsap.timeline({paused:true}),
         'narrative':narrative
       },
       timer = (t:number, dt:number, fr:number) => {
+        // sync frame and gsap-frame => no need to increment frame in render()
+        frame = fr;
         if(fr % 1000 === 0){
-          console.log(`timer:frame=${frame} et=${et} fr=${fr} t=${t} dt=${dt}`);
+          console.log(`timer:frame=${frame} et=${et} fr=${fr} t=${t}`);
         }
       };
 
@@ -119,7 +121,6 @@ let _stats = false,            // performance meter - update stats in render
     et = 0,                 // elapsed time - clock starts at render start
     frame = 0;             // frame index (as in rendered frames - fps)
    
-
 
 
 
@@ -257,18 +258,13 @@ class Narrative {
       // set timer to report time passage - t, dt, frames
       gsap.ticker.add(timer);
   
-      // animate => begin render-loop
+      // setAnimationLoop => begin render-loop
       animating = true;
-      narrative.animate();
+      renderer.setAnimationLoop(narrative.render);
+      narrative.render();
     }
   }//changeState
 
-
-  // animate-render loop - et holds current elapsed time
-  animate():void {
-    renderer.setAnimationLoop(narrative.render);
-    narrative.render();
-  }
 
 
   // render current frame - frame holds current frame number
@@ -283,7 +279,7 @@ class Narrative {
 
     //renderer.render( scene, camera );
     renderer.render(vrscene, vrlens);
-    frame++;
+
   }
 
 
