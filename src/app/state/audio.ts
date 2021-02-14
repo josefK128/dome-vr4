@@ -65,7 +65,7 @@ class Audio {
 
         // delay
         delay = <number>state['delay'] || delay;
-        listener.setDelay(delay);
+        (<(d:number)=>void>listener['setDelay'])(delay);
 
         // properties
         // panner

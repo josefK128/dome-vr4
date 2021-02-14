@@ -194,7 +194,8 @@ class Narrative {
     renderer.setClearColor(new THREE.Color(config.renderer.clearColor), 
       config.renderer.clearAlpha);
     renderer.setSize(window.innerWidth, window.innerHeight);
-    
+
+
     // webXR
     renderer.xr.enabled = true;
     renderer.xr.setReferenceSpaceType('local');
@@ -203,13 +204,14 @@ class Narrative {
     document.body.append(VRButton.createButton(renderer));
 
 
-    // initialize state 
-    narrative.changeState(state);
-
     // connect to server?
     if(config.server.server_connect){
       //mediator.connect();
     }
+
+    // initialize state 
+    narrative.changeState(state);
+
   }
 
 
@@ -220,9 +222,6 @@ class Narrative {
   changeState(state:State):void{
     console.log(`\n@@@ narrative.changeState state:`);
     console.dir(state);
-
-    // prepare for rendering scene
-    narrative.prerender();
 
     // panorama - Promise resolves to Actor instance - contains
     // delta() and layers:THREE.Mesh[]  (layers.length = 2)
@@ -265,6 +264,40 @@ class Narrative {
   }//changeState
 
 
+  // animate-render loop - et holds current elapsed time
+  animate():void {
+    renderer.setAnimationLoop(narrative.render);
+    narrative.render();
+  }
+
+
+  // render current frame - frame holds current frame number
+  render():void {
+    // time
+    et = clock.getElapsedTime();
+
+    //console.log('narrative.render()');
+    if(_stats){
+      stats.update();
+    } 
+
+    //renderer.render( scene, camera );
+    renderer.render(vrscene, vrlens);
+    frame++;
+  }
+
+
+
+  // reset params based on window resize event
+  onWindowResize():void {
+    //sglens.aspect = window.innerWidth / window.innerHeight;
+    //sglens.updateProjectionMatrix();
+    //vrlens.aspect = window.innerWidth / window.innerHeight;
+    //vrlens.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+  }
+
 
   // method to allow infinite seq-loop mainly for music sequence playing
   // for infinite loop of sequence place this action at tail of sequence
@@ -291,70 +324,6 @@ class Narrative {
 //        }
 //      });
 //    }
-  }
-
-
-
-  // prepare render-loop actors, cameras, controls
-  prerender(){
-    // diagnostics - list all actors
-    //console.log(`\nprerender: reportActors():`);
-    narrative.reportActors(true);
-
-    // if _webxr adjust y-coord of displayed scene to adjust for webxr
-    // camera position at (0,1.6,0)  (displayed_scene:'vr'|'sg')
-    // NOTE: both lens and vrlens are modified by webxr:t to (0,1.6!,0) ?!
-//    if(_webxr){
-//      lens_offset = new THREE.Object3D();
-//      lens_offset.position.y = -1.6;
-//      lens_offset.add(lens);
-//      sgscene.add(lens_offset);
-//      if(displayed_scene === 'vr'){
-//        vrlens_offset = new THREE.Object3D();
-//        vrlens_offset.position.y = -1.6;
-//        vrlens_offset.add(vrlens);
-//        vrscene.add(vrlens_offset);
-//        //vrscene.scale.set(10,10,10);
-//      }
-//    }
-  }
-
-
-
-  // reset params based on window resize event
-  onWindowResize():void {
-    //sglens.aspect = window.innerWidth / window.innerHeight;
-    //sglens.updateProjectionMatrix();
-    //vrlens.aspect = window.innerWidth / window.innerHeight;
-    //vrlens.updateProjectionMatrix();
-
-    renderer.setSize( window.innerWidth, window.innerHeight );
-  }
-
-
-
-  // animate-render loop - et holds current elapsed time
-  animate():void {
-    renderer.setAnimationLoop(narrative.render);
-    narrative.render();
-  }
-
-
-
-  // render current frame - frame holds current frame number
-  render():void {
-
-    // time
-    et = clock.getElapsedTime();
-
-    //console.log('narrative.render()');
-    if(_stats){
-      stats.update();
-    } 
-
-    //renderer.render( scene, camera );
-    renderer.render(vrscene, vrlens);
-    frame++;
   }
 
 
