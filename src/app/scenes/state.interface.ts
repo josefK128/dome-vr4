@@ -15,14 +15,14 @@ export interface State {
         far?:number,
         transform?:Record<string,number[]>
       },
-      controls?:{
-        _controls?:boolean,
-        controls?:string
-      },
       fog?:{           //sgscene.fog = new Fog(color,near,far)-default:f
         color?:string|number,          //default:'white'|0xffffff
         near?:number,                 //default:.01
         far?:number                  //default:100
+      },
+      controls?:{
+        _controls?:boolean,
+        controls?:string
       },
       csphere?:{
         _visible:boolean,

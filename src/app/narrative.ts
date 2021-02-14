@@ -167,11 +167,8 @@ class Narrative {
     }
 
 
-    // initialize scene and camera, i.e lens
+    // initialize scene 
     vrscene = new THREE.Scene();
-    aspect = window.innerWidth/window.innerHeight;
-    vrlens = new THREE.PerspectiveCamera(90, aspect, 0.1, 1000); 
-
 
     // canvas and gl-context
     canvas = <HTMLCanvasElement>document.getElementById(config.renderer.canvas_id);
@@ -223,6 +220,11 @@ class Narrative {
   changeState(state:State):void{
     console.log(`\n@@@ narrative.changeState state:`);
     console.dir(state);
+
+    // create/modify cameras/lenses
+    aspect = window.innerWidth/window.innerHeight;
+    vrlens = new THREE.PerspectiveCamera(90, aspect, 0.1, 1000); 
+
 
     // panorama - Promise resolves to Actor instance - contains
     // delta() and layers:THREE.Mesh[]  (layers.length = 2)
