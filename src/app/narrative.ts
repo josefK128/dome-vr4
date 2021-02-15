@@ -42,19 +42,20 @@ import {State} from './scenes/state.interface';
 // file-extension is .js - note that .js is needed for runtime usage
 
 // services
-//import {mediator} from './services/actions/mediator';
-//import {director} from './services/actions/director';
+//import {mediator} from './services/actions/mediator.js';
+//import {director} from './services/actions/director.js';
 import {queue} from './services/actions/queue.js';
-//import {transform3d} from './services/transform3d';
-//import {animation} from './services/animation';
+import {transform3d} from './services/transform3d.js';
+//import {animation} from './services/animation.js';
 if(typeof queue !== undefined){
   //console.log(`queue is defined!`);  //otherwise queue is NOT used - tsc warn
 }
 
 // state
-import {stage} from './state/stage';
-//import {camera} from './state/camera';
-//import {actions} from './state/actions';
+import {stage} from './state/stage.js';
+import {camera} from './state/camera.js';
+//import {audio} from './state/audio.js';
+//import {actions} from './state/actions.js';
 
 // models
 import {Actor} from './models/stage/actors/actor.interface';  
@@ -237,6 +238,17 @@ class Narrative {
     console.log(`\n@@@ narrative.changeState state:`);
     console.dir(state);
 
+
+    const result:Record<string,unknown> = Promise.all([
+      camera.delta(state['camera']),
+      //stage.delta(state['stage', narrative]),
+      //audio.delta(state['audio']),
+      //actions.delta(state['actions'])
+    ]);
+    console.log(`camera.delta resolves to result:Record<string,unknown> =`);
+    console.dir(result);
+
+    // TEMP !!!
     // create/modify cameras/lenses
     aspect = window.innerWidth/window.innerHeight;
     vrlens = new THREE.PerspectiveCamera(90, aspect, 0.1, 1000); 

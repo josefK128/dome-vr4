@@ -4,7 +4,7 @@
 // be replaced by a VR-capable 'vrcontrols' built from OrbitControls
 //var controls = new THREE.OrbitControls( camera );
 //import {OrbitControls} from '../models/camera/controls/OrbitControls';
-import {transform3d} from '../services/transform3d';
+import {transform3d} from '../services/transform3d.js';
 import {Controls} from '../models/camera/controls/Controls.interface';
 
 
@@ -83,8 +83,6 @@ class Camera {
           o['_controls'] = false;
         }
 
-        console.log(`camera result:`);
-        console.dir(result);
         resolve(result);               //promise fulfilled
       }else{
         resolve({});  // don't reject because ruins Promise.all
