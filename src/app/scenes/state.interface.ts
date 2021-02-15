@@ -77,7 +77,40 @@ export interface State {
       controls?:{
         _controls?:boolean, // t=>create, f=>delete undef=>modify
         controls?:string
-      }
+      },
+      csphere?:{
+        _csphere:boolean,    // t=>create, f=>delete undef=>modify
+        _visible:boolean,
+        _wireframe:boolean,
+        opacity:number,
+        color:string,
+        hud?: {
+          _post:boolean,
+          _hud_rendered:boolean,
+          fsh: string,
+          opacity:number,
+          scaleX:number,
+          scaleY:number
+        },//hud
+        key?: {
+          color:string,
+          intensity:number,
+          distance:number,  // 0 => infinite range of light
+          position:number[]
+        },//key
+        fill?: { 
+          color:string,
+          intensity:number,
+          distance:number,  // 0 => infinite range of light
+          position:number[]
+        },//fill
+        back?: {
+          color:string,
+          intensity:number,
+          distance:number,  // 0 => infinite range of light
+          position:number[]
+        }//back
+      }//csphere
     }//vr
   }
 

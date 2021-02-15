@@ -137,6 +137,8 @@ const state:State = {
           //controls: {
           //  _controls: true,
           //  controls: 'vr'
+          //},
+          //csphere: {
           //}
         }
     },
