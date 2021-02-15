@@ -9,22 +9,24 @@ export interface State {
   camera:{
     sg?:{
       lens?:{
-        _lens?:boolean,
+        _lens?:boolean,      // t=>create, f=>delete undef=>modify
         fov?:number,
         near?:number,
         far?:number,
         transform?:Record<string,number[]>
       },
       fog?:{           //sgscene.fog = new Fog(color,near,far)-default:f
-        color?:string|number,          //default:'white'|0xffffff
-        near?:number,                 //default:.01
-        far?:number                  //default:100
+        _fog?:boolean,                 // t=>create, f=>delete undef=>modify
+        color?:string,                //default:'white'
+        near?:number,                //default:.01
+        far?:number                 //default:100
       },
       controls?:{
-        _controls?:boolean,
+        _controls?:boolean,  // t=>create, f=>delete undef=>modify
         controls?:string
       },
       csphere?:{
+        _csphere:boolean,    // t=>create, f=>delete undef=>modify
         _visible:boolean,
         _wireframe:boolean,
         opacity:number,
@@ -60,19 +62,20 @@ export interface State {
 
     vr?:{
       lens?:{
-        _lens?:boolean,
+        _lens?:boolean, // t=>create, f=>delete undef=>modify
         fov?:number,
         near?:number,
         far?:number,
         transform?:Record<string,number[]>   //moves vrscene rel to vrlens 
       },
       fog?:{           //vrscene.fog = new Fog(color,near,far)-default:f
+        _fog?:boolean, // t=>create, f=>delete undef=>modify
         color?:string|number,          //default:'white'|0xffffff
         near?:number,                 //default:.01
         far?:number                  //default:100
       },
       controls?:{
-        _controls?:boolean,
+        _controls?:boolean, // t=>create, f=>delete undef=>modify
         controls?:string
       }
     }//vr

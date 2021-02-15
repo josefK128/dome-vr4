@@ -11,7 +11,9 @@ export interface Config {
     _webxr:boolean;
     displayed_scene:string;         //'sg'|'rm'|'vr'
 
-    // sgscene
+
+    // render sgscene either to display, or to sgTarget offscreen for 
+    // bg texturing in rmscene or texturing in vrscene
     _sg?:boolean,                  // render to sgTarget
     sgpost?:string,               //post-pr with prv frame 
                                  //'sg'|'rm'|'texture'|nothing
@@ -20,9 +22,10 @@ export interface Config {
     sgTargetNames?:string[], //actor names to be textured by sgTarget.texture
 
 
-    // rmscene
-    _rm?:boolean,             //render to rmTarget for raymarch texture in vr
-                            //NOTE! true=>must define rmquad and rmTargetName(s)
+    // render rmscene to display, or to rmTarget offscreen for texturing 
+    // in vrscene - either skybox/skydome/etc. or actors
+    // NOTE! true=>must define rmquad and if texturing - define rmTargetName(s)
+    _rm?:boolean,             
     rmTargetNames?:string[], //actor names to be textured by rmTarget.texture
     skyfaces?:string[],     //used if actor 'skyfaces' exists and is rmTgtName
                          //value is some subset of ['f','b','l','r','t','g']
@@ -35,7 +38,7 @@ export interface Config {
                        //NOTE! <=1000 - more effects performance but positions
                       //defined in animation with pos.z=0 are ignored
 
-    // vrscene
+    // render vrscene - which implies displayed_scene = 'vr'
     _vr?:boolean
 
   },//stage

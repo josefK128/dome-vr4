@@ -239,33 +239,31 @@ class Narrative {
     console.dir(state);
 
 
+    // prepare camera.delta
+    const scenes:Record<string,THREE.Scene> = {};
+    if(sgscene){
+      scenes['sgscene'] = sgscene;
+    }
+    if(vrscene){
+      scenes['vrscene'] = vrscene;
+    }
+
     const result:Record<string,unknown> = Promise.all([
-      camera.delta(state['camera']),
+      camera.delta(state['camera'], scenes),
       //stage.delta(state['stage', narrative]),
       //audio.delta(state['audio']),
-      //actions.delta(state['actions'])
+      //actions.delta(state['actions'], narrative)
     ]);
     console.log(`camera.delta resolves to result:Record<string,unknown> =`);
     console.dir(result);
+
 
     // TEMP !!!
     // create/modify cameras/lenses
     aspect = window.innerWidth/window.innerHeight;
     vrlens = new THREE.PerspectiveCamera(90, aspect, 0.1, 1000); 
 
-
-    // panorama - Promise resolves to Actor instance - contains
-    // delta() and layers:THREE.Mesh[]  (layers.length = 2)
-//    Panorama.create({'camera': vrlens}).then((panorama) => {
-//      console.log(`Panorama.create returns panorama containing layers - length = ${panorama['layers'].length}`);
-//      //console.log(`panorama['layers'][0] = ${panorama['layers'][0]}`);
-//      vrscene.add(panorama['layers'][0]);
-//      //console.log(`panorama['layers'][1] = ${panorama['layers'][1]}`);
-//      vrscene.add(panorama['layers'][1]);
-//    }).catch((e) => {
-//      console.log(`error creating panorama: ${e}`);
-//    });
-
+    // TEMP !!!
     Panorama.create({'lens': vrlens}).then((actor) => {
       console.log(`Panorama.create returns panorama containing layers - length = ${actor['layers'].length}`);
       if(actor['layers']){
@@ -278,6 +276,7 @@ class Narrative {
     }).catch((e) => {
       console.log(`error creating panorama: ${e}`);
     });
+
 
     if(!animating){
       // initialize clock, timeline

@@ -45,8 +45,9 @@ const config:Config = {
       // displayed_scene = 'sg|rm|vr'
       displayed_scene: 'vr', 
 
-      // render sgscene to sgTarget offscreen for bg texturing in rmscene
-      // or texturing in vrscene
+
+      // render sgscene either to display, or to sgTarget offscreen for 
+      // bg texturing in rmscene or texturing in vrscene
       _sg: false,
       
       //'sg'|'rm'|'texture'|undefined
@@ -59,7 +60,8 @@ const config:Config = {
       sgTargetNames: [],
   
   
-      // render rmscene to rmTarget offscreen for texturing in vrscene
+      // render rmscene to display, or to rmTarget offscreen for texturing 
+      // in vrscene - either skybox/skydome/etc. or actors
       // NOTE! true=>must define rmquad and rmTargetName(s)
       _rm: false,
   
@@ -76,6 +78,7 @@ const config:Config = {
       //defined in animation with pos.z=0 are ignored
       rm_npositions: 100,
 
+      // render vrscene - which implies displayed_scene = 'vr'
       _vr:true
 
     },//topology
@@ -126,14 +129,15 @@ const state:State = {
             transform: {'t':[0,0,0]}
           },
           fog: {
+            _fog: true,
             color: 'white', //0x00ff00,
             near: 0.1,
             far: 1000 //default:100
-          },
-          controls: {
-            _controls: true,
-            controls: 'vr'
           }
+          //controls: {
+          //  _controls: true,
+          //  controls: 'vr'
+          //}
         }
     },
 
