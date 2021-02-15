@@ -239,23 +239,29 @@ class Narrative {
     console.dir(state);
 
 
-    // prepare camera.delta
-    const scenes:Record<string,THREE.Scene> = {};
-    if(sgscene){
-      scenes['sgscene'] = sgscene;
-    }
-    if(vrscene){
-      scenes['vrscene'] = vrscene;
-    }
+    (async () => {
+  
+      // prepare scenes={existing scenes} second arg for camera.delta
+      const scenes:Record<string,THREE.Scene> = {};
+      if(sgscene){
+        scenes['sgscene'] = sgscene;
+      }
+      if(vrscene){
+        scenes['vrscene'] = vrscene;
+      }
 
-    const result:Record<string,unknown> = Promise.all([
-      camera.delta(state['camera'], scenes),
-      //stage.delta(state['stage', narrative]),
-      //audio.delta(state['audio']),
-      //actions.delta(state['actions'], narrative)
-    ]);
-    console.log(`camera.delta resolves to result:Record<string,unknown> =`);
-    console.dir(result);
+      const result:Record<string,unknown>[] = await Promise.all([
+        camera.delta(state['camera'], scenes),
+        //stage.delta(state['stage', narrative]),
+        //audio.delta(state['audio']),
+        //actions.delta(state['actions'], narrative)
+      ]);
+      console.log(`camera.delta resolves to result:Record<string,unknown> =`);
+      console.dir(result);
+
+      // process result
+
+    })();  
 
 
     // TEMP !!!

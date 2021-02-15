@@ -16,10 +16,11 @@ export interface Config {
     // bg texturing in rmscene or texturing in vrscene
     _sg?:boolean,                  // render to sgTarget
     sgpost?:string,               //post-pr with prv frame 
-                                 //'sg'|'rm'|'texture'|nothing
+                                 //'sg'|'rm'(useful?)|'texture'|nothing
                                 //use frame n-1 sgTarget.tex ('sg') 
                                //or rmTarget.tex ('rm') in sghud frame n
     sgTargetNames?:string[], //actor names to be textured by sgTarget.texture
+                            //these can be in vrscene or sgscene
 
 
     // render rmscene to display, or to rmTarget offscreen for texturing 
@@ -27,6 +28,7 @@ export interface Config {
     // NOTE! true=>must define rmquad and if texturing - define rmTargetName(s)
     _rm?:boolean,             
     rmTargetNames?:string[], //actor names to be textured by rmTarget.texture
+                            //these can be in vrscene or sgscene
     skyfaces?:string[],     //used if actor 'skyfaces' exists and is rmTgtName
                          //value is some subset of ['f','b','l','r','t','g']
                         //order-independent: front,back,left,right,top,ground
@@ -40,6 +42,9 @@ export interface Config {
 
     // render vrscene - which implies displayed_scene = 'vr'
     _vr?:boolean
+    vrpost?:string,               //post-pr with prv frame 
+                                 //'vr'|'texture'|nothing
+                                //use frame n-1 vrTarget.tex in vrhud frame n
 
   },//stage
   

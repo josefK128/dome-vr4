@@ -78,8 +78,14 @@ const config:Config = {
       //defined in animation with pos.z=0 are ignored
       rm_npositions: 100,
 
+
       // render vrscene - which implies displayed_scene = 'vr'
-      _vr:true
+      _vr:true,
+
+      //'vr'|'texture'|undefined
+      //use frame n-1 vrTarget.tex ('vr') in sghud frame n
+      //or image url OR undefined => NO sgpost/sghud
+      vrpost: undefined,
 
     },//topology
 

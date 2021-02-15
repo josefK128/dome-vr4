@@ -31,6 +31,24 @@ class Camera {
   }
 
 
+  create_lens(ls:Record<string,unknown>, scene:THREE.Scene):Record<string,unknown>{
+    return {};
+  }//create_lens
+
+  create_fog(fs:Record<string,unknown>, scene:THREE.Scene):void{
+    console.log(`fs:`);
+    console.dir(fs);
+  }//create_fog
+
+  create_controls(cs:Record<string,unknown>, scene:THREE.Scene):Record<string,unknown>{
+    return {};
+  }//create_controls
+
+  create_csphere(ss:Record<string,unknown>, scene:THREE.Scene):Record<string,unknown>{
+    return {};
+  }//create_csphere
+
+
   // create objects specified in arg camera-state === state['camera']
   // returns new Promise<Record<string,unknown>>((resolve, reject) => {});
   delta(state:Record<string,unknown>, scenes:Record<string,THREE.Scene>):
