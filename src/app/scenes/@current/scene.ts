@@ -48,7 +48,7 @@ const config:Config = {
 
       // render sgscene either to display, or to sgTarget offscreen for 
       // bg texturing in rmscene or texturing in vrscene
-      _sg: false,
+      _sg: true,
       
       //'sg'|'rm'|'texture'|undefined
       //use frame n-1 sgTarget.tex ('sg') 
@@ -126,6 +126,28 @@ const state:State = {
     // since sgscene,vrscene are translated by 1.6 in y, in all
     // cases the scene and camera coincide at camera coords (0,0,0)
     camera: {
+        sg:{
+          lens: {
+            _lens: true,
+            fov: 90,
+            near: 0.001,
+            far: 100000,
+            transform: {'t':[0,0,0]}
+          },
+          fog: {
+            _fog: true,
+            color: 'white', //0x00ff00,
+            near: 0.1,
+            far: 1000 //default:100
+          }
+          //controls: {
+          //  _controls: true,
+          //  controls: 'vr'
+          //},
+          //csphere: {
+          //}
+        },
+
         vr:{
           lens: {
             _lens: true,
