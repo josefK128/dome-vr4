@@ -134,7 +134,7 @@ class Camera {
             sglens = lens;
           }
         }
-        console.log(`\nafter camera.create_lens sglens is:`);
+        console.log(`after camera.create_lens sglens is:`);
         console.dir(sglens);
 
         // fog
@@ -185,7 +185,7 @@ class Camera {
             vrlens = lens;
           }
         }
-        console.log(`\nafter camera.create_lens vrlens is:`);
+        console.log(`after camera.create_lens vrlens is:`);
         console.dir(vrlens);
 
 
