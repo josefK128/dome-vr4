@@ -279,7 +279,7 @@ class Narrative {
 
     // TEMP !!!
     Panorama.create({'lens': vrlens}).then((actor) => {
-      console.log(`Panorama.create returns panorama containing layers - length = ${actor['layers'].length}`);
+      console.log(`\n\nPanorama.create returns panorama containing layers - length = ${actor['layers'].length}`);
       if(actor['layers']){
         for(const layer of actor['layers']){
           vrscene.add(layer);
@@ -288,7 +288,7 @@ class Narrative {
         vrscene.add(actor);
       }
     }).catch((e) => {
-      console.log(`error creating panorama: ${e}`);
+      console.log(`\n\nerror creating panorama: ${e}`);
     });
 
 

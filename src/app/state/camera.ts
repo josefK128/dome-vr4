@@ -33,49 +33,47 @@ class Camera {
   }
 
 
-  // l = state['sg'|'vr']['lens']  - return rl = result['sg'|'vr']['lens']
-  create_lens(l:Record<string,unknown>, scene:THREE.Scene):THREE.Camera{
-    console.log('\n\ncamera.create_lens');
-    let lens:THREE.Camera;
+  // l = state['sg'|'vr']['lens']  - return THREE.Camera if created
+  create_lens(l:Record<string,unknown>, scene:THREE.Scene, lens_:THREE.Camera):THREE.Camera{
 
     // lens 
     // NOTE: l['_lens'] is only true or undefined (create or modify)
     if(l && Object.keys(l).length > 0){
       if(l['_lens']){   //t=>create
+        console.log(`\ncamera_create(): creating lens`);
         const aspect = window.innerWidth/window.innerHeight,
               fov = l['fov'] || 90,
               near = l['near'] || .001,
-              far = l['far'] || 10000;
+              far = l['far'] || 10000,
+              lens = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
-        //console.log(`fov = ${fov}`);
-        //console.log(`aspect = ${aspect}`);
-        //console.log(`near = ${near}`);
-        //console.log(`far = ${far}`);
-        lens = new THREE.PerspectiveCamera(fov, aspect, near, far);
+        if(l['transform']){transform3d.apply(l['transform'],lens);}
+        return lens;
+
       }else{      // undefined=>modify
-        console.log(`camera: modifying lens - NOT YET IMPLEMENTED`);
+        console.log(`\ncamera_create(): modifying lens`);
+        if(lens_){
+          if(l['fov']){lens_.fov = l['fov'];}
+          if(l['near']){lens_.near = l['near'];}
+          if(l['far']){lens_.far = l['far'];}
+          if(l['transform']){transform3d.apply(l['transform'],lens_);}
+        }
       }
-
-      // transform camera position and/or orientation
-      const transform = <Record<string,number[]>>l['transform'];
-      if(transform){
-        console.log(`applying transform to lens`);
-        transform3d.apply(transform, lens);
-      }
-
-      return lens;
     }//l
 
   }//create_lens
 
 
+  // l = state['sg'|'vr']['fog']  - no return
   create_fog(fs:Record<string,unknown>, scene:THREE.Scene):void{
     console.log('camera.create_fog');
   }//create_fog
 
+
   create_controls(cs:Record<string,unknown>, scene:THREE.Scene):void{
     console.log('camera.create_controls');
   }//create_controls
+
 
   create_csphere(ss:Record<string,unknown>, scene:THREE.Scene):void{
     console.log('camera.create_csphere');
@@ -102,34 +100,43 @@ class Camera {
 
       // process state
       // sg
-      if(state['sg'] && Object.keys(<Record<string,unknown>>state['sg']).length > 0){
+      const state_sg = <Record<string,unknown>>state['sg'];
+      if(state_sg && Object.keys(state_sg).length > 0){
         console.log(`state['sg'] is non-empty`);
 
         // lens
-        const sgl = <Record<string,unknown>>(<Record<string,unknown>>state['sg'])['lens'];
+        const sgl = <Record<string,unknown>>state_sg['lens'];
         if(sgl){
-          const lens:THREE.Camera = camera.create_lens(sgl, scenes['sgscene']);
+          const lens = camera.create_lens(sgl, scenes['sgscene'], sglens);
           if(lens){
-            (<Record<string,unknown>>result_['vr'])['lens'] = <THREE.Camera>lens;
-            sglens = <THREE.Camera>lens;
+            (<Record<string,unknown>>result_['vr'])['lens'] = lens;
+            sglens = lens;
           }
         }
+
+        // fog
+
+        // controls
+
+        // csphere
+
       }else{
         console.log(`state['sg'] is undefined or empty`);
       }
 
 
       // vr
-      if(state['vr'] && Object.keys(<Record<string,unknown>>state['vr']).length > 0){
+      const state_vr = <Record<string,unknown>>state['vr'];
+      if(state_vr && Object.keys(state_vr).length > 0){
         console.log(`state['vr'] is non-empty`);
 
         // lens
-        const vrl = <Record<string,unknown>>(<Record<string,unknown>>state['vr'])['lens'];
+        const vrl = <Record<string,unknown>>state_vr['lens'];
         if(vrl){
-          const lens:THREE.Camera = camera.create_lens(vrl, scenes['vrscene']);
+          const lens = camera.create_lens(vrl, scenes['vrscene'], vrlens);
           if(lens){
-            (<Record<string,unknown>>result_['vr'])['lens'] = <THREE.Camera>lens;
-            vrlens = <THREE.Camera>result_['lens'];
+            (<Record<string,unknown>>result_['vr'])['lens'] = lens;
+            vrlens = lens;
           }
         }
         console.log(`after camera.create_lens result_ is:`);
@@ -169,7 +176,9 @@ class Camera {
 //        }else{
 //          o['_controls'] = false;
 //        }
-        console.log(`state['vr'] is non-trivial - resolve(result)`);
+
+        // csphere
+
         resolve(result_);               //promise fulfilled
 
       }else{
