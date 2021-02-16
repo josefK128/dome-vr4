@@ -156,9 +156,8 @@ class Narrative {
 
 
     // canvas and gl-context
+    // Oct 2019 webgl2 could not support ant-aliasing - now OK jan 2021
     canvas = <HTMLCanvasElement>document.getElementById(config.renderer.canvas_id);
-    //as of Oct 2019 webgl2 cannot render antialiasing - when supported
-    //change false to config.renderer.antialias - done! jan30_2021
     context = canvas.getContext('webgl2', {antialias:true});
 
     // initialize renderer
@@ -206,6 +205,7 @@ class Narrative {
       stats.dom.style.display = 'none';  // hide
     }
 
+
     // webxr
     if(config.topology._webxr){
       renderer.xr.enabled = true;
@@ -240,7 +240,7 @@ class Narrative {
 
 
     (async () => {
-  
+
       // prepare scenes={existing scenes} second arg for camera.delta
       const scenes:Record<string,THREE.Scene> = {};
       if(sgscene){
@@ -260,6 +260,14 @@ class Narrative {
       console.dir(result);
 
       // process result
+
+
+      // actions - _actions:t/f/undefined => load, empty or append to queue
+      // NOTE: queue.load(sequence), queue.load([]) and queue.append(seq)
+      // all done in state/actions.ts - result['actions'] merely reports 
+      // what was done in state/actions.ts
+      // _actions:true=>load(seq), _actions:undefined=>append(seq),     
+      // _actions:false=>load([])
 
     })();  
 
