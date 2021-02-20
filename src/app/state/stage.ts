@@ -128,10 +128,10 @@ class Stage {
         }//for(name)
       }//if(actors.l >0
 
-      console.log(`\nafter stage.scene():`);
-      for(const [n,a] of Object.entries(narrative.reportActors())){
-        console.log(`cast contains actor ${n}`);
-      }
+//      console.log(`\nafter stage.scene():`);
+//      for(const [n,a] of Object.entries(narrative.reportActors())){
+//        console.log(`cast contains actor ${n}`);
+//      }
 
       return new Promise((resolve, reject) => {
         resolve();

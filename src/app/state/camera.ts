@@ -18,7 +18,6 @@ let camera:Camera,
     vrcsphere:THREE.Mesh;
 
 
-
 class Camera {
 
   // ctor
@@ -48,7 +47,7 @@ class Camera {
               lens = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
         if(l['transform']){transform3d.apply(l['transform'],lens);}
-        //console.log(`\ncamera.create_lens(): created lens = ${lens}`);
+        console.log(`camera.create_lens(): created lens = ${lens}`);
 
         // keep closure ref to lens
         lens_ = lens;
@@ -117,7 +116,7 @@ class Camera {
   // returns new Promise<Record<string,unknown>>((resolve, reject) => {});
   delta(state:Record<string,unknown>, scenes:Record<string,THREE.Scene>):
     Promise<Record<string,unknown>>{
-      console.log(`\n\n@@ camera.delta(state, scenes) state:`);
+      console.log(`\n@@ camera.delta(state, scenes) state:`);
       console.dir(state);
 
       // camera-created objects passed to narrative in result_ Object
@@ -137,24 +136,22 @@ class Camera {
 
         // lens
         const sgl = <Record<string,unknown>>state_sg['lens'];
+        //console.dir(sgl);
         if(sgl){
           const lens = camera.create_lens(sgl, scenes['sgscene'], sglens);
           if(lens){
             (<Record<string,unknown>>result_['sg'])['lens'] = lens;
             sglens = lens;
+            //console.log(`after camera.create_lens sglens is:`);
+            //console.dir(sglens);
           }
         }
-        //console.log(`after camera.create_lens sglens is:`);
-        //console.dir(sglens);
 
         // fog
         const sgf = <Record<string,unknown>>(state_sg['fog']);
+        //console.dir(sgf);
         if(sgf && Object.keys(sgf).length > 0){
-          //console.log(`state['sg']['fog'] is non-empty`);
-          //console.dir(sgf);
           camera.create_fog(sgf, scenes['sgscene']); 
-          //console.log(`after camera.create_fog scenes['sgscene'].fog is:`);
-          //console.dir(scenes['sgscene'].fog);
         }else{
           //console.log(`state['sg']['fog'] is undefined or empty`);
         }
@@ -162,6 +159,7 @@ class Camera {
 
         // controls
         const sgc = <Record<string,unknown>>(state_sg['controls']);
+        //console.dir(sgc);
         if(sgc && Object.keys(sgc).length > 0){
           camera.create_controls(sgc, scenes, canvas);
         }else{
@@ -171,6 +169,7 @@ class Camera {
 
         // csphere
         const sgs = <Record<string,unknown>>(state_sg['csphere']);
+        //console.dir(sgs);
         if(sgs && Object.keys(sgs).length > 0){
           camera.create_csphere(sgs, scenes);
         }else{
@@ -188,25 +187,23 @@ class Camera {
 
         // lens
         const vrl = <Record<string,unknown>>state_vr['lens'];
+        //console.dir(vrl);
         if(vrl){
           const lens = camera.create_lens(vrl, scenes['vrscene'], vrlens);
           if(lens){
             (<Record<string,unknown>>result_['vr'])['lens'] = lens;
             vrlens = lens;
+            //console.log(`after camera.create_lens vrlens is:`);
+            //console.dir(vrlens);
           }
         }
-        //console.log(`after camera.create_lens vrlens is:`);
-        //console.dir(vrlens);
 
 
         // fog
         const vrf = <Record<string,unknown>>(state_vr['fog']);
+        //console.diyyr(vrf);
         if(vrf && Object.keys(vrf).length > 0){
-          //console.log(`state['vr']['fog'] is non-empty`);
-          //console.dir(vrf);
           camera.create_fog(vrf, scenes['vrscene']); 
-          //console.log(`after camera.create_fog scenes['vrscene'].fog is:`);
-          //console.dir(scenes['vrscene'].fog);
         }else{
           console.log(`state['vr']['fog'] is undefined or empty`);
         }
@@ -214,6 +211,7 @@ class Camera {
 
         // controls
         const vrc = <Record<string,unknown>>(state_vr['controls']);
+        //console.dir(vrc);
         if(vrc && Object.keys(vrc).length > 0){
           camera.create_controls(vrc, scenes, canvas);
         }else{
@@ -223,6 +221,7 @@ class Camera {
 
         // csphere
         const vrs = <Record<string,unknown>>(state_vr['csphere']);
+        //console.dir(vrs);
         if(vrs && Object.keys(vrs).length > 0){
           camera.create_csphere(vrs, scenes);
         }else{
@@ -237,7 +236,9 @@ class Camera {
         //reject(new Error(`camera: malformed state:${state}`));//reject promise
       }
     });
-  }
+
+  }//camera.delta
+
 }//Camera
 
 

@@ -234,7 +234,6 @@ class Narrative implements Cast{
     console.log(`\n@@@ narrative.changeState state:`);
     console.dir(state);
 
-
     (async () => {
 
       // prepare scenes={existing scenes} second arg for camera.delta
@@ -249,27 +248,15 @@ class Narrative implements Cast{
         const camera_results:Record<string,unknown> = await camera.delta(state['camera'], scenes);
 
         // process camera_results
-        console.log(`\n&&&&&&&& n.chSt camera_results:`);
+        console.log(`\n@@@ n.chSt camera_results:`);
         console.dir(camera_results);
+        console.log(`@@@ n.chSt camera_results\n`);
         if(sgscene){
           sglens = <THREE.PerspectiveCamera>(<Record<string,unknown>>camera_results['sg'])['lens'];
-//          //sgscene['lens'] = sglens;
-//          console.log(`sgscene['lens'] = ${sgscene['lens']}`);
-//          console.log(`***sglens = ${sglens}`);
-//          console.dir(sglens);
         }
         if(vrscene){
           vrlens = <THREE.PerspectiveCamera>(<Record<string,unknown>>camera_results['vr'])['lens'];
-//          vrscene['lens'] = vrlens;
-//          console.log(`vrscene['lens'] = ${vrscene['lens']}`);
-//          console.log(`***vrlens = ${vrlens}:`);
-//          console.dir(vrlens);
         }
-        //console.log(`sgscene['lens'] = ${sgscene['lens']}`); 
-        //console.log(`sgscene['lens']['layers'] = ${sgscene['lens']['layers']}`); 
-        //console.log(`vrscene['lens'] = ${vrscene['lens']}`); 
-        //console.log(`vrscene['lens']['layers'] = ${vrscene['lens']['layers']}`); 
-        console.log(`&&&&&&&& n.chSt camera_results\n`);
       }catch(e){
         console.log(`error in camera.delta: ${e}`);
       }
@@ -284,9 +271,9 @@ class Narrative implements Cast{
 
         // process stage, audio and actions results
         //console.log(`these results should be [void,void,void]`);
-        console.log(`\n\n&&&&&&&& n.chSt: Promise.all([stage,audio,actions]) results[]:`);
+        console.log(`\n\n@@@ n.chSt: Promise.all([stage,audio,actions]) results[]:`);
         console.dir(results);
-        console.log(`&&&&&&&& n.chSt Promise.all([stage,audio,actions]) results[]:\n`);
+        console.log(`@@@ n.chSt Promise.all([stage,audio,actions]) results[]:\n`);
 
         if(!animating){
           // start clock, timeline
@@ -303,30 +290,10 @@ class Narrative implements Cast{
         }
 
       }catch(e){
-        console.log(`error in camera.delta: ${e}`);
+        console.log(`n.chSt - error in processing state from scene: ${e}`);
       }
 
-    })();  
-
-
-    // TEMP !!!
-    // create/modify cameras/lenses
-//    aspect = window.innerWidth/window.innerHeight;
-//    vrlens = new THREE.PerspectiveCamera(90, aspect, 0.1, 1000); 
-
-    // TEMP !!!
-//    Panorama.create({'lens': vrlens}).then((actor) => {
-//      //console.log(`\n\nPanorama.create returns panorama containing layers - length = ${actor['layers'].length}`);
-//      if(actor['layers']){
-//        for(const layer of actor['layers']){
-//          vrscene.add(layer);
-//        }
-//      }else{
-//        vrscene.add(actor);
-//      }
-//    }).catch((e) => {
-//      console.log(`\n\nerror creating panorama: ${e}`);
-//    });
+    })();//async-IIFE 
 
   }//changeState
 
@@ -391,14 +358,12 @@ class Narrative implements Cast{
 
   // following two functions are for sgscene-actor management (by actor name)
   addActor(scene:THREE.Scene, name:string, actor:THREE.Object3D):void{
-    console.log(`\n############################### addActor`);
+    console.log(`\n@@@ narrative.addActor ${name}`);
     if(scene && actor && name && name.length > 0){
       if(cast[name]){
         narrative.removeActor(scene, name);  //if replace actor with same name?
       }
-      console.log(`n.addActor: adding actor ${actor} with name ${name}`); 
       actor.name = name;  // possible diagnostic use
-      //console.dir(actor);
       cast[name] = actor;
       scene.add(actor);
       console.log(`n.addActor: scene.children.l = ${scene.children.length}`);
@@ -408,11 +373,11 @@ class Narrative implements Cast{
   }
 
   removeActor(scene:THREE.Scene, name:string):void{
+    console.log('\nnarrative.removeActor ${name}');
     if(scene && name && name.length > 0){
       if(cast[name]){
         scene.remove(cast[name]);
         delete cast[name];
-        console.log(`n.removeActor:removing actor ${name}`); 
       }
     }else{
       console.log(`n.removeActor:FAILED to remove actor with name ${name}!!`); 
@@ -432,7 +397,7 @@ class Narrative implements Cast{
   }
 
   findActor(name:string):Actor{
-    //console.log(`narrative.find: seeking actor name=${name}`);
+    //console.log(`\nnarrative.findActor: seeking actor name=${name}`);
     if(name && name.length > 0){
       if(cast[name]){
         //console.log(`narrative.find: cast[${name}] = ${cast[name]}`);
