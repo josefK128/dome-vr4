@@ -118,10 +118,7 @@ export interface State {
   // stage - default stage is empty. 
   // booleans are in sub-states frame/_stats, cast/_actors
   stage:{
-    frame?:{
-      _stats:boolean   // fps monitor - t/f => show/hide
-    },
-  
+
     // _actors:true => create actors; false => remove actors 
     // actors object non-empty => iterate through actors
     // sg (scenegraph) is the first stage scene  

@@ -96,6 +96,7 @@ const config:Config = {
     // renderer.setClearColor(clearColor-rgb, clearAlpha);
     // put in rendering object [?]
     renderer:{
+      _stats:true,
       canvas_id: 'webgl',
       clearColor: 'black',
       clearAlpha: 1.0,
@@ -174,21 +175,9 @@ const state:State = {
     // stage - initialization and management of stats performance meter,
     // and actors in one of two possible scenes, sgscene and/or vrscene
     stage: {
-        frame: {
-            _stats: true // fps monitor built by default - t/f => show/hide
-        },
-        // there are two possible and possibly co-existing scenes - sgscene which
-        // renders a 3D-scene possibly off-screen to sgTarget, and vrscene
-        // which renders a VR scene to a headset possibly using sgTarget.texture
-        // as a texture map within vrscene
-        //
-        // The actors for each are created by the 'stage' state and then added
-        // to the respective 'cast' and 'scene' via the narrative interfaces of
-        // narrative.addActor or narrative.addVRActor respectively.
-        //
-        // Each follows the following syntax:
+        // each scene the has two properties:
         // _actors:true=>create actors; false=>remove actors, undefined=>modify 
-        // actors object non-empty => iterate through actors by key 'names'
+        // actors:Record<string,Actor>[] => iterate through actors by 'name'
         sgscene: {
         },
 
@@ -198,33 +187,34 @@ const state:State = {
         vrscene: {
             _actors: true,
             actors: {
-                'axes': {
-                    factory: 'Axes',
-                    url: './app/models/stage/actors/environment/axes',
-                    options: {
-                        length: 10000,
-                        // setting axes translation-y at -0.01 allows z-axis to be seen
-                        transform: { t: [0.0, -0.01, -0.99] }
-                    }
-                },
+//                'axes': {
+//                    factory: 'Axes',
+//                    url: './app/models/stage/actors/environment/axes',
+//                    options: {
+//                        length: 10000,
+//                        // setting axes translation-y at -0.01 allows z-axis to be seen
+//                        transform: { t: [0.0, -0.01, -0.99] }
+//                    }
+//                },
+//                'unitcube': {
+//                    factory: 'Unitcube',
+//                    url: './app/models/stage/actors/objects/unitcube',
+//                    options: { wireframe: false,
+//                        color: 'red',
+//                        opacity: 1.0,
+//                        map: './app/assets/images/glad.png',
+//                        transform: { t: [0.0, 0.0, -0.5], e: [0.0, 0.0, 0.0], s: [0.05, 0.05, 0.05] }
+//                    }
+//                },
                 'panorama':{
                     factory:'Panorama',
-                    url:'./app/models/stage/actors/environment/panorama',
+                    url:'../models/stage/actors/environment/panorama.js',
                     options:{
-                      texture_url:'../media/images/cube/sun_temple_stripe__stereo.jpg',
+                      //texture_url:'../../../../media/images/cube/sun_temple_stripe__stereo.jpg',
+                      texture_url:'../../../../../../../media/images/cube/sun_temple_stripe_stereo.jpg',
                       ntextures:12
                     }
-                },
-                'unitcube': {
-                    factory: 'Unitcube',
-                    url: './app/models/stage/actors/objects/unitcube',
-                    options: { wireframe: false,
-                        color: 'red',
-                        opacity: 1.0,
-                        map: './app/assets/images/glad.png',
-                        transform: { t: [0.0, 0.0, -0.5], e: [0.0, 0.0, 0.0], s: [0.05, 0.05, 0.05] }
-                    }
-                },
+                }
             } //actors
         } //vrscene
     },

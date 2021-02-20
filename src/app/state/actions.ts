@@ -1,6 +1,15 @@
 // actions.ts 
+// actions - _actions:t/f/undefined => load, empty or append to queue
+// NOTE: queue.load(sequence), queue.load([]) and queue.append(seq)
+// all done in state/actions.ts - result['actions'] merely reports 
+// what was done in state/actions.ts
+// _actions:true=>load(seq), _actions:undefined=>append(seq),     
+// _actions:false=>load([]
+
+
 import {Action} from '../models/actions/action.interface';
 import {queue} from '../services/actions/queue';
+
 
 // singleton closure-instance variable
 let actions:Actions;

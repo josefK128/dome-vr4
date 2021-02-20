@@ -1,9 +1,9 @@
 // Actor.interface.ts
 // defines an interface which all Object3D-actors MUST implement,
-// which is a 'delta(Record<string|symbol,unknown>):void' method for 
+// which is a 'delta(Record<string,unknown>):void' method for 
 // modifying actor properties
 
-// NOTE: Record<string|symbol,unknown> represents an 'options' object,
+// NOTE: Record<string,unknown> represents an 'options' object,
 // essentially a Dictionary or Hash
 
 // NOTE: each actor-instance is returned in the resolution of the 
@@ -14,6 +14,6 @@
 // see './actorfactory.interface.ts'
 
 export interface Actor {
-  delta(options:Record<string|symbol,unknown>):void;
+  delta(options:Record<string,unknown>):void;
 }
 

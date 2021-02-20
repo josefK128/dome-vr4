@@ -35,6 +35,7 @@ window['Power1'] = Power1;
 
 // first 2 imports are compile-time only so don't need to use js-ext
 // interfaces for scene
+import {Cast} from './cast.interface';
 import {Config} from './scenes/config.interface';
 import {State} from './scenes/state.interface';
 
@@ -77,9 +78,9 @@ let narrative:Narrative,
     renderer:THREE.WebGLRenderer, // from state/stage
                                  // NOTE:renderer.render(sgscene,lens)
     // cameras, controls
-    //lens:THREE.PerspectiveCamera,      // from state/camera
+    sglens:THREE.PerspectiveCamera,      // from state/camera
                    // NOTE:TBD 'csphere' is whole apparatus - lens, lights etc
-    //lens_offset:THREE.Object3D,      // _webxr:t => lower camera by 1.6
+    //sglens_offset:THREE.Object3D,      // _webxr:t => lower camera by 1.6
     vrlens:THREE.PerspectiveCamera, // separate camera for rendering vrscene
     //vrlens_offset:THREE.Object3D, // _webxr:t => lower camera by 1.6
     //_controls:boolean = false,   // use controls/keymap? 
@@ -87,36 +88,35 @@ let narrative:Narrative,
     //controls:Object,           // vrcontrols
     //keymap:Object,            // vrcontrols-keymap - vrkeymap
 
-    //clock and performance meter
-    clock:THREE.Clock,    // uses perfomance.now() - fine grain
-    stats:Stats,
+    // scenes
+    sgscene:THREE.Scene,
+    rmscene:THREE.Scene,
+    vrscene:THREE.Scene,
 
     // actors
     cast:Record<string, Actor>,  //stage creates name-actor entries & 
-      // registers them in cast via narrative.addSGActor(name, actor) 
-      // for all actors in sgscene, or narrative.addVRActor(name, actor) 
-      // for all actors in vrscene
+      // registers them in cast via narrative.addActor(scene, name, actor) 
 
-    sgscene:THREE.Scene,
-    rmscene:THREE.Scene,
-    vrscene:THREE.Scene;
+    // fps-performance meter
+    stats:Stats;
+    
 
 // const - initialized
 const tl = gsap.timeline({paused:true}),
-      targetNames:Record<string,unknown> = {
+      clock = new THREE.Clock(),    // uses perfomance.now() - fine grain
+      targetNames:Record<string,unknown> = { // renderTargets - what to texture 
         'narrative':narrative
       },
       timer = (t:number, dt:number, fr:number) => {
         // sync frame and gsap-frame => no need to increment frame in render()
         frame = fr;
-        if(fr % 1000 === 0){
-          console.log(`timer:frame=${frame} et=${et} fr=${fr} t=${t}`);
-        }
+//        if(fr % 1000 === 0){
+//          console.log(`timer:frame=${frame} et=${et} fr=${fr} t=${t}`);
+//        }
       };
 
-
 //dynamic
-let _stats = false,            // performance meter - update stats in render 
+let _stats = false,
     aspect = 1.0,             // window.innerW/window.innerH
     animating = false,       // animation => render-loop running
     et = 0,                 // elapsed time - clock starts at render start
@@ -125,7 +125,7 @@ let _stats = false,            // performance meter - update stats in render
 
 
 
-class Narrative {
+class Narrative implements Cast{
   // ctor
   private constructor(){
     narrative = this;
@@ -150,17 +150,18 @@ class Narrative {
   //bootstrap(_config:Config, state:State){
   bootstrap(_config:Config, state:State):void{
     console.log(`\n@@@ narrative.bootstrap:`);
+    // assign to aspect to silence lint about making it const - cannot do
+    aspect = window.innerWidth/window.innerHeight;
 
     // initialize config
     config = _config;
 
 
+    // renderer
     // canvas and gl-context
-    // Oct 2019 webgl2 could not support ant-aliasing - now OK jan 2021
     canvas = <HTMLCanvasElement>document.getElementById(config.renderer.canvas_id);
     context = canvas.getContext('webgl2', {antialias:true});
 
-    // initialize renderer
     renderer = new THREE.WebGLRenderer({
       canvas:canvas,
       context:context,
@@ -177,7 +178,16 @@ class Narrative {
       console.log(`webGL1 renderer created !!!!!!!`);
     }
 
+    // stats - display fps performance
+    _stats = config['renderer']['_stats'];
+    if(_stats){
+      stats = new Stats();
+      document.body.appendChild(stats.dom);
+      stats.dom.style.display = 'block';  // show
+    }
 
+
+    // topology
     // initialize scenes 
     if(config.topology._sg){
       sgscene = new THREE.Scene();
@@ -191,20 +201,6 @@ class Narrative {
       vrscene = new THREE.Scene();
       console.log(`_vr = ${config.topology._vr} so creating vrscene`);
     }
-
-
-    // stats
-    _stats = state['stage']['frame']['_stats'];
-    stats = new Stats();
-    document.body.appendChild(stats.dom);
-    if(_stats){
-      //console.log('setting stats display style to block');
-      stats.dom.style.display = 'block';  // show
-    }else{
-      //console.log('setting stats display style to none');
-      stats.dom.style.display = 'none';  // hide
-    }
-
 
     // webxr
     if(config.topology._webxr){
@@ -243,69 +239,95 @@ class Narrative {
 
       // prepare scenes={existing scenes} second arg for camera.delta
       const scenes:Record<string,THREE.Scene> = {};
-      if(sgscene){
-        scenes['sgscene'] = sgscene;
+      scenes['sgscene'] = sgscene;
+      scenes['rmscene'] = rmscene;
+      scenes['vrscene'] = vrscene;
+
+      // get camera_results so lens(es) can be attached to corresponding
+      // scenes - needed by some actors created in stage.delta - exp. panorama
+      try{
+        const camera_results:Record<string,unknown> = await camera.delta(state['camera'], scenes);
+
+        // process camera_results
+        console.log(`\n&&&&&&&& n.chSt camera_results:`);
+        console.dir(camera_results);
+        if(sgscene){
+          sglens = <THREE.PerspectiveCamera>(<Record<string,unknown>>camera_results['sg'])['lens'];
+//          //sgscene['lens'] = sglens;
+//          console.log(`sgscene['lens'] = ${sgscene['lens']}`);
+//          console.log(`***sglens = ${sglens}`);
+//          console.dir(sglens);
+        }
+        if(vrscene){
+          vrlens = <THREE.PerspectiveCamera>(<Record<string,unknown>>camera_results['vr'])['lens'];
+//          vrscene['lens'] = vrlens;
+//          console.log(`vrscene['lens'] = ${vrscene['lens']}`);
+//          console.log(`***vrlens = ${vrlens}:`);
+//          console.dir(vrlens);
+        }
+        //console.log(`sgscene['lens'] = ${sgscene['lens']}`); 
+        //console.log(`sgscene['lens']['layers'] = ${sgscene['lens']['layers']}`); 
+        //console.log(`vrscene['lens'] = ${vrscene['lens']}`); 
+        //console.log(`vrscene['lens']['layers'] = ${vrscene['lens']['layers']}`); 
+        console.log(`&&&&&&&& n.chSt camera_results\n`);
+      }catch(e){
+        console.log(`error in camera.delta: ${e}`);
       }
-      if(vrscene){
-        scenes['vrscene'] = vrscene;
+
+   
+      try{
+        const results:unknown[] = await Promise.all([
+          stage.delta(state['stage'], scenes, narrative),
+          //audio.delta(state['audio']),
+          //actions.delta(state['actions'], narrative)
+        ]);
+
+        // process stage, audio and actions results
+        //console.log(`these results should be [void,void,void]`);
+        console.log(`\n\n&&&&&&&& n.chSt: Promise.all([stage,audio,actions]) results[]:`);
+        console.dir(results);
+        console.log(`&&&&&&&& n.chSt Promise.all([stage,audio,actions]) results[]:\n`);
+
+        if(!animating){
+          // start clock, timeline
+          clock.start();
+          tl.play();
+    
+          // set timer to report time passage - t, dt, frames
+          gsap.ticker.add(timer);
+      
+          // setAnimationLoop => begin render-loop
+          animating = true;
+          renderer.setAnimationLoop(narrative.render);
+          narrative.render();
+        }
+
+      }catch(e){
+        console.log(`error in camera.delta: ${e}`);
       }
-
-      const result:Record<string,unknown>[] = await Promise.all([
-        camera.delta(state['camera'], scenes),
-        //stage.delta(state['stage', narrative]),
-        //audio.delta(state['audio']),
-        //actions.delta(state['actions'], narrative)
-      ]);
-      console.log(`camera.delta resolves to result:Record<string,unknown> =`);
-      console.dir(result);
-
-      // process result
-
-
-      // actions - _actions:t/f/undefined => load, empty or append to queue
-      // NOTE: queue.load(sequence), queue.load([]) and queue.append(seq)
-      // all done in state/actions.ts - result['actions'] merely reports 
-      // what was done in state/actions.ts
-      // _actions:true=>load(seq), _actions:undefined=>append(seq),     
-      // _actions:false=>load([])
 
     })();  
 
 
     // TEMP !!!
     // create/modify cameras/lenses
-    aspect = window.innerWidth/window.innerHeight;
-    vrlens = new THREE.PerspectiveCamera(90, aspect, 0.1, 1000); 
+//    aspect = window.innerWidth/window.innerHeight;
+//    vrlens = new THREE.PerspectiveCamera(90, aspect, 0.1, 1000); 
 
     // TEMP !!!
-    Panorama.create({'lens': vrlens}).then((actor) => {
-      console.log(`\n\nPanorama.create returns panorama containing layers - length = ${actor['layers'].length}`);
-      if(actor['layers']){
-        for(const layer of actor['layers']){
-          vrscene.add(layer);
-        }
-      }else{
-        vrscene.add(actor);
-      }
-    }).catch((e) => {
-      console.log(`\n\nerror creating panorama: ${e}`);
-    });
+//    Panorama.create({'lens': vrlens}).then((actor) => {
+//      //console.log(`\n\nPanorama.create returns panorama containing layers - length = ${actor['layers'].length}`);
+//      if(actor['layers']){
+//        for(const layer of actor['layers']){
+//          vrscene.add(layer);
+//        }
+//      }else{
+//        vrscene.add(actor);
+//      }
+//    }).catch((e) => {
+//      console.log(`\n\nerror creating panorama: ${e}`);
+//    });
 
-
-    if(!animating){
-      // initialize clock, timeline
-      clock = new THREE.Clock();
-      clock.start();
-      tl.play();
-
-      // set timer to report time passage - t, dt, frames
-      gsap.ticker.add(timer);
-  
-      // setAnimationLoop => begin render-loop
-      animating = true;
-      renderer.setAnimationLoop(narrative.render);
-      narrative.render();
-    }
   }//changeState
 
 
@@ -323,7 +345,7 @@ class Narrative {
     //renderer.render( scene, camera );
     renderer.render(vrscene, vrlens);
 
-  }
+  }//render
 
 
 
@@ -368,95 +390,34 @@ class Narrative {
 
 
   // following two functions are for sgscene-actor management (by actor name)
-  addSGActor(name:string, actor:THREE.Object3D):void{
-    if(actor && name && name.length > 0){
+  addActor(scene:THREE.Scene, name:string, actor:THREE.Object3D):void{
+    console.log(`\n############################### addActor`);
+    if(scene && actor && name && name.length > 0){
       if(cast[name]){
-        narrative.removeSGActor(name);  // if replace actor with same name?
+        narrative.removeActor(scene, name);  //if replace actor with same name?
       }
-      console.log(`\n############################### addSGActor`);
-      console.log(`narrative: adding sg actor ${actor} with name ${name}`); 
+      console.log(`n.addActor: adding actor ${actor} with name ${name}`); 
       actor.name = name;  // possible diagnostic use
       //console.dir(actor);
       cast[name] = actor;
-      sgscene.add(actor);
-      console.log(`n.addSGActor: sgscene.children.length = ${sgscene.children.length}`);
+      scene.add(actor);
+      console.log(`n.addActor: scene.children.l = ${scene.children.length}`);
     }else{
-      console.log(`narrative: FAILED to add sg actor ${actor} with name ${name}!!`); 
+      console.log(`n.addActor:FAILED to add actor ${actor} w. name ${name}!!`); 
     }
   }
 
-  removeSGActor(name:string):void{
-    if(name && name.length > 0){
+  removeActor(scene:THREE.Scene, name:string):void{
+    if(scene && name && name.length > 0){
       if(cast[name]){
-        sgscene.remove(cast[name]);
+        scene.remove(cast[name]);
         delete cast[name];
-        console.log(`removing sg actor ${name}`); 
+        console.log(`n.removeActor:removing actor ${name}`); 
       }
     }else{
-      console.log(`FAILED to remove sg actor with name ${name}!!`); 
+      console.log(`n.removeActor:FAILED to remove actor with name ${name}!!`); 
     }
   }
-
-  // following two functions are for rmscene-actor management (by actor name)
-  // in all cases this should simply be 'rmquad' (PlaneXY) - quad equal to
-  // the rm-'eye' near plane (in normalized device coords (NDC) [-1,1]x[-1,1]
-  addRMActor(name:string, actor:THREE.Object3D):void{
-    if(actor && name && name.length > 0){
-      if(cast[name]){
-        narrative.removeRMActor(name);  // if replace actor with same name?
-      }
-      console.log(`narrative:adding rm actor ${actor} with name ${name}`); 
-      actor.name = name;  // possible diagnostic use
-      cast[name] = actor;
-      rmscene.add(actor);
-      console.log(`n.addRMActor: rmscene.children.length = ${rmscene.children.length}`);
-    }else{
-      console.log(`narrative: FAILED to add rm actor ${actor} with name ${name}!!`); 
-    }
-  }
-
-  removeRMActor(name:string):void{
-    if(name && name.length > 0){
-      if(cast[name]){
-        rmscene.remove(cast[name]);
-        delete cast[name];
-        console.log(`removing rm actor ${name}`); 
-      }
-    }else{
-      console.log(`FAILED to remove rm actor with name ${name}!!`); 
-    }
-  }
-
-  // following two functions are for vrscene-actor management (by actor name)
-  addVRActor(name:string, actor:THREE.Object3D):void{
-    if(actor && name && name.length > 0){
-      if(cast[name]){
-        narrative.removeVRActor(name);  // if replace actor with same name?
-      }
-      console.log(`\n############################### addVRActor`);
-      console.log(`narrative:adding vr actor ${actor} with name ${name}`); 
-      actor.name = name;  // possible diagnostic use
-      cast[name] = actor;
-      vrscene.add(actor);
-      console.log(`n.addVRActor: vrscene.children.length = ${vrscene.children.length}`);
-    }else{
-      console.log(`narrative: FAILED to add vr actor ${actor} with name ${name}!!`); 
-    }
-  }
-
-  removeVRActor(name:string):void{
-    if(name && name.length > 0){
-      if(cast[name]){
-        vrscene.remove(cast[name]);
-        delete cast[name];
-        console.log(`removing vr actor ${name}`); 
-      }
-    }else{
-      console.log(`FAILED to remove vr actor with name ${name}!!`); 
-    }
-  }
-
-
 
   // following two functions are for actor report and fetch
   reportActors(display=false):Record<string, Actor>{

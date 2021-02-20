@@ -45,8 +45,7 @@ export interface Config {
     vrpost?:string,               //post-pr with prv frame 
                                  //'vr'|'texture'|nothing
                                 //use frame n-1 vrTarget.tex in vrhud frame n
-
-  },//stage
+  },//topology
   
 
   // initialization of canvas and renderer
@@ -54,6 +53,7 @@ export interface Config {
   // renderer = new THREE.WebGLRenderer( { canvas: canvas, antialias:antialias, alpha:alpha} );
   // renderer.setClearColor(clearColor-rgb, clearAlpha);
   renderer:{
+    _stats:boolean;         //show fps
     canvas_id:string;
     clearColor:string;    // background color - exp THREE.Color('black')
     clearAlpha:number;   // 0.0 to 1.0 =>  1 opaque, 0 transparent - background

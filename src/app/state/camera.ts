@@ -33,8 +33,8 @@ class Camera {
   }
 
 
-  // l = state['sg'|'vr']['lens']  - return THREE.Camera if created
-  create_lens(l:Record<string,unknown>, scene:THREE.Scene, lens_:THREE.Camera):THREE.Camera{
+  // l = state['sg'|'vr']['lens']  - return THREE.PerspectiveCamera if created
+  create_lens(l:Record<string,unknown>, scene:THREE.Scene, lens_:THREE.PerspectiveCamera):THREE.PerspectiveCamera{
 
     // lens 
     // NOTE: l['_lens'] is only true or undefined (create or modify)
@@ -48,6 +48,16 @@ class Camera {
               lens = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
         if(l['transform']){transform3d.apply(l['transform'],lens);}
+        //console.log(`\ncamera.create_lens(): created lens = ${lens}`);
+
+        // keep closure ref to lens
+        lens_ = lens;
+        //console.log(`camera.create_lens(): (sglens/vrlens) lens_ = ${lens_}`);
+
+        // attach lens to scene for reference elsewhere
+        scene['lens'] = lens;
+        //console.log(`camera.create_lens(): scene['lens'] = ${scene['lens']}`);
+
         return lens;
 
       }else{      //undefined=>modify
@@ -107,7 +117,7 @@ class Camera {
   // returns new Promise<Record<string,unknown>>((resolve, reject) => {});
   delta(state:Record<string,unknown>, scenes:Record<string,THREE.Scene>):
     Promise<Record<string,unknown>>{
-      console.log(`\n\n\n@@ camera.delta(state, scenes) state:`);
+      console.log(`\n\n@@ camera.delta(state, scenes) state:`);
       console.dir(state);
 
       // camera-created objects passed to narrative in result_ Object
@@ -134,8 +144,8 @@ class Camera {
             sglens = lens;
           }
         }
-        console.log(`after camera.create_lens sglens is:`);
-        console.dir(sglens);
+        //console.log(`after camera.create_lens sglens is:`);
+        //console.dir(sglens);
 
         // fog
         const sgf = <Record<string,unknown>>(state_sg['fog']);
@@ -143,10 +153,10 @@ class Camera {
           //console.log(`state['sg']['fog'] is non-empty`);
           //console.dir(sgf);
           camera.create_fog(sgf, scenes['sgscene']); 
-          console.log(`after camera.create_fog scenes['sgscene'].fog is:`);
-          console.dir(scenes['sgscene'].fog);
+          //console.log(`after camera.create_fog scenes['sgscene'].fog is:`);
+          //console.dir(scenes['sgscene'].fog);
         }else{
-          console.log(`state['sg']['fog'] is undefined or empty`);
+          //console.log(`state['sg']['fog'] is undefined or empty`);
         }
 
 
@@ -155,7 +165,7 @@ class Camera {
         if(sgc && Object.keys(sgc).length > 0){
           camera.create_controls(sgc, scenes, canvas);
         }else{
-          console.log(`state['sg']['controls'] is undefined or empty`);
+          //console.log(`state['sg']['controls'] is undefined or empty`);
         }
 
 
@@ -164,7 +174,7 @@ class Camera {
         if(sgs && Object.keys(sgs).length > 0){
           camera.create_csphere(sgs, scenes);
         }else{
-          console.log(`state['sg']['csphere'] is undefined or empty`);
+          //console.log(`state['sg']['csphere'] is undefined or empty`);
         }
 
       }else{
@@ -185,8 +195,8 @@ class Camera {
             vrlens = lens;
           }
         }
-        console.log(`after camera.create_lens vrlens is:`);
-        console.dir(vrlens);
+        //console.log(`after camera.create_lens vrlens is:`);
+        //console.dir(vrlens);
 
 
         // fog
@@ -195,8 +205,8 @@ class Camera {
           //console.log(`state['vr']['fog'] is non-empty`);
           //console.dir(vrf);
           camera.create_fog(vrf, scenes['vrscene']); 
-          console.log(`after camera.create_fog scenes['vrscene'].fog is:`);
-          console.dir(scenes['vrscene'].fog);
+          //console.log(`after camera.create_fog scenes['vrscene'].fog is:`);
+          //console.dir(scenes['vrscene'].fog);
         }else{
           console.log(`state['vr']['fog'] is undefined or empty`);
         }
@@ -207,7 +217,7 @@ class Camera {
         if(vrc && Object.keys(vrc).length > 0){
           camera.create_controls(vrc, scenes, canvas);
         }else{
-          console.log(`state['vr']['controls'] is undefined or empty`);
+          //console.log(`state['vr']['controls'] is undefined or empty`);
         }
 
 
@@ -216,7 +226,7 @@ class Camera {
         if(vrs && Object.keys(vrs).length > 0){
           camera.create_csphere(vrs, scenes);
         }else{
-          console.log(`state['vr']['csphere'] is undefined or empty`);
+          //console.log(`state['vr']['csphere'] is undefined or empty`);
         }
 
         resolve(result_);               //promise fulfilled
