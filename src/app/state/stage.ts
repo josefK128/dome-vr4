@@ -89,7 +89,7 @@ class Stage {
                   
                   // Panorama is *special case*
                   //if(factory === 'Panorama'){
-                  if(actor['layers']){
+                  if(actor['layers'] && actor['layers'].length > 0){
                     console.log(`\nstage.sc actor['layers'] - adding ${name}.layers to scene`);
                     let i=0;
                     for(const layer of actor['layers']){
@@ -108,7 +108,7 @@ class Stage {
 
             case false:    // _actor=f => remove actor
               actor = narrative.findActor(name);
-              if(actor['layers']){
+              if(actor['layers'] && actor['layers'].length > 0){
                 console.log(`\nstage.sc actor['layers'] - removing ${name}.layers from scene`);
                 let i=0;
                 for(const layer of actor['layers']){

@@ -187,25 +187,25 @@ const state:State = {
         vrscene: {
             _actors: true,
             actors: {
-//                'axes': {
-//                    factory: 'Axes',
-//                    url: './app/models/stage/actors/environment/axes',
-//                    options: {
-//                        length: 10000,
-//                        // setting axes translation-y at -0.01 allows z-axis to be seen
-//                        transform: { t: [0.0, -0.01, -0.99] }
-//                    }
-//                },
-//                'unitcube': {
-//                    factory: 'Unitcube',
-//                    url: './app/models/stage/actors/objects/unitcube',
-//                    options: { wireframe: false,
-//                        color: 'red',
-//                        opacity: 1.0,
-//                        map: './app/assets/images/glad.png',
-//                        transform: { t: [0.0, 0.0, -0.5], e: [0.0, 0.0, 0.0], s: [0.05, 0.05, 0.05] }
-//                    }
-//                },
+                'axes': {
+                    factory: 'Axes',
+                    url: '../models/stage/actors/objects/axes.js',
+                    options: {
+                        length: 10000,
+                        // setting axes translation-y at -0.01 allows z-axis to be seen
+                        transform: { t: [0.0, -0.01, -0.99] }
+                    }
+                },
+                'unitcube': {
+                    factory: 'Unitcube',
+                    url: '../models/stage/actors/objects/unitcube.js',
+                    options: { wireframe: false,
+                        color: 'red',
+                        opacity: 1.0,
+                        map: '../../../../../../../media/images/glad.png',
+                        transform: { t: [0.0, 0.0, -0.5], e: [0.0, 0.0, 0.0], s: [0.2, 0.2, 0.2] }
+                    }
+                },
                 'panorama':{
                     factory:'Panorama',
                     url:'../models/stage/actors/environment/panorama.js',

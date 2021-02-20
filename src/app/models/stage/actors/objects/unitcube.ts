@@ -36,7 +36,7 @@
 //};
 import {ActorFactory} from '../actorfactory.interface';
 import {Actor} from '../actor.interface';
-import {transform3d} from '../../../../services/transform3d';
+import {transform3d} from '../../../../services/transform3d.js';
 
 
 // class Unitcube - Factory
@@ -51,7 +51,7 @@ export const Unitcube:ActorFactory = class {
         opacity = options['opacity'] || 1.0,
         map = options['map'],
         loader = new THREE.TextureLoader(),
-        transform = options['transform'] || {};
+        transform = <Record<string,number[]>>(options['transform'] || {});
 
     let cube_g:THREE.Geometry,
         cube_m:THREE.Material,
@@ -117,7 +117,7 @@ export const Unitcube:ActorFactory = class {
         }
 
         // transform
-        if(transform && Object.keys(transform).length >0){
+        if(transform && Object.keys(<Record<string,number[]>>transform).length >0){
           transform3d.apply(transform, cube);
         }
       };//cube.delta
