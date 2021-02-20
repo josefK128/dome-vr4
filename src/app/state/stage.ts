@@ -40,6 +40,11 @@ class Stage {
       //console.log(`_actors = ${_actors}`);
       //console.log(`actors = ${actors}`);
 
+      // asignable
+      let m:Record<string,unknown>,
+          actor:Actor;
+
+
       // process actors one by one
       if(actors && Object.keys(actors).length > 0){
         for(const name of Object.keys(actors)){
@@ -57,13 +62,12 @@ class Stage {
 //          console.log(`typeof factory = ${typeof factory}`);
 
 
+
           switch(_actors){
             case true:     // _actor=t => create actor
               if(url){
                 console.log(`creating actor - url = ${url}`);
 
-                let m:Record<string,unknown>,
-                    actor:Actor;
                 try{
                   m = await import(url);
                   //console.log(`m:`);
@@ -84,14 +88,16 @@ class Stage {
                   actor = await (<ActorFactory>m[factory]).create(options);
                   
                   // Panorama is *special case*
-                  if(factory === 'Panorama'){
-                    console.log(`\nstage.sc Panorama - adding layers to scene`);
-                    //console.log(`\nstage.sc Panorama - mock narrative.addActor()`);
-                    narrative.addActor(scene, `${name}.layer0`, actor['layers'][0]);
-                    narrative.addActor(scene, `${name}.layer1`, actor['layers'][1]);
+                  //if(factory === 'Panorama'){
+                  if(actor['layers']){
+                    console.log(`\nstage.sc actor['layers'] - adding ${name}.layers to scene`);
+                    let i=0;
+                    for(const layer of actor['layers']){
+                      narrative.addActor(scene, `${name}.layer${i}`, actor['layers'][i]);
+                      i++;
+                    }
                   }else{
-                    //console.log(`stage.scene - mock narrative.addActor()`);
-                    console.log(`stage.scene - narrative.addActor()`);
+                    console.log(`stage.scene - narrative.addActor(${name})`);
                     narrative.addActor(scene, name, actor);
                   }
                 }catch(e){
@@ -101,7 +107,18 @@ class Stage {
               break;
 
             case false:    // _actor=f => remove actor
-              narrative.removeActor(scene, name);
+              actor = narrative.findActor(name);
+              if(actor['layers']){
+                console.log(`\nstage.sc actor['layers'] - removing ${name}.layers from scene`);
+                let i=0;
+                for(const layer of actor['layers']){
+                  narrative.removeActor(scene, `${name}.layer${i}`);
+                  i++;
+                }
+              }else{
+                console.log(`stage.scene - narrative.removeActor(${name})`);
+                narrative.removeActor(scene, name);
+              }
               break;
 
             default:       // _actor=undefined => modify actor
@@ -110,6 +127,11 @@ class Stage {
           }//switch(_actors)
         }//for(name)
       }//if(actors.l >0
+
+      console.log(`\nafter stage.scene():`);
+      for(const [n,a] of Object.entries(narrative.reportActors())){
+        console.log(`cast contains actor ${n}`);
+      }
 
       return new Promise((resolve, reject) => {
         resolve();
