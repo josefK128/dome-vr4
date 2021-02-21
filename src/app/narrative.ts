@@ -82,7 +82,8 @@ let narrative:Narrative,
     sglens:THREE.PerspectiveCamera,      // from state/camera
                    // NOTE:TBD 'csphere' is whole apparatus - lens, lights etc
     //sglens_offset:THREE.Object3D,      // _webxr:t => lower camera by 1.6
-    vrlens:THREE.PerspectiveCamera, // separate camera for rendering vrscene
+    rmlens:THREE.PerspectiveCamera,   // separate camera for rendering rmscene
+    vrlens:THREE.PerspectiveCamera,   // separate camera for rendering vrscene,
     //vrlens_offset:THREE.Object3D, // _webxr:t => lower camera by 1.6
     //_controls:boolean = false,   // use controls/keymap? 
                                 // set by config.controls:boolean? default false
@@ -215,6 +216,8 @@ class Narrative implements Cast{
     // initialize scenes according to topology 
     sgscene = _sg ? new THREE.Scene() : undefined;
     rmscene = _rm ? new THREE.Scene() : undefined;
+    aspect = window.innerWidth/window.innerHeight;
+    rmlens = _rm ? new THREE.PerspectiveCamera(90, aspect,.1,1000) : undefined;
     vrscene = _vr ? new THREE.Scene() : undefined;
     displayed_scene = config.topology.displayed_scene;
     console.log(`displayed_scene = ${displayed_scene}`);

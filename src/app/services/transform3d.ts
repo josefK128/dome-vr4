@@ -110,7 +110,7 @@ class Transform3d {
     if(actor){
       //console.log(`applying matrix m = ${m}:`);
       //console.dir(m);
-      actor.applyMatrix(m);
+      actor.applyMatrix4(m);
     }
 
     // return created matrix representing model transform input

@@ -1,6 +1,6 @@
 // camera.ts 
 
-// NOTE! - class OrbitControls has syntax pronlems, and in any case should
+// NOTE! - class OrbitControls has syntax problems, and in any case should
 // be replaced by a VR-capable 'vrcontrols' built from OrbitControls
 //var controls = new THREE.OrbitControls( camera );
 //import {OrbitControls} from '../models/camera/controls/OrbitControls';
@@ -42,7 +42,7 @@ class Camera {
         //console.log(`\ncamera.create_lens(): creating lens`);
         const aspect = window.innerWidth/window.innerHeight,
               fov = l['fov'] || 90,
-              near = l['near'] || .001,
+              near = l['near'] || .01,
               far = l['far'] || 10000,
               lens = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
