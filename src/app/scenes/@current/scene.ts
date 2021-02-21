@@ -4,10 +4,11 @@
 // 
 // [1] config:Config (interface) is used once for initialization
 // [2] substates are dynamic - used for initialization AND subsequent variation
-// [3] There are 3 substates:
+// [3] There are 4 substates:
 //   stage,    // stage (scenegraph) 
 //   camera, 
-//   LATER - actions
+//   audio
+//   actions
 //
 // A substate which is undefined (not allowed by interface) or {} is IGNORED.
 // the use of a non-empty substate object implies that a creation/deletion or
@@ -119,6 +120,13 @@ const config:Config = {
 
 // STATE
 // for initialization AND subsequent changeState actions 
+// NOTE: media assets are relative to <base href='/dist/'> so exp.
+// dist/app/media/images/glad.png in scene is:
+// ./app/media/images/glad.png
+// NOTE: actors are relative to dist/app/state/stage.ts so exp.
+// dist/app/models/stage/actors/environment/panorama.ts is:
+// ../models/stage/actors/environment/panorama.ts is:
+
 const state:State = {
     // NOTE: after initial creation of the camera, only modifications are 
     // allowed to camera - _camera is ignored
@@ -202,7 +210,7 @@ const state:State = {
                     options: { wireframe: false,
                         color: 'red',
                         opacity: 1.0,
-                        map: '../../../../../../../media/images/glad.png',
+                        map: './app/media/images/glad.png',
                         transform: { t: [0.0, 0.0, -0.5], e: [0.0, 0.0, 0.0], s: [0.2, 0.2, 0.2] }
                     }
                 },
@@ -210,8 +218,7 @@ const state:State = {
                     factory:'Panorama',
                     url:'../models/stage/actors/environment/panorama.js',
                     options:{
-                      //texture_url:'../../../../media/images/cube/sun_temple_stripe__stereo.jpg',
-                      texture_url:'../../../../../../../media/images/cube/sun_temple_stripe_stereo.jpg',
+                      texture_url:'./app/media/images/cube/sun_temple_stripe_stereo.jpg',
                       ntextures:12
                     }
                 }

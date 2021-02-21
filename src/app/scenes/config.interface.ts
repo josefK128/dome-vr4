@@ -3,6 +3,40 @@
 // outer group-containers are type Record<string:unknown>
 // NOTE: unknowns must be narrowed before assignment to variables
 
+// CONFIG
+// webGL2, es300 three.js ==0.125.2
+
+// 
+// [1] config:Config (interface) is used once for initialization
+// [2] substates are dynamic - used for initialization AND subsequent variation
+// [3] There are 4 substates:
+//   stage,    // stage (scenegraph) 
+//   camera, 
+//   audio
+//   actions
+//
+// A substate which is undefined (not allowed by interface) or {} is IGNORED.
+// the use of a non-empty substate object implies that a creation/deletion or
+// modification of substate properti(es) is requested.
+//
+// there are two cases for substate or substate-property change:
+// Let p be a substate or substate-property:
+// state entries have the form:  p:{_p:boolean; ...} 
+//   _p true => create new p using properties listed (previous p deleted first)
+//   _p false => if object[p] does not exist - ignore. If object[p] exists,
+//      set p to undefined to remove and ignore for rendering scene 
+//   _p undefined => modify the properties listed (no effect on non-existent p)
+// NOTE: in the special case of substate 'action': 
+//   _action:true => set queue.fifo = actions
+//   _action:false => set queue.fifo = []
+//   _action undefined => append actions to queue.fifo
+// NOTE: substate camera only creates the initial_camera or modifies 
+// properties - it is NEVER removed or replaced
+// NOTE: initial_camera is a configuration object - not a substate
+// CONFIG
+// for initialization
+
+
 export interface Config {
 
   // topology - rendering topology

@@ -3,6 +3,15 @@
 // outer group-containers are type Record<string:unknown>
 // NOTE: unknowns must be narrowed before assignment to variables
 
+// STATE
+// for initialization AND subsequent changeState actions 
+// NOTE: media assets are relative to <base href='/dist/'> so exp.
+// dist/app/media/images/glad.png in scene is:
+// ./app/media/images/glad.png
+// NOTE: actors are relative to dist/app/state/stage.ts so exp.
+// dist/app/models/stage/actors/environment/panorama.ts is:
+// ../models/stage/actors/environment/panorama.ts is:
+
 export interface State {
   // NOTE: an initial camera is created so only modifications are allowed.
   // NOTE!: webxr:true => lens.position = [0, 1.6, 0] - avatar head position,

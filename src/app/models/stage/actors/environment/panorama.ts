@@ -75,7 +75,7 @@ export const Panorama:ActorFactory = class {
 
       const panorama:Actor = <Actor>{delta: (options:Record<string,unknown>={}):void => {console.log(`panorama.delta(): options=${options}`);}},
             texture_url = <string>options['texture_url'] ||
-        '../../../../../../../media/images/cube/sun_temple_stripe_stereo.jpg',
+        '../../../../media/images/cube/sun_temple_stripe_stereo.jpg',
             ntextures = <number>options['ntextures'] || 12,
             lens = <THREE.PerspectiveCamera>options['lens'],
             layers:THREE.Mesh[] = [];
@@ -90,7 +90,7 @@ export const Panorama:ActorFactory = class {
         const geometry = new THREE.BoxGeometry( 100, 100, 100 );
         geometry.scale( 1, 1, - 1 );
         
-        //const textures = getTexturesFromAtlasFile( "../../../../../../../media/images/cube/sun_temple_stripe_stereo.jpg", 12 );
+        //const textures = getTexturesFromAtlasFile( "../../../../media/images/cube/sun_temple_stripe_stereo.jpg", 12 );
         const textures = getTexturesFromAtlasFile(texture_url, ntextures );
 //        console.log(`panorama: textures = ${textures}:`);
 //        console.dir(textures);

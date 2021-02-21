@@ -92,6 +92,7 @@ let narrative:Narrative,
     sgscene:THREE.Scene,
     rmscene:THREE.Scene,
     vrscene:THREE.Scene,
+    displayed_scene:string,
 
     // actors
     cast:Record<string, Actor>,  //stage creates name-actor entries & 
@@ -189,6 +190,8 @@ class Narrative implements Cast{
 
     // topology
     // initialize scenes 
+    displayed_scene = config.topology.displayed_scene;
+    console.log(`displayed_scene = ${displayed_scene}`);
     if(config.topology._sg){
       sgscene = new THREE.Scene();
       console.log(`_sg = ${config.topology._sg} so creating sgscene`);
