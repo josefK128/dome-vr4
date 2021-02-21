@@ -32,9 +32,9 @@ class Stage {
   // t/f => create/remove actor(s)
   // undefined => modify actor(s) via actor.delta(options), a method
   // [2] actors = Record<string,unknown>[] = [{name:Actor},...]
-  async scene(name:string, state:Record<string,unknown>, scene:THREE.Scene,
+  async scene(scene_name:string, state:Record<string,unknown>, scene:THREE.Scene,
     narrative:Cast):Promise<void>{
-      //console.log(`stage.scene(${name}):`);
+      //console.log(`stage.scene(${scene_name}):`);
       const _actors = <boolean>state['_actors'],
             actors = <Record<string,Actor>>state['actors'];
       //console.log(`_actors = ${_actors}`);
@@ -90,14 +90,14 @@ class Stage {
                   // Panorama is *special case*
                   //if(factory === 'Panorama'){
                   if(actor['layers'] && actor['layers'].length > 0){
-                    console.log(`\nstage.sc actor['layers'] - adding ${name}.layers to scene`);
+                    console.log(`\nstage.sc ${scene_name} - adding ${name}.layers to scene`);
                     let i=0;
                     for(const layer of actor['layers']){
                       narrative.addActor(scene, `${name}.layer${i}`, actor['layers'][i]);
                       i++;
                     }
                   }else{
-                    console.log(`stage.scene - narrative.addActor(${name})`);
+                    console.log(`stage.scene ${scene_name} - narrative.addActor(${name})`);
                     narrative.addActor(scene, name, actor);
                   }
                 }catch(e){
@@ -109,19 +109,20 @@ class Stage {
             case false:    // _actor=f => remove actor
               actor = narrative.findActor(name);
               if(actor['layers'] && actor['layers'].length > 0){
-                console.log(`\nstage.sc actor['layers'] - removing ${name}.layers from scene`);
+                console.log(`\nstage.sc ${scene_name} - removing ${name}.layers from scene`);
                 let i=0;
                 for(const layer of actor['layers']){
                   narrative.removeActor(scene, `${name}.layer${i}`);
                   i++;
                 }
               }else{
-                console.log(`stage.scene - narrative.removeActor(${name})`);
+                console.log(`stage.scene ${scene_name} - narrative.removeActor(${name})`);
                 narrative.removeActor(scene, name);
               }
               break;
 
             default:       // _actor=undefined => modify actor
+              console.log(`stage.scene ${scene_name} modifying actor ${name}`);
               actors[name].delta(options);
 
           }//switch(_actors)
