@@ -164,12 +164,6 @@ const state:State = {
         // each scene the has two properties:
         // _actors:true=>create actors; false=>remove actors, undefined=>modify 
         // actors:Record<string,Actor>[] => iterate through actors by 'name'
-//        sgscene: {
-//        },
-
-//        rmscene: {
-//        },
-
         vrscene: {
             _actors: true,
             actors: {

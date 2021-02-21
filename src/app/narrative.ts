@@ -39,6 +39,7 @@ import {Cast} from './cast.interface';
 import {Config} from './scenes/config.interface';
 import {State} from './scenes/state.interface';
 
+
 // at compile time tsc is smart enough to load <module>.ts even though the 
 // file-extension is .js - note that .js is needed for runtime usage
 
@@ -88,6 +89,13 @@ let narrative:Narrative,
     //controls:Object,           // vrcontrols
     //keymap:Object,            // vrcontrols-keymap - vrkeymap
 
+    // topology type and corresponding flags
+    // see function calculate_topology(sg:boolen,rm:boolean,vr:boolean):number
+    topology:number,
+    _sg:boolean,
+    _rm:boolean,
+    _vr:boolean,
+
     // scenes
     sgscene:THREE.Scene,
     rmscene:THREE.Scene,
@@ -108,13 +116,21 @@ const tl = gsap.timeline({paused:true}),
       targetNames:Record<string,unknown> = { // renderTargets - what to texture 
         'narrative':narrative
       },
-      timer = (t:number, dt:number, fr:number) => {
+      timer = (t:number, dt:number, fr:number):void => {
         // sync frame and gsap-frame => no need to increment frame in render()
         frame = fr;
 //        if(fr % 1000 === 0){
 //          console.log(`timer:frame=${frame} et=${et} fr=${fr} t=${t}`);
 //        }
+      },
+      calculate_topology = (sg:boolean, rm:boolean, vr:boolean):number => {
+        let t = 0;
+        if(sg){t+=1;}
+        if(rm){t+=2;}
+        if(vr){t+=4;}
+        return t;
       };
+
 
 //dynamic
 let _stats = false,
@@ -189,21 +205,20 @@ class Narrative implements Cast{
 
 
     // topology
-    // initialize scenes 
+    _sg = config.topology._sg;
+    _rm = config.topology._rm;
+    _vr = config.topology._vr;
+    topology = calculate_topology(_sg, _rm, _vr);
+    //console.log(`_sg=${_sg} _rm=${_rm} _vr=${_vr}`);
+    console.log(`rendering topology type = ${topology}`);
+
+    // initialize scenes according to topology 
+    sgscene = _sg ? new THREE.Scene() : undefined;
+    rmscene = _rm ? new THREE.Scene() : undefined;
+    vrscene = _vr ? new THREE.Scene() : undefined;
     displayed_scene = config.topology.displayed_scene;
     console.log(`displayed_scene = ${displayed_scene}`);
-    if(config.topology._sg){
-      sgscene = new THREE.Scene();
-      console.log(`_sg = ${config.topology._sg} so creating sgscene`);
-    }
-    if(config.topology._rm){
-      rmscene = new THREE.Scene();
-      console.log(`_rm = ${config.topology._rm} so creating rmscene`);
-    }
-    if(config.topology._vr){
-      vrscene = new THREE.Scene();
-      console.log(`_vr = ${config.topology._vr} so creating vrscene`);
-    }
+
 
     // webxr
     if(config.topology._webxr){

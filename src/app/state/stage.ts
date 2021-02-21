@@ -34,15 +34,18 @@ class Stage {
   // [2] actors = Record<string,unknown>[] = [{name:Actor},...]
   async scene(scene_name:string, state:Record<string,unknown>, scene:THREE.Scene, narrative:Cast):Promise<void>{
 
-      // break-resolve if state[scene_name] (exp state['sg']) is undefined
+      // break-resolve if state[scene_name] (exp state['sgscene']) is undefined
       // or if state[scene_name] = {}
       if(state === undefined){ 
+        console.log(`@@ stage.scene: ${scene_name} state is undefined`);
         return new Promise((resolve, reject) => {
           resolve();
         });
       }
+      console.log(`@@ stage.scene: ${scene_name} state is defined:`);
+      console.dir(state);
 
-      //console.log(`stage.scene(${scene_name}):`);
+
       const _actors = <boolean>(state['_actors'] || false),
             actors = <Record<string,Actor>>(state['actors'] || {});
       //console.log(`_actors = ${_actors}`);
@@ -164,9 +167,9 @@ class Stage {
                 vrstate = <Record<string,unknown>>state['vrscene'];
 
           await Promise.all([
-            stage.scene('sg', sgstate, scenes['sgscene'], narrative),
-            stage.scene('rm', rmstate, scenes['rmscene'], narrative),
-            stage.scene('vr', vrstate, scenes['vrscene'], narrative),
+            stage.scene('sgscene', sgstate, scenes['sgscene'], narrative),
+            stage.scene('rmscene', rmstate, scenes['rmscene'], narrative),
+            stage.scene('vrscene', vrstate, scenes['vrscene'], narrative),
           ]);
 
         })();
