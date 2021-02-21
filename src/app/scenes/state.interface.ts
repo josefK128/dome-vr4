@@ -3,14 +3,34 @@
 // outer group-containers are type Record<string:unknown>
 // NOTE: unknowns must be narrowed before assignment to variables
 
+
 // STATE
 // for initialization AND subsequent changeState actions 
 // NOTE: media assets are relative to <base href='/dist/'> so exp.
 // dist/app/media/images/glad.png in scene is:
 // ./app/media/images/glad.png
-// NOTE: actors are relative to dist/app/state/stage.ts so exp.
-// dist/app/models/stage/actors/environment/panorama.ts is:
-// ../models/stage/actors/environment/panorama.ts is:
+// NOTE: actors are relative to dist/app/state/stage.js so exp.
+// dist/app/models/stage/actors/environment/panorama.js is:
+// ../models/stage/actors/environment/panorama.js is:
+
+// A substate which is undefined (not allowed by interface) or {} is IGNORED.
+// the use of a non-empty substate object implies that a creation/deletion or
+// modification of substate properti(es) is requested.
+//
+// there are two cases for substate or substate-property change:
+// Let p be a substate or substate-property:
+// state entries have the form:  p:{_p:boolean; ...} 
+//   _p true => create new p using properties listed (previous p deleted first)
+//   _p false => if object[p] does not exist - ignore. If object[p] exists,
+//      set p to undefined to remove and ignore for rendering scene 
+//   _p undefined => modify the properties listed (no effect on non-existent p)
+// NOTE: in the special case of substate 'action': 
+//   _action:true => set queue.fifo = actions
+//   _action:false => set queue.fifo = []
+//   _action undefined => append actions to queue.fifo
+// NOTE: substate camera only creates the initial_camera or modifies 
+// properties - it is NEVER removed or replaced
+
 
 export interface State {
   // NOTE: an initial camera is created so only modifications are allowed.

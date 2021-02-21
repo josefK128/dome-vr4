@@ -32,11 +32,19 @@ class Stage {
   // t/f => create/remove actor(s)
   // undefined => modify actor(s) via actor.delta(options), a method
   // [2] actors = Record<string,unknown>[] = [{name:Actor},...]
-  async scene(scene_name:string, state:Record<string,unknown>, scene:THREE.Scene,
-    narrative:Cast):Promise<void>{
+  async scene(scene_name:string, state:Record<string,unknown>, scene:THREE.Scene, narrative:Cast):Promise<void>{
+
+      // break-resolve if state[scene_name] (exp state['sg']) is undefined
+      // or if state[scene_name] = {}
+      if(state === undefined){ 
+        return new Promise((resolve, reject) => {
+          resolve();
+        });
+      }
+
       //console.log(`stage.scene(${scene_name}):`);
-      const _actors = <boolean>state['_actors'],
-            actors = <Record<string,Actor>>state['actors'];
+      const _actors = <boolean>(state['_actors'] || false),
+            actors = <Record<string,Actor>>(state['actors'] || {});
       //console.log(`_actors = ${_actors}`);
       //console.log(`actors = ${actors}`);
 
