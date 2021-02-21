@@ -303,7 +303,10 @@ class Narrative implements Cast{
     
           // set timer to report time passage - t, dt, frames
           gsap.ticker.add(timer);
-      
+
+          // listen for resize events
+          window.addEventListener( 'resize', narrative.onWindowResize, false );
+
           // setAnimationLoop => begin render-loop
           animating = true;
           renderer.setAnimationLoop(narrative.render);
@@ -330,8 +333,36 @@ class Narrative implements Cast{
       stats.update();
     } 
 
-    //renderer.render( scene, camera );
-    renderer.render(vrscene, vrlens);
+
+    // render config-defined topology using defined rendering functions
+    switch(topology){
+      case 1:     // sg
+        renderer.render(sgscene, sglens);
+        break;
+
+      case 2:     // rm
+        renderer.render(rmscene, rmlens);
+        break;
+
+      case 3:     // sg-rm
+        break;
+
+      case 4:     // vr
+        renderer.render(vrscene, vrlens);
+        break;
+
+      case 5:     // sg-vr
+        break;
+
+      case 6:     // rm-vr
+        break;
+
+      case 7:     // sg-rm-vr
+        break;
+
+      default:    // error
+        console.log(`unrecgnized topology ${topology}`);
+    }    
 
   }//render
 
@@ -339,12 +370,27 @@ class Narrative implements Cast{
 
   // reset params based on window resize event
   onWindowResize():void {
-    //sglens.aspect = window.innerWidth / window.innerHeight;
-    //sglens.updateProjectionMatrix();
-    //vrlens.aspect = window.innerWidth / window.innerHeight;
-    //vrlens.updateProjectionMatrix();
+    const width_:number = window.innerWidth,
+          height_:number = window.innerHeight;
+ 
+    console.log(`resize: width=${width_} height=${height_}`);
+    canvas.width = width_;
+    canvas.height = height_;
+    aspect = width_/height_;
 
-    renderer.setSize( window.innerWidth, window.innerHeight );
+    if(sglens){
+      sglens.aspect = aspect;
+      sglens.updateProjectionMatrix();
+    }
+    if(rmlens){
+      rmlens.aspect = aspect;
+      rmlens.updateProjectionMatrix();
+    }
+    if(vrlens){
+      vrlens.aspect = aspect;
+      vrlens.updateProjectionMatrix();
+    }
+    renderer.setSize(width_, height_);
   }
 
 
