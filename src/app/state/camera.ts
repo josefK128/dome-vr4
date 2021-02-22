@@ -47,7 +47,8 @@ class Camera {
               lens = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
         if(l['transform']){transform3d.apply(l['transform'],lens);}
-        console.log(`camera.create_lens(): created lens = ${lens}`);
+        //console.log(`camera.create_lens(): created lens = ${lens}:`);
+        //console.dir(lens);
 
         // keep closure ref to lens
         lens_ = lens;
@@ -147,6 +148,7 @@ class Camera {
           }
         }
 
+
         // fog
         const sgf = <Record<string,unknown>>(state_sg['fog']);
         //console.dir(sgf);
@@ -231,8 +233,8 @@ class Camera {
         resolve(result_);               //promise fulfilled
 
       }else{
-        console.log(`state['vr'] is undefined or empty - resolve({})`);
-        resolve({});  // don't reject because ruins Promise.all
+        console.log(`state['vr'] is undefined or empty - resolve possible sg`);
+        resolve(result_);  // don't reject because ruins Promise.all
         //reject(new Error(`camera: malformed state:${state}`));//reject promise
       }
     });
