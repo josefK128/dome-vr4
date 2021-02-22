@@ -1,4 +1,4 @@
-// topologies/topology1.ts
+// topology4/capri4.ts 
 // webGL2, es300 three.js ==0.125.2
  
 
@@ -25,12 +25,12 @@ const config:Config = {
       _webxr: true,
      
       // displayed_scene = 'sg|rm|vr'
-      displayed_scene: 'sg', 
+      displayed_scene: 'vr', 
 
 
       // render sgscene either to display, or to sgTarget offscreen for 
       // bg texturing in rmscene or texturing in vrscene
-      _sg: true,
+      _sg: false,
       
       //'sg'|'rm'|'texture'|undefined
       //use frame n-1 sgTarget.tex ('sg') 
@@ -62,7 +62,7 @@ const config:Config = {
 
 
       // render vrscene - which implies displayed_scene = 'vr'
-      _vr:false,
+      _vr:true,
 
       //'vr'|'texture'|undefined
       //use frame n-1 vrTarget.tex ('vr') in sghud frame n
@@ -135,13 +135,13 @@ const state:State = {
     // since sgscene,vrscene are translated by 1.6 in y, in all
     // cases the scene and camera coincide at camera coords (0,0,0)
     camera: {
-        sg:{
+        vr:{
           lens: {
             _lens: true,
             fov: 90,
             near: 0.001,
             far: 100000,
-            transform: {'t':[0,0,10]}
+            transform: {'t':[0,0,0]}
           },
           fog: {
             _fog: true,
@@ -164,7 +164,7 @@ const state:State = {
         // each scene the has two properties:
         // _actors:true=>create actors; false=>remove actors, undefined=>modify 
         // actors:Record<string,Actor>[] => iterate through actors by 'name'
-        sgscene: {
+        vrscene: {
             _actors: true,
             actors: {
                 'axes': {
@@ -180,10 +180,10 @@ const state:State = {
                     factory: 'Unitcube',
                     url: '../models/stage/actors/objects/unitcube.js',
                     options: { wireframe: false,
-                        color: 'white',
-                        opacity: 0.8,
+                        color: 'red',
+                        opacity: 1.0,
                         map: './app/media/images/glad.png',
-                        transform: { t: [0.0, -0.01, -0.99], e: [0.0, 0.0, 0.0], s: [0.2, 0.6, 0.4] }
+                        transform: { t: [0.0, -0.1, -0.99], e: [0.0, 0.0, 0.0], s: [0.2, 0.2, 0.4] }
                     }
                 },
                 'panorama':{
@@ -195,7 +195,7 @@ const state:State = {
                     }
                 }
             } //actors
-        } //sgscene
+        } //vrscene
     },
 
 
