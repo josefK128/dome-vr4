@@ -10,12 +10,12 @@ import {Controls} from '../models/camera/controls/Controls.interface';
 
 // singleton closure-instance variable
 let camera:Camera,
-    sglens:THREE.PerspectiveCamera,
-    vrlens:THREE.PerspectiveCamera,
-    sgcontrols:THREE.OrbitContols,
-    vrcontrols:THREE.OrbitContols,
-    sgcsphere:THREE.Mesh,
-    vrcsphere:THREE.Mesh;
+    sglens_:THREE.PerspectiveCamera,
+    vrlens_:THREE.PerspectiveCamera,
+    sgcontrols_:Record<string,unknown>,
+    vrcontrols_:Record<string,unknown>,
+    sgcsphere_:Record<string,unknown>,
+    vrcsphere_:Record<string,unknown>;
 
 
 class Camera {
@@ -102,13 +102,15 @@ class Camera {
   }//create_fog
 
 
-  create_controls(cs:Record<string,unknown>, scene:THREE.Scene, canvas_:THREE.CanvasElement):void{
+  create_controls(cs:Record<string,unknown>, scene:THREE.Scene, canvas_:THREE.CanvasElement, controls_:Record<string,unknown>):void{
     console.log('camera.create_controls');
+    //controls_ = controls;
   }//create_controls
 
 
-  create_csphere(ss:Record<string,unknown>, scene:THREE.Scene):void{
+  create_csphere(ss:Record<string,unknown>, scene:THREE.Scene, csphere_:Record<string,unknown>):void{
     console.log('camera.create_csphere');
+    //csphere = csphere;
   }//create_csphere
 
 
@@ -139,10 +141,10 @@ class Camera {
         const sgl = <Record<string,unknown>>state_sg['lens'];
         //console.dir(sgl);
         if(sgl){
-          const lens = camera.create_lens(sgl, scenes['sgscene'], sglens);
+          const lens = camera.create_lens(sgl, scenes['sgscene'], sglens_);
           if(lens){
             (<Record<string,unknown>>result_['sg'])['lens'] = lens;
-            sglens = lens;
+            sglens_ = lens;
             //console.log(`after camera.create_lens sglens is:`);
             //console.dir(sglens);
           }
@@ -163,7 +165,7 @@ class Camera {
         const sgc = <Record<string,unknown>>(state_sg['controls']);
         //console.dir(sgc);
         if(sgc && Object.keys(sgc).length > 0){
-          camera.create_controls(sgc, scenes, canvas);
+          camera.create_controls(sgc, scenes, canvas, sgcontrols_);
         }else{
           //console.log(`state['sg']['controls'] is undefined or empty`);
         }
@@ -173,7 +175,7 @@ class Camera {
         const sgs = <Record<string,unknown>>(state_sg['csphere']);
         //console.dir(sgs);
         if(sgs && Object.keys(sgs).length > 0){
-          camera.create_csphere(sgs, scenes);
+          camera.create_csphere(sgs, scenes, sgcsphere_);
         }else{
           //console.log(`state['sg']['csphere'] is undefined or empty`);
         }
@@ -191,10 +193,10 @@ class Camera {
         const vrl = <Record<string,unknown>>state_vr['lens'];
         //console.dir(vrl);
         if(vrl){
-          const lens = camera.create_lens(vrl, scenes['vrscene'], vrlens);
+          const lens = camera.create_lens(vrl, scenes['vrscene'], vrlens_);
           if(lens){
             (<Record<string,unknown>>result_['vr'])['lens'] = lens;
-            vrlens = lens;
+            vrlens_ = lens;
             //console.log(`after camera.create_lens vrlens is:`);
             //console.dir(vrlens);
           }
@@ -215,7 +217,7 @@ class Camera {
         const vrc = <Record<string,unknown>>(state_vr['controls']);
         //console.dir(vrc);
         if(vrc && Object.keys(vrc).length > 0){
-          camera.create_controls(vrc, scenes, canvas);
+          camera.create_controls(vrc, scenes, canvas, vrcontrols_);
         }else{
           //console.log(`state['vr']['controls'] is undefined or empty`);
         }
@@ -225,7 +227,7 @@ class Camera {
         const vrs = <Record<string,unknown>>(state_vr['csphere']);
         //console.dir(vrs);
         if(vrs && Object.keys(vrs).length > 0){
-          camera.create_csphere(vrs, scenes);
+          camera.create_csphere(vrs, scenes, vrcsphere_);
         }else{
           //console.log(`state['vr']['csphere'] is undefined or empty`);
         }
