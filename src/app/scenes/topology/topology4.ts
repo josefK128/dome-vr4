@@ -183,7 +183,7 @@ const state:State = {
                         color: 'red',
                         opacity: 1.0,
                         map: './app/media/images/glad.png',
-                        transform: { t: [0.0, 0.0, -0.5], e: [0.0, 0.0, 0.0], s: [0.2, 0.2, 0.2] }
+                        transform: { t: [0.0, -0.1, -0.99], e: [0.0, 0.0, 0.0], s: [0.2, 0.2, 0.4] }
                     }
                 },
                 'panorama':{

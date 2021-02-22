@@ -141,7 +141,7 @@ const state:State = {
             fov: 90,
             near: 0.001,
             far: 100000,
-            transform: {'t':[0,0,0]}
+            transform: {'t':[0,0,10]}
           },
           fog: {
             _fog: true,
@@ -180,10 +180,10 @@ const state:State = {
                     factory: 'Unitcube',
                     url: '../models/stage/actors/objects/unitcube.js',
                     options: { wireframe: false,
-                        color: 'red',
-                        opacity: 1.0,
+                        color: 'white',
+                        opacity: 0.8,
                         map: './app/media/images/glad.png',
-                        transform: { t: [0.0, 0.0, -0.5], e: [0.0, 0.0, 0.0], s: [0.2, 0.2, 0.2] }
+                        transform: { t: [0.0, -0.01, -0.99], e: [0.0, 0.0, 0.0], s: [0.2, 0.6, 0.4] }
                     }
                 },
                 'panorama':{

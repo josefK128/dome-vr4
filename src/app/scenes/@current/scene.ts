@@ -145,9 +145,9 @@ const state:State = {
           },
           fog: {
             _fog: true,
-            color: 'white', //0x00ff00,
+            color: 'pink', //0x00ff00,
             near: 0.1,
-            far: 1000 //default:100
+            far: 200 //default:100
           }
           //controls: {
           //  _controls: true,
@@ -173,17 +173,17 @@ const state:State = {
                     options: {
                         length: 10000,
                         // setting axes translation-y at -0.01 allows z-axis to be seen
-                        transform: { t: [0.0, -0.01, -0.99] }
+                        transform: { t: [0.0, 0.0, -0.99] }
                     }
                 },
                 'unitcube': {
                     factory: 'Unitcube',
                     url: '../models/stage/actors/objects/unitcube.js',
                     options: { wireframe: false,
-                        color: 'red',
-                        opacity: 1.0,
+                        color: 'white',
+                        opacity: 0.8,
                         map: './app/media/images/glad.png',
-                        transform: { t: [0.0, 0.0, -0.5], e: [0.0, 0.0, 0.0], s: [0.2, 0.2, 0.2] }
+                        transform: { t: [0.0, 0.15, -0.99], e: [0.0, 0.0, 0.0], s: [0.2, 0.3, 0.2] }
                     }
                 },
                 'panorama':{

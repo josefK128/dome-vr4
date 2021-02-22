@@ -1,4 +1,4 @@
-// @current/scene.ts
+// panorama/capri.ts 
 // webGL2, es300 three.js ==0.125.2
  
 
@@ -30,7 +30,7 @@ const config:Config = {
 
       // render sgscene either to display, or to sgTarget offscreen for 
       // bg texturing in rmscene or texturing in vrscene
-      _sg: true,
+      _sg: false,
       
       //'sg'|'rm'|'texture'|undefined
       //use frame n-1 sgTarget.tex ('sg') 
@@ -135,28 +135,6 @@ const state:State = {
     // since sgscene,vrscene are translated by 1.6 in y, in all
     // cases the scene and camera coincide at camera coords (0,0,0)
     camera: {
-        sg:{
-          lens: {
-            _lens: true,
-            fov: 90,
-            near: 0.001,
-            far: 100000,
-            transform: {'t':[0,0,0]}
-          },
-          fog: {
-            _fog: true,
-            color: 'white', //0x00ff00,
-            near: 0.1,
-            far: 1000 //default:100
-          }
-          //controls: {
-          //  _controls: true,
-          //  controls: 'vr'
-          //},
-          //csphere: {
-          //}
-        },
-
         vr:{
           lens: {
             _lens: true,
@@ -167,9 +145,9 @@ const state:State = {
           },
           fog: {
             _fog: true,
-            color: 'white', //0x00ff00,
+            color: 'pink', //0x00ff00,
             near: 0.1,
-            far: 1000 //default:100
+            far: 300 //default:100
           }
           //controls: {
           //  _controls: true,
@@ -186,12 +164,6 @@ const state:State = {
         // each scene the has two properties:
         // _actors:true=>create actors; false=>remove actors, undefined=>modify 
         // actors:Record<string,Actor>[] => iterate through actors by 'name'
-        sgscene: {
-        },
-
-        rmscene: {
-        },
-
         vrscene: {
             _actors: true,
             actors: {
@@ -208,10 +180,10 @@ const state:State = {
                     factory: 'Unitcube',
                     url: '../models/stage/actors/objects/unitcube.js',
                     options: { wireframe: false,
-                        color: 'red',
-                        opacity: 1.0,
+                        color: 'white',
+                        opacity: 0.7,
                         map: './app/media/images/glad.png',
-                        transform: { t: [0.0, 0.0, -0.5], e: [0.0, 0.0, 0.0], s: [0.2, 0.2, 0.2] }
+                        transform: { t: [0.0, 0.06, -0.99], e: [0.0, 0.0, 0.0], s: [0.2, 0.4, 0.2] }
                     }
                 },
                 'panorama':{
