@@ -336,28 +336,28 @@ class Narrative implements Cast{
 
     // render config-defined topology using defined rendering functions
     switch(topology){
-      case 1:     // sg
-        renderer.render(sgscene, sglens);
+      case 7:     // sg-rm-vr
         break;
 
-      case 2:     // rm
-        renderer.render(rmscene, rmlens);
+      case 6:     // rm-vr
         break;
 
-      case 3:     // sg-rm
+      case 5:     // sg-vr
         break;
 
       case 4:     // vr
         renderer.render(vrscene, vrlens);
         break;
 
-      case 5:     // sg-vr
+      case 3:     // sg-rm
         break;
 
-      case 6:     // rm-vr
+      case 2:     // rm
+        renderer.render(rmscene, rmlens);
         break;
 
-      case 7:     // sg-rm-vr
+      case 1:     // sg
+        renderer.render(sgscene, sglens);
         break;
 
       default:    // error

@@ -15,7 +15,7 @@ npm-debug.log*
 *.txt
 
 # media assets
-/src/app/media
+/dist/app/media
 
 # dependencies
 /node_modules
