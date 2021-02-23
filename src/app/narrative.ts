@@ -20,6 +20,9 @@ import Stats from '../jsm/three/stats/stats.module.js'; //default export
 // gsap
 import {gsap, TweenMax, TimelineMax, Power1} from '../jsm/gsap/all.js';
 
+// tween.js
+import TWEEN from '../jsm/tween.js/tween.esm.js';
+
 // make exterior modules available globally 
 window['THREE'] = THREE;
 window['VRButton'] = VRButton;
@@ -28,12 +31,11 @@ window['gsap'] = gsap;
 window['TweenMax'] = TweenMax;
 window['TimelineMax'] = TimelineMax;
 window['Power1'] = Power1;
-
+window['TWEEN'] = TWEEN;
 
 
 // dome-vr4 modules
-
-// first 2 imports are compile-time only so don't need to use js-ext
+// first 3 imports are compile-time only so don't need to use js-ext
 // interfaces for scene
 import {Cast} from './cast.interface';
 import {Config} from './scenes/config.interface';
@@ -42,10 +44,9 @@ import {State} from './scenes/state.interface';
 
 // at compile time tsc is smart enough to load <module>.ts even though the 
 // file-extension is .js - note that .js is needed for runtime usage
-
 // services
 //import {mediator} from './services/actions/mediator.js';
-//import {director} from './services/actions/director.js';
+import {director} from './services/actions/director.js';
 import {queue} from './services/actions/queue.js';
 import {transform3d} from './services/transform3d.js';
 //import {animation} from './services/animation.js';
@@ -66,7 +67,6 @@ import {Panorama} from './models/stage/actors/environment/Panorama.js';
 //import {vrcontrols} from './models/camera/controls/vrcontrols';  
 //import {vrkeymap} from './models/camera/keymaps/vrkeymap';  
 //// for actors/cloud/spritecloud.ts
-//import TWEEN from '../libs/tween.js/tween.esm';
 
 
 
@@ -114,7 +114,7 @@ let narrative:Narrative,
 // const - initialized
 const tl = gsap.timeline({paused:true}),
       clock = new THREE.Clock(),    // uses perfomance.now() - fine grain
-      targetNames:Record<string,unknown> = { // renderTargets - what to texture 
+      actionsTargets:Record<string,unknown> = { // targets of actions 
         'narrative':narrative
       },
       timer = (t:number, dt:number, fr:number):void => {
@@ -168,11 +168,15 @@ class Narrative implements Cast{
   //bootstrap(_config:Config, state:State){
   bootstrap(_config:Config, state:State):void{
     console.log(`\n@@@ narrative.bootstrap:`);
-    // assign to aspect to silence lint about making it const - cannot do
-    aspect = window.innerWidth/window.innerHeight;
+
 
     // initialize config
     config = _config;
+
+    // initialize director with set of possible actions targets {t:'target',...}
+    // and with ref to narrative (contained in 'actionsTargets')
+    config['actionsTargets'] = actionsTargets;
+    director.initialize(config);
 
 
     // renderer
@@ -452,7 +456,7 @@ class Narrative implements Cast{
   }
 
   // following two functions are for actor report and fetch
-  reportActors(display=false):Record<string, Actor>{
+  reportActors(display=false):Record<string, THREE.Object3D>{
     //console.log('\nnarrative.reportActors()');
     if(display){
       for(const [k,v] of Object.entries(cast)){
@@ -463,7 +467,7 @@ class Narrative implements Cast{
     return cast;
   }
 
-  findActor(name:string):Actor{
+  findActor(name:string):THREE.Object3D{
     //console.log(`\nnarrative.findActor: seeking actor name=${name}`);
     if(name && name.length > 0){
       if(cast[name]){
