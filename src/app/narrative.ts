@@ -50,7 +50,7 @@ import {State} from './scenes/state.interface';
 import {director} from './services/actions/director.js';
 import {queue} from './services/actions/queue.js';
 import {transform3d} from './services/transform3d.js';
-//import {animation} from './services/animation.js';
+import {animation} from './services/animation.js';
 if(typeof queue !== undefined){
   //console.log(`queue is defined!`);  //otherwise queue is NOT used - tsc warn
 }
@@ -178,10 +178,11 @@ class Narrative implements Cast{
     // initialize config
     config = _config;
 
-    // initialize director with set of possible actions targets {t:'target',...}
+    // initialize modules with set of possible actions targets {t:'target',...}
     // and with ref to narrative (contained in 'actionsTargets')
     config['actionsTargets'] = actionsTargets;
     director.initialize(config);
+    animation.initialize(config);
 
 
     // renderer

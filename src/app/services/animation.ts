@@ -3,6 +3,7 @@
 
 // interface to access actor methods of narrative - passed in at initialization
 import {Cast} from '../cast.interface.js';
+import {Config} from '../scenes/config.interface.js';
 
 // services
 // director used to execute shot-actions - director.exec({})
@@ -12,13 +13,13 @@ import {director} from './actions/director.js';
 
 // singleton instance - exported
 let animation:Animation,
-    narrative:Cast;  // source for actor methods
-
+    narrative:Cast,  // source for actor methods
+    actionsTargets:Record<string,unknown>;  // possible actions['t'] for anim
 
 const timeline = (shot:Record<string,unknown>) => {
-  const _timeline = shot['timeline'] || {},
-        tlp = _timeline['p'] || {},
-        actors = _timeline['actors'] || {},
+  const _timeline = <Record<string,unknown>>shot['timeline'] || {},
+        tlp = <Record<string,unknown>>_timeline['p'] || {},
+        actors = <Record<string,unknown>>_timeline['actors'] || {},
         emptyf = () => {return;};
   
   let ntuple:string[],
@@ -28,8 +29,8 @@ const timeline = (shot:Record<string,unknown>) => {
       hud_m:THREE.ShaderMaterial;
 
   // timeline ctor params - tlp
-  tlp.timeScale = tlp['timeScale'] || 1.0;
-  tlp.repeat = tlp['repeat'] || 0;
+  tlp.timeScale = <number>tlp['timeScale'] || 1.0;
+  tlp.repeat = <number>tlp['repeat'] || 0;
   tlp.repeatDelay = tlp['repeatDelay'] || 0;
   tlp.yoyo = tlp['yoyo'] || true;
   tlp.ease = tlp['ease'] || Power1.easeInOut;
@@ -66,7 +67,7 @@ const timeline = (shot:Record<string,unknown>) => {
 
     // determine target of property animation
     if(ntuple[0].match(/target/)){
-      target = narrative.targets[ntuple[0]];
+      target = <Record<string,unknown>>actionsTargets[ntuple[0]];
       if(ntuple[1]){target = <Record<string,unknown>>target[ntuple[1]];}
       if(ntuple[2]){target = <Record<string,unknown>>target[ntuple[2]];}
     }else{
@@ -74,7 +75,7 @@ const timeline = (shot:Record<string,unknown>) => {
         //console.log(`ntuple[0] matches /uniform/`);
         //console.log(`ntuple[1] = ${ntuple[1]}`);
         if(ntuple[1].match(/quad/)){
-          quad_m = narrative.quad.material;
+          quad_m = (<THREE.Mesh>narrative.findActor(ntuple[1])).material;
           //console.log(`ntuple[1] matches /quad/`);
           //for(let p of Object.keys(quad_m.uniforms)){
           //  console.log(`quad_m has uniform ${p}`);
@@ -83,7 +84,7 @@ const timeline = (shot:Record<string,unknown>) => {
           target = quad_m.uniforms[ntuple[2]];
         }
         if(ntuple[1].match(/hud/)){
-          hud_m = narrative.quad.material;
+          hud_m = (<THREE.Mesh>narrative.findActor(ntuple[1])).material;
           //console.log(`ntuple[1] matches /hud/`);
           //for(let p of Object.keys(hud_m.uniforms)){
           //  console.log(`hud_m has uniform ${p}`);
@@ -109,7 +110,7 @@ const timeline = (shot:Record<string,unknown>) => {
     // insert tween defaults if not specified
     // add actor tween array(s) to tlp.tweens array
     tlp.tweens = tlp['tweens'] || [];
-    tweens = actors[a];
+    tweens = <Record<string,unknown>[]>actors[a];
     for(const tween of tweens){
       // dur - duration of the tween animation
       if(tween.dur === undefined){
@@ -117,17 +118,17 @@ const timeline = (shot:Record<string,unknown>) => {
       }
 
       // property to animate - tween['p'] = {{name:value}, ...}
-      tween.p = <Record<string,unknown>>tween['p'] || {};
+      tween.p = <Record<string,unknown>>((<TweenMax>tween)['p']) || {};
 
       // other tween.p properties - nearly identical to timeline-tlp properties
-      tween.p['timeScale'] = tween.p['timeScale'] || 1.0;
-      tween.p['repeat'] = tween.p['repeat'] || 0;
-      tween.p['repeatDelay'] = tween.p['repeatDelay'] || 0;
-      tween.p['yoyo'] = tween.p['yoyo'] || true;
+      tween.p['timeScale'] = <number>(tween['p']['timeScale']) || 1.0;
+      tween.p['repeat'] = <number>(tween.p['repeat']) || 0;
+      tween.p['repeatDelay'] = <number>(tween.p['repeatDelay']) || 0;
+      tween.p['yoyo'] = <boolean>(tween.p['yoyo']) || true;
       tween.p['ease'] = tween.p['ease'] || Quad.easeInOut;
 //      tween.p.paused = tween.p['paused'] || true; // default DO NOT USE!!!!
-      tween.p['immediateRender'] = tween.p['immediateRender'] || false; // default
-      tween.p['delay'] = tween['delay'] || '0';
+      tween.p['immediateRender'] = <boolean>(tween.p['immediateRender']) || false; // default
+      tween.p['delay'] = <number>(tween['delay']) || '0';
     
       // callbacks & params
       tween.p['onStart'] = tween.p['onStart'] || emptyf;      
@@ -148,7 +149,7 @@ const timeline = (shot:Record<string,unknown>) => {
         }else{  
           console.log(`tween:ntuple[1] matches /hud/`);
           tween.p['onUpdate'] = ()=>{hud_m.uniforms[ntuple[2]]['needsUpdate']=true;};
-          hud.uniforms[ntuple[2]]['needsUpdate']=true;
+          hud_m.uniforms[ntuple[2]]['needsUpdate']=true;
           //console.log(`q.u.u = ${hud_m.uniforms[ntuple[2]]}`);
           //console.log(`q.u.u.nUpdt = ${hud_m.uniforms[ntuple[2]]['needsUpdate']}`);
         } 
@@ -164,7 +165,7 @@ const timeline = (shot:Record<string,unknown>) => {
       tween.p['onReverseCompleteParams'] = tween.p['onReverseCompleteParams'] || [];
 
       // add tween to tlp.tweens array
-      tlp.tweens.push(TweenMax.to(target, tween.dur, tween.p));
+      (<Tweenmax[]>tlp['tweens']).push(TweenMax.to(target, tween.dur, tween.p));
     }
   }//actors
 
@@ -183,9 +184,13 @@ class Animation {
   }
 
 
-  initialize(_narrative:Narrative){
-    narrative = _narrative;
-    //console.log(`&&& quad = ${narrative.quad} hud = ${narrative.hud}`);
+  // actionsTargets are the first name determing the action exec 'signature'
+  // narrative reference is needed to fetch actors if action-target (a.t)
+  // is not in actionsTargets name-keys
+  initialize(config:Config):void{
+    console.log(`services/animation initializing`);
+    actionsTargets = config['actionsTargets'] || {};
+    narrative = config['actionsTargets']['narrative'];
   }
 
 
