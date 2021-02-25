@@ -51,8 +51,10 @@ export interface State {
         far?:number                 //default:100
       },
       controls?:{
-        _controls?:boolean,  // t=>create, f=>delete undef=>modify
-        controls?:string
+        _controls?:boolean,    // t=>create, f=>delete
+        controls?:string,     //url
+        _keymap?:boolean,    // t=>create, f=>delete 
+        keymap:string       //url
       },
       csphere?:{
         _csphere:boolean,    // t=>create, f=>delete undef=>modify

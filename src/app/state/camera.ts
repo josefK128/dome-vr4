@@ -104,7 +104,6 @@ class Camera {
 
   create_controls(cs:Record<string,unknown>, scene:THREE.Scene, canvas_:THREE.CanvasElement, controls_:Record<string,unknown>):void{
     console.log('camera.create_controls');
-    //controls_ = controls;
   }//create_controls
 
 

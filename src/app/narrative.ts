@@ -18,7 +18,7 @@ import {VRButton} from '../jsm/three/webxr/VRButton.js';
 import Stats from '../jsm/three/stats/stats.module.js'; //default export
 
 // gsap
-import {gsap, TweenMax, TimelineMax, Power1} from '../jsm/gsap/all.js';
+import {gsap, TweenMax, TimelineMax, Quad, Power1} from '../jsm/gsap/all.js';
 
 // tween.js
 import TWEEN from '../jsm/tween.js/tween.esm.js';
@@ -30,6 +30,7 @@ window['Stats'] = Stats;
 window['gsap'] = gsap;
 window['TweenMax'] = TweenMax;
 window['TimelineMax'] = TimelineMax;
+window['Quad'] = Quad;
 window['Power1'] = Power1;
 window['TWEEN'] = TWEEN;
 
@@ -85,10 +86,8 @@ let narrative:Narrative,
     rmlens:THREE.PerspectiveCamera,   // separate camera for rendering rmscene
     vrlens:THREE.PerspectiveCamera,   // separate camera for rendering vrscene,
     //vrlens_offset:THREE.Object3D, // _webxr:t => lower camera by 1.6
-    //_controls:boolean = false,   // use controls/keymap? 
-                                // set by config.controls:boolean? default false
-    //controls:Object,           // vrcontrols
-    //keymap:Object,            // vrcontrols-keymap - vrkeymap
+    //controls:Record<string,unknown>,           // vrcontrols
+    //keymap:Record<string,unknown>,            // vrcontrols-keymap - vrkeymap
 
     // topology type and corresponding flags
     // see function calculate_topology(sg:boolen,rm:boolean,vr:boolean):number
@@ -168,6 +167,12 @@ class Narrative implements Cast{
   //bootstrap(_config:Config, state:State){
   bootstrap(_config:Config, state:State):void{
     console.log(`\n@@@ narrative.bootstrap:`);
+
+    // TEMP - diagnostics
+    console.log(`Quad:`);
+    console.dir(Quad);
+    console.log(`Power1:`);
+    console.dir(Power1);
 
 
     // initialize config
