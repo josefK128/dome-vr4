@@ -18,33 +18,42 @@ export interface Config {
   topology:{
     // webxr? true => lens.position=[0, 1.6, 0] - avatar 1.6 meters 'tall'
     _webxr:boolean;
-    topology:number;                 // {1,...,7}: sg=1;rm=2;vr=4 => rm->vr=6
     displayed_scene:string;         //'sg'|'rm'|'vr'
 
 
     // render sgscene either to display, or to sgTarget offscreen for 
     // bg texturing in rmscene or texturing in vrscene
-    _sg:boolean;                  // render to sgTarget
-    _sgpost?:string;             //post-pr with prv frame 
+    _sg?:boolean,                  // render to sgTarget
+    sgpost?:string,               //post-pr with prv frame 
+                                 //'sg'|'rm'(useful?)|'texture'|nothing
                                 //use frame n-1 sgTarget.tex ('sg') 
-    sgTargetNames?:string[]; //actor names to be textured by sgTarget.texture
+                               //or rmTarget.tex ('rm') in sghud frame n
+    sgTargetNames?:string[], //actor names to be textured by sgTarget.texture
                             //these can be in vrscene or sgscene
 
 
     // render rmscene to display, or to rmTarget offscreen for texturing 
     // in vrscene - either skybox/skydome/etc. or actors
     // NOTE! true=>must define rmquad and if texturing - define rmTargetName(s)
-    // raymarch - via fragment shader in rmquad ShaderMaterial
-    _rm:boolean;             
-    _rmpost?:boolean;         //post-pr with prv frame 
-    rmTargetNames?:string[]; //actor names to be textured by rmTarget.texture
+    _rm?:boolean,             
+    rmTargetNames?:string[], //actor names to be textured by rmTarget.texture
                             //these can be in vrscene or sgscene
-
+    skyfaces?:string[],     //used if actor 'skyfaces' exists and is rmTgtName
+                         //value is some subset of ['f','b','l','r','t','g']
+                        //order-independent: front,back,left,right,top,ground
+    // raymarch - via fragment shader in rmquad ShaderMaterial
+    // NOTE! obviously requires rm:t and a vr-actor name in rmTargetNames
+    rm_npositions?:number,//number of raymarch obj positions (pos.z=0=>ignored)
+                         //these are positions of raymarch objects which can
+                        //be animated using declarative actions in sequences
+                       //NOTE! <=1000 - more effects performance but positions
+                      //defined in animation with pos.z=0 are ignored
 
     // render vrscene - which implies displayed_scene = 'vr'
-    _vr:boolean;
-    _vrpost?:string;              //post-pr with prv frame 
-                                 //use frame n-1 vrTarget.tex in vrhud frame n
+    _vr?:boolean
+    vrpost?:string,               //post-pr with prv frame 
+                                 //'vr'|'texture'|nothing
+                                //use frame n-1 vrTarget.tex in vrhud frame n
   },//topology
   
 

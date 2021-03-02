@@ -141,7 +141,7 @@ const state:State = {
             transform: {'t':[0,0,0]}
           },
           fog: {
-            _fog: false,
+            _fog: true,
             color: 'pink', //0x00ff00,
             near: 0.1,
             far: 200 //default:100
@@ -183,46 +183,14 @@ const state:State = {
                         transform: { t: [0.0, 0.15, -0.99], e: [0.0, 0.0, 0.0], s: [0.2, 0.3, 0.2] }
                     }
                 },
-
-//                'skydome':{ 
-//                  factory:'Skydome',
-//                  url:'../models/stage/actors/environment/skydome.js',
-//                  options:{
-//                     width:1000,       // default=10000
-//                     height:1000,       // default=10000
-//                     color:'white',
-//                     opacity: 0.5,    // default 1.0
-//                     texture:'./app/media/images/glad.png'
-//
-//                  }
-//                }
-
-                'skybox':{ 
-                  factory:'Skybox',
-                  url:'../models/stage/actors/environment/skybox.js',
-                  options:{
-                     size:1000,       // default=10000
-                     color:'white',
-                     opacity: 1.0,    // default 1.0
-                     textures:[
-                       './app/media/images/skybox/sky/sky_posX.jpg',
-                       './app/media/images/skybox/sky/sky_negX.jpg',
-                       './app/media/images/skybox/sky/sky_posY.jpg',
-                       './app/media/images/skybox/sky/sky_negY.jpg',
-                       './app/media/images/skybox/sky/sky_posZ.jpg',
-                       './app/media/images/skybox/sky/sky_negZ.jpg'
-                     ]
-                  }
+                'panorama':{
+                    factory:'Panorama',
+                    url:'../models/stage/actors/environment/panorama.js',
+                    options:{
+                      texture_url:'./app/media/images/cube/sun_temple_stripe_stereo.jpg',
+                      ntextures:12
+                    }
                 }
-
-//                'panorama':{
-//                    factory:'Panorama',
-//                    url:'../models/stage/actors/environment/panorama.js',
-//                    options:{
-//                      texture_url:'./app/media/images/cube/sun_temple_stripe_stereo.jpg',
-//                      ntextures:12
-//                    }
-//                }
             } //actors
         } //vrscene
     },

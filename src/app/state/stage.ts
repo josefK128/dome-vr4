@@ -64,13 +64,12 @@ class Stage {
                 url = <string>descriptor['url'],
                 options = <Record<string,unknown>>descriptor['options'];
 
-//          console.log(`actors[${name}] = ${actors[name]}`);
-//          console.dir(actors[name]);
-//          console.log(`descriptor = ${descriptor}`);
-//          console.dir(descriptor);
-//          console.log(`options = ${options}`);
-//          console.dir(options);
-//          console.log(`typeof factory = ${typeof factory}`);
+          console.log(`\n\n*************************************`);
+          console.log(`actors[${name}] = ${actors[name]}`);
+          console.dir(actors[name]);
+          console.log(`options = ${options}`);
+          console.dir(options);
+          console.log(`typeof factory = ${typeof factory}`);
 
 
 
@@ -109,6 +108,11 @@ class Stage {
                     }
                   }else{
                     console.log(`stage.scene ${scene_name} - narrative.addActor(${name})`);
+                    console.log(`add actor = ${actor}`);
+                    console.log(`typeof actor = ${typeof actor}`);
+                    console.log(`typeof scene = ${typeof scene}`);
+                    console.log(`scene = ${scene}`);
+                    console.dir(scene);
                     narrative.addActor(scene, name, actor);
                   }
                 }catch(e){

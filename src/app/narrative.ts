@@ -75,10 +75,18 @@ import {Panorama} from './models/stage/actors/environment/Panorama.js';
 // const but uninitialized
 let narrative:Narrative,
     config:Config,
-    canvas:HTMLCanvasElement,       // DOM singularity 
-    context:WebGLRenderingContext|CanvasRenderingContext2D, //webGL(2) context
+
+    // canvas DOM-singularity, and webgl2-context
+    canvas:HTMLCanvasElement, 
+    context:WebGLRenderingContext|CanvasRenderingContext2D,
+
+    // webGLRender
     renderer:THREE.WebGLRenderer, // from state/stage
                                  // NOTE:renderer.render(sgscene,lens)
+    sgRenderTarget:THREE.WebGLRenderTarget,
+    rmRenderTarget:THREE.WebGLRenderTarget,
+    vrRenderTarget:THREE.WebGLRenderTarget,
+
     // cameras, controls
     sglens:THREE.PerspectiveCamera,      // from state/camera
                    // NOTE:TBD 'csphere' is whole apparatus - lens, lights etc
@@ -96,26 +104,33 @@ let narrative:Narrative,
     _rm:boolean,
     _vr:boolean,
 
-    // scenes
-    sgscene:THREE.Scene,
-    rmscene:THREE.Scene,
-    vrscene:THREE.Scene,
-    displayed_scene:string,
+  // scenes
+  sgscene:THREE.Scene,
+  rmscene:THREE.Scene,
+  vrscene:THREE.Scene,
+  displayed_scene:string,
 
-    // actors
-    cast:Record<string, Actor>,  //stage creates name-actor entries & 
-      // registers them in cast via narrative.addActor(scene, name, actor) 
-
-    // fps-performance meter
-    stats:Stats;
-    
+  // fps-performance meter
+  stats:Stats;
+  
 
 // const - initialized
-const tl = gsap.timeline({paused:true}),
-      clock = new THREE.Clock(),    // uses perfomance.now() - fine grain
-      actionsTargets:Record<string,unknown> = { // targets of actions 
+      // dictionary of all scenes
+const scenes:Record<string, THREE.Scene> = {},
+    
+      // dictionary of all actors.
+      cast:Record<string, THREE.Object3D> = {},
+           //state/stage creates name-actor entries & registers them in cast 
+          //via narrative.addActor(scene, name, actor) 
+
+      // dictionary of targets of actions 
+      actionsTargets:Record<string,unknown> = { 
         'narrative':narrative
       },
+
+      // time
+      tl = gsap.timeline({paused:true}),
+      clock = new THREE.Clock(),    // uses perfomance.now() - fine grain
       timer = (t:number, dt:number, fr:number):void => {
         // sync frame and gsap-frame => no need to increment frame in render()
         frame = fr;
@@ -123,18 +138,25 @@ const tl = gsap.timeline({paused:true}),
 //          console.log(`timer:frame=${frame} et=${et} fr=${fr} t=${t}`);
 //        }
       },
-      calculate_topology = (sg:boolean, rm:boolean, vr:boolean):number => {
-        let t = 0;
-        if(sg){t+=1;}
-        if(rm){t+=2;}
-        if(vr){t+=4;}
-        return t;
+
+      // renderers
+      create_renderer = ():THREE.WebGLRenderer => {
+        renderer = new THREE.WebGLRenderer({
+          canvas:canvas,
+          context:context,
+          antialias:config.renderer.antialias,
+          alpha:config.renderer.alpha
+        });
+        renderer.setClearColor(new THREE.Color(config.renderer.clearColor),
+          config.renderer.clearAlpha);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        return renderer;
       };
 
 
 //dynamic
 let _stats = false,
-    aspect = 1.0,             // window.innerW/window.innerH
+    aspect = 1.0,             // dynamic measure of window.innerW/window.innerH
     animating = false,       // animation => render-loop running
     et = 0,                 // elapsed time - clock starts at render start
     frame = 0;             // frame index (as in rendered frames - fps)
@@ -146,7 +168,6 @@ class Narrative implements Cast{
   // ctor
   private constructor(){
     narrative = this;
-    cast = {};
   } 
 
   static create():Narrative{
@@ -168,13 +189,6 @@ class Narrative implements Cast{
   bootstrap(_config:Config, state:State):void{
     console.log(`\n@@@ narrative.bootstrap:`);
 
-    // TEMP - diagnostics
-    console.log(`Quad:`);
-    console.dir(Quad);
-    console.log(`Power1:`);
-    console.dir(Power1);
-
-
     // initialize config
     config = _config;
 
@@ -185,52 +199,35 @@ class Narrative implements Cast{
     animation.initialize(config);
 
 
-    // renderer
-    // canvas and gl-context
+    // canvas DOM-singularity, and webgl2-context
     canvas = <HTMLCanvasElement>document.getElementById(config.renderer.canvas_id);
     context = canvas.getContext('webgl2', {antialias:true});
-
-    renderer = new THREE.WebGLRenderer({
-      canvas:canvas,
-      context:context,
-      alpha:config.renderer.alpha,
-    });
-
-    renderer.setClearColor(new THREE.Color(config.renderer.clearColor), 
-      config.renderer.clearAlpha);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-
-    if(renderer.capabilities.isWebGL2){
-      console.log(`webGL2 renderer created !!!!!!!`);
-    }else{
-      console.log(`webGL1 renderer created !!!!!!!`);
-    }
-
-    // stats - display fps performance
-    _stats = config['renderer']['_stats'];
-    if(_stats){
-      stats = new Stats();
-      document.body.appendChild(stats.dom);
-      stats.dom.style.display = 'block';  // show
-    }
 
 
     // topology
     _sg = config.topology._sg;
     _rm = config.topology._rm;
     _vr = config.topology._vr;
-    topology = calculate_topology(_sg, _rm, _vr);
+    topology = config.topology.topology;  //topology=_sg + _rm*2 + _vr*4
     //console.log(`_sg=${_sg} _rm=${_rm} _vr=${_vr}`);
     console.log(`rendering topology type = ${topology}`);
 
     // initialize scenes according to topology 
     sgscene = _sg ? new THREE.Scene() : undefined;
     rmscene = _rm ? new THREE.Scene() : undefined;
-    aspect = window.innerWidth/window.innerHeight;
-    rmlens = _rm ? new THREE.PerspectiveCamera(90, aspect,.1,1000) : undefined;
     vrscene = _vr ? new THREE.Scene() : undefined;
+    scenes['sgscene'] = sgscene;
+    scenes['rmscene'] = rmscene;
+    scenes['vrscene'] = vrscene;
     displayed_scene = config.topology.displayed_scene;
     console.log(`displayed_scene = ${displayed_scene}`);
+
+    // create render
+    narrative.prerender();
+
+    //non-essential rmlens
+    aspect = window.innerWidth/window.innerHeight;
+    rmlens = _rm ? new THREE.PerspectiveCamera(90, aspect,.1,1000) : undefined;
 
 
     // webxr
@@ -243,6 +240,14 @@ class Narrative implements Cast{
       console.log(`_webxr = ${config.topology._webxr} so rendering in webXR`);
     }else{
       console.log(`_webxr = ${config.topology._webxr} so rendering in webGL`);
+    }
+
+    // stats - display fps performance
+    _stats = config['renderer']['_stats'];
+    if(_stats){
+      stats = new Stats();
+      document.body.appendChild(stats.dom);
+      stats.dom.style.display = 'block';  // show
     }
 
 
@@ -265,14 +270,10 @@ class Narrative implements Cast{
     console.log(`\n@@@ narrative.changeState state:`);
     console.dir(state);
 
+
     (async () => {
 
-      // prepare scenes={existing scenes} second arg for camera.delta
-      const scenes:Record<string,THREE.Scene> = {};
-      scenes['sgscene'] = sgscene;
-      scenes['rmscene'] = rmscene;
-      scenes['vrscene'] = vrscene;
-
+      // state/camera
       // get camera_results so lens(es) can be attached to corresponding
       // scenes - needed by some actors created in stage.delta - exp. panorama
       try{
@@ -293,6 +294,10 @@ class Narrative implements Cast{
       }
 
    
+      // non-camera states
+      // stage prepares scenes
+      // audio prepares music/sound
+      // actions prepares sequences - music, animation and changes
       try{
         const results:unknown[] = await Promise.all([
           stage.delta(state['stage'], scenes, narrative),
@@ -332,6 +337,10 @@ class Narrative implements Cast{
   }//changeState
 
 
+  // prerender - prepare secific rendering topology
+  prerender():void {
+    renderer = create_renderer();
+  }
 
   // render current frame - frame holds current frame number
   render():void {
@@ -480,14 +489,29 @@ class Narrative implements Cast{
         //console.log(`narrative.find: cast[${name}] = ${cast[name]}`);
         return cast[name];
       }else{
-        console.log(`actor name ${name} NOT found - returning null!!`); 
-        return null;
+        console.log(`actor name ${name} NOT found - returning undefined!`); 
+        return undefined;
       }
     }else{
-      console.log(`actor name ${name} is malformed - returning null!!`); 
+      console.log(`actor name ${name} is malformed - returning undefined!`); 
       return null;
     }
   }
+
+
+  findRenderTarget(name:string):THREE.WebGLRenderTarget{
+    //console.log(`\nnarrative.getRenderTarget: name=${name}`);
+    if(name && name.length > 0){
+      if(name.match(/sg/)){return sgRenderTarget;}
+      if(name.match(/rm/)){return rmRenderTarget;}
+      if(name.match(/vr/)){return vrRenderTarget;}
+      console.log(`renderTarget matching ${name} NOT found!`); 
+    }else{
+      console.log(`renderTarget name ${name} is malformed!`); 
+    }
+    return undefined;
+  }
+
 
 }//Narrative
 

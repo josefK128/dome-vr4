@@ -1,4 +1,4 @@
-// topology4/capri4.ts 
+// topology4/capri4b.ts 
 // webGL2, es300 three.js ==0.125.2
  
 
@@ -23,6 +23,7 @@ const config:Config = {
     topology:{
       // webxr?
       _webxr: true,
+      topology:4,
      
       // displayed_scene = 'sg|rm|vr'
       displayed_scene: 'vr', 
@@ -36,7 +37,7 @@ const config:Config = {
       //use frame n-1 sgTarget.tex ('sg') 
       //or rmTarget.tex ('rm') in sghud frame n
       //or image url OR undefined => NO sgpost/sghud
-      sgpost: undefined,
+      _sgpost: undefined,
   
       // rmstage or vrstage actors 
       sgTargetNames: [],
@@ -46,7 +47,7 @@ const config:Config = {
       // in vrscene - either skybox/skydome/etc. or actors
       // NOTE! true=>must define rmquad and rmTargetName(s)
       _rm: false,
-  
+      _rmpost: undefined,
       rmTargetNames: ['vrcube'],
       //skyfaces:string[];  //used if actor 'skyfaces' exists and is rmTgtName
       //value is some subset of ['f','b','l','r','t','g']
@@ -54,12 +55,6 @@ const config:Config = {
       // raymarch - via fragment shader in rmquad ShaderMaterial
       // NOTE! obviously requires rm:t and a vr-actor name in rmTargetNames
     
-      //these are positions of raymarch objects which can
-      //be animated using declarative actions in sequences
-      //NOTE! <=1000 - more effects performance but positions
-      //defined in animation with pos.z=0 are ignored
-      rm_npositions: 100,
-
 
       // render vrscene - which implies displayed_scene = 'vr'
       _vr:true,
@@ -67,7 +62,7 @@ const config:Config = {
       //'vr'|'texture'|undefined
       //use frame n-1 vrTarget.tex ('vr') in sghud frame n
       //or image url OR undefined => NO sgpost/sghud
-      vrpost: undefined,
+      _vrpost: undefined,
 
     },//topology
 
@@ -145,9 +140,9 @@ const state:State = {
           },
           fog: {
             _fog: true,
-            color: 'white', //0x00ff00,
+            color: 'pink', //0x00ff00,
             near: 0.1,
-            far: 1000 //default:100
+            far: 300 //default:100
           }
           //controls: {
           //  _controls: true,
@@ -180,10 +175,10 @@ const state:State = {
                     factory: 'Unitcube',
                     url: '../models/stage/actors/objects/unitcube.js',
                     options: { wireframe: false,
-                        color: 'red',
-                        opacity: 1.0,
+                        color: 'white',
+                        opacity: 0.7,
                         map: './app/media/images/glad.png',
-                        transform: { t: [0.0, -0.1, -0.99], e: [0.0, 0.0, 0.0], s: [0.2, 0.2, 0.4] }
+                        transform: { t: [0.0, 0.06, -0.99], e: [0.0, 0.0, 0.0], s: [0.2, 0.4, 0.2] }
                     }
                 },
                 'panorama':{

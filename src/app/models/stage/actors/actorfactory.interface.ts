@@ -13,9 +13,10 @@
 // instance - each Promise-closure holds a unique set of instance-properties 
 // for each actor-object3D-instance created.
 import {Actor} from './actor.interface';
+import {Cast} from '../../../cast.interface';
 
 export interface ActorFactory {
-  create(options:Record<string,unknown>): Promise<Actor>; 
+  create(options:Record<string,unknown>, narrative?:Cast): Promise<Actor>; 
 }
 
 

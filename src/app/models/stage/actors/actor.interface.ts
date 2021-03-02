@@ -12,8 +12,9 @@
 // returned actor instance - each Promise-closure holds a unique set of 
 // instance-properties for each actor-object3D-instance created.
 // see './actorfactory.interface.ts'
+import {Cast} from '../../../cast.interface';
 
 export interface Actor {
-  delta(options:Record<string,unknown>):void;
+  delta(options:Record<string,unknown>, narrative?:Cast):void;
 }
 

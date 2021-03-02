@@ -1,4 +1,4 @@
-// actors/environmant/skybox.ts
+// actors/environment/skybox.ts
 // Actor is a Factory interface - so Skybox 'creates' instances using the
 // options Object as variations, i.e. Skybox is a factory and NOT a singleton
 //
@@ -24,15 +24,16 @@
 //          factory:'Skybox',
 //          url:'./app/models/stage/actors/environment/skybox',
 //          options:{
-//              size:10000,        // default=10000
-//             *opacity: 1.0,    // default 1.0
-//             *textures:[      // string[] - default space - see below
-//                url/posX.png,
-//                url/negX.png,
-//                url/posY.png,
-//                url/negY.png,
-//                url/posZ.png,
-//                url/negZ.png,
+//              size:10000,         // default=10000
+//             *color:'black',
+//             *opacity: 1.0,      // default 1.0
+//              textures:[        // string[] - cube face urls - see below
+//                pathTo/posX.png,
+//                pathTo/negX.png,
+//                pathTo/posY.png,
+//                pathTo/negY.png,
+//                pathTo/posZ.png,
+//                pathTo/negZ.png,
 //              ],
 //             *transform:{t:[0.0,2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
 //          }
@@ -41,120 +42,180 @@
 //};
 import {ActorFactory} from '../actorfactory.interface';
 import {Actor} from '../actor.interface';
-import {transform3d} from '../../../../services/transform3d';
+import {Cast} from '../../../../cast.interface';
+import {transform3d} from '../../../../services/transform3d.js';
 
 
 
 // class Skybox - Factory
 export const Skybox:ActorFactory = class {
 
-  static create(options:Record<string,unknown>={}):Promise<Actor>{
+  static create(options:Record<string,unknown>={}, narrative:Cast):Promise<Actor>{
+    const size:number = <number>options['size'] || 10000,
+          color:string = <string>options['color'] || 'black',
+          opacity:number = <number>options['opacity'] || 1.0,
+          urls = <string[]>options['textures'],
+          transform = <Record<string,number[]>>(options['transform'] || {}),
 
-    const size = <number>options['size'] || 10000,
-          opacity = <number>options['opacity'] || 1.0,
-          textures = <string[]>options['textures'] || [
-            './app/assets/images/skybox/space/space_posX.jpg',
-            './app/assets/images/skybox/space/space_negX.jpg',
-            './app/assets/images/skybox/space/space_posY.jpg',
-            './app/assets/images/skybox/space/space_negY.jpg',
-            './app/assets/images/skybox/space/space_posZ.jpg',
-            './app/assets/images/skybox/space/space_negZ.jpg'
-          ],
-          transform = <Record<string,number[]>>options['transform'] || {};
-          
-    let cubeLoader:THREE.CubeTextureLoader, 
-        cube_shader:THREE.ShaderLib,
-        cube_g:THREE.Geometry,
+          create_material = (url_):Promise<THREE.Material> => {
+            const loader = new THREE.TextureLoader();
+            let material:THREE.MeshBasicMaterial;
+
+            return new Promise((resolve, reject) => {
+              try{
+                loader.load(url_, (texture) => {
+                  console.log(`create_material((${url_}) texture = ${texture}:`);
+                  console.dir(texture);
+
+                  material = new THREE.MeshBasicMaterial({
+                    color:color,
+                    opacity:opacity, 
+                    fog:true,
+                    side:THREE.DoubleSide,
+                    map: texture
+                  });
+                  material.blending = THREE.CustomBlending;
+                  material.blendSrc = THREE.SrcAlphaFactor; // default
+                  material.blendDst = THREE.OneMinusSrcAlphaFactor; // default
+                  material.blendEquation = THREE.AddEquation; // default
+                  
+                  console.log(`create_material((${url_}) material = ${material}:`);
+                  console.dir(material);
+
+                  resolve(material);
+
+                });//load
+
+              }catch(e){
+                const err = `error in skybox.create: ${e.message}`;
+                console.error(err);
+                reject(err);
+              }
+            });
+          },
+
+          create_materials = (urls_):Promise<THREE.Material[]> => {
+            return Promise.all([
+                create_material(urls_[0]),
+                create_material(urls_[1]),
+                create_material(urls_[2]),
+                create_material(urls_[3]),
+                create_material(urls_[4]),
+                create_material(urls_[5])
+            ]);//resolve
+          };
+
+
+    let cube_g:THREE.Geometry,
+        materials:THREE.Material[],
         cube_m:THREE.Material,
-        cube:THREE.Mesh,
-        maps;
-
+        cube:THREE.Mesh;
 
     //diagnostics
-    //console.log(`size = ${size}`);
-    //console.log(`opacity = ${opacity}`);
-    //console.log(`transform = ${transform}:`);
-    //console.dir(transform);
+//    console.log(`\n\n!!! Skybox.create():`);
+//    console.log(`size = ${size}`);
+//    console.log(`color = ${color}`);
+//    console.log(`opacity = ${opacity}`);
+//    console.log(`urls = ${urls}`);
+//    console.log(`transform = ${transform}:`);
+//    console.dir(transform);
 
 
     return new Promise((resolve, reject) => {
-        try{
-          cube_g = new THREE.BoxBufferGeometry(size, size, size, 1,1,1);
-          cubeLoader = new THREE.CubeTextureLoader();
-          cubeLoader.load(textures, (t) => {
-            //console.log(`skybox: t = ${t}:`);
-            //console.dir(t);
-            //console.log(`skybox: Array.isArray(t) is ${Array.isArray(t)}`);
-            cube_shader = THREE.ShaderLib['cube'];
-            cube_shader.uniforms['tCube'].value = t;
-            cube_m = new THREE.ShaderMaterial({
-              vertexShader: cube_shader.vertexShader,
-              fragmentShader: cube_shader.fragmentShader,
-              uniforms: cube_shader.uniforms,
-              depthWrite: false,
-              opacity: opacity, 
-              fog:true,
-              side: THREE.BackSide
-            });
 
+      cube_g = new THREE.BoxBufferGeometry(size, size, size, 1,1,1);
 
-            // blending
-            // check: need gl.enable(gl.BLEND)
-            cube_m.blending = THREE.CustomBlending;
-            cube_m.blendSrc = THREE.SrcAlphaFactor; // default
-            cube_m.blendDst = THREE.OneMinusSrcAlphaFactor; // default
-            cube_m.blendEquation = THREE.AddEquation; // default
-            //cube_m.depthTest = false;  //default
+      try{
+        if(urls){
 
+          create_materials(urls).then((materials_) => {
+            materials = materials_;
+            console.log(`materials = ${materials}`);
+            console.dir(materials[0]);
+          
+            // object3D
+            cube = new THREE.Mesh(cube_g, materials);
+            console.log(`cube = ${cube}`);
+            console.dir(cube);
 
-            // cube
-            cube = new THREE.Mesh(cube_g, cube_m);
+            // render order - try to render first - i.e background
             cube.renderOrder = 10;  // larger rO is rendered first
-                                   // cube rendered 'behind' vr stage & actors
-            //cube.visible = true;  // default - not needed
-    
-
+                                 // cube rendered 'behind' vr stage & actors
             // transform
             if(Object.keys(transform).length > 0){
               transform3d.apply(transform, cube);
             }
-  
-            
-            // delta() for property modification required by Actor interface
-            cube['delta'] = (options:Record<string,unknown>={}) => {
-              const opacity = <number>options['opacity'],
-                    textures = <string[]>options['textures'],
-                    transform = <Record<string,number[]>>options['transform'];
 
-              if(opacity){
-                //console.log(`cube.delta: opacity = ${opacity}`);
-                cube_m.opacity = opacity;
-              }
-              if(textures){
-                cubeLoader.load(textures, (t) => {
-                  //console.log(`cube.delta: textures = ${textures}`);
-                  //console.log(`cube.delta: t = ${t}`);
-                  cube_shader.uniforms['tCube'].value = t;
-                  cube_shader.uniforms['tCube'].needsUpdate = true;
-                });  
-              }
+            // delta() for property modification required by Actor interface
+            cube['delta'] = (options:Record<string,unknown>={}):void => {
+              if(options['color']){cube.material.color = <string>options['color'];} 
+              if(options['opacity']){cube.material.opacity = <number>options['opacity'];} 
+
+              const transform = <Record<string,number[]>>options['transform'];
               if(transform && Object.keys(transform).length > 0){
                 //console.log(`cube.delta: transform = ${transform}`);
                 transform3d.apply(transform, cube);
               }
-            };
+            };//delta
+
+            console.log(`cube['delta'] = ${cube['delta']}`);
 
             // return created skybox instance
             resolve(cube);
 
-          });//cubeLoader.load()
-        } catch(e) {
-          const err = `error in skybox.create: ${e.message}`;
-          console.error(err);
-          reject(err);
-        }
+          });
+
+        }else{  //urls=undefined
+          cube_m = new THREE.MeshBasicMaterial({
+            color:color,
+            opacity:opacity, 
+            fog:true,
+            side:THREE.BackSide
+          }); 
+          // blending
+          // check: need gl.enable(gl.BLEND)
+          cube_m.blending = THREE.CustomBlending;
+          cube_m.blendSrc = THREE.SrcAlphaFactor; // default
+          cube_m.blendDst = THREE.OneMinusSrcAlphaFactor; // default
+          cube_m.blendEquation = THREE.AddEquation; // default
+          //cube_m.depthTest = false;  //default
+  
+          // object3D
+          cube = new THREE.Mesh(cube_g, cube_m);
+
+          // render order - try to render first - i.e background
+          cube.renderOrder = 10;  // larger rO is rendered first
+                              // cube rendered 'behind' vr stage & actors
+          // transform
+          if(Object.keys(transform).length > 0){
+            transform3d.apply(transform, cube);
+          }
+
+          // delta() for property modification required by Actor interface
+          cube['delta'] = (options:Record<string,unknown>={}):void => {
+            if(options['color']){cube.material.color = <string>options['color'];} 
+            if(options['opacity']){cube.material.opacity = <number>options['opacity'];} 
+
+            const transform = <Record<string,number[]>>options['transform'];
+            if(transform && Object.keys(transform).length > 0){
+               //console.log(`cube.delta: transform = ${transform}`);
+               transform3d.apply(transform, cube);
+            }
+          };//delta
+ 
+          // return created skybox instance
+          resolve(cube);
+         
+        }//urls
+
+
+      }catch(e){
+        const err = `error in skybox.create: ${e.message}`;
+        console.error(err);
+        reject(err);
+      }
+
     });//return Promise<Actor>
 
   }//create
-
-};
+};//class Skybox

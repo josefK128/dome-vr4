@@ -9,5 +9,6 @@ export interface Cast {
   removeActor(scene:THREE.Scene, name:string):void,
   findActor(name:string):THREE.Object3D;
   reportActors(display?:boolean):Record<string,THREE.Object3D>;
+  findRenderTarget(name:string):THREE.WebGLRenderTarget;
 }
 
