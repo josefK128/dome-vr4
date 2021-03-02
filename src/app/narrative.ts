@@ -499,18 +499,18 @@ class Narrative implements Cast{
   }
 
 
-  findRenderTarget(name:string):THREE.WebGLRenderTarget{
-    //console.log(`\nnarrative.getRenderTarget: name=${name}`);
-    if(name && name.length > 0){
-      if(name.match(/sg/)){return sgRenderTarget;}
-      if(name.match(/rm/)){return rmRenderTarget;}
-      if(name.match(/vr/)){return vrRenderTarget;}
-      console.log(`renderTarget matching ${name} NOT found!`); 
-    }else{
-      console.log(`renderTarget name ${name} is malformed!`); 
-    }
-    return undefined;
-  }
+//  findRenderTarget(name:string):THREE.WebGLRenderTarget{
+//    //console.log(`\nnarrative.getRenderTarget: name=${name}`);
+//    if(name && name.length > 0){
+//      if(name.match(/sg/)){return sgRenderTarget;}
+//      if(name.match(/rm/)){return rmRenderTarget;}
+//      if(name.match(/vr/)){return vrRenderTarget;}
+//      console.log(`renderTarget matching ${name} NOT found!`); 
+//    }else{
+//      console.log(`renderTarget name ${name} is malformed!`); 
+//    }
+//    return undefined;
+//  }
 
 
 }//Narrative

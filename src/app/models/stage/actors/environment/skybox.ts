@@ -50,7 +50,7 @@ import {transform3d} from '../../../../services/transform3d.js';
 // class Skybox - Factory
 export const Skybox:ActorFactory = class {
 
-  static create(options:Record<string,unknown>={}, narrative:Cast):Promise<Actor>{
+  static create(options:Record<string,unknown>={}):Promise<Actor>{
     const size:number = <number>options['size'] || 10000,
           color:string = <string>options['color'] || 'black',
           opacity:number = <number>options['opacity'] || 1.0,
@@ -64,8 +64,8 @@ export const Skybox:ActorFactory = class {
             return new Promise((resolve, reject) => {
               try{
                 loader.load(url_, (texture) => {
-                  console.log(`create_material((${url_}) texture = ${texture}:`);
-                  console.dir(texture);
+                  //console.log(`create_material((${url_}) texture = ${texture}:`);
+                  //console.dir(texture);
 
                   material = new THREE.MeshBasicMaterial({
                     color:color,
@@ -79,15 +79,15 @@ export const Skybox:ActorFactory = class {
                   material.blendDst = THREE.OneMinusSrcAlphaFactor; // default
                   material.blendEquation = THREE.AddEquation; // default
                   
-                  console.log(`create_material((${url_}) material = ${material}:`);
-                  console.dir(material);
+                  //console.log(`create_material((${url_}) material = ${material}:`);
+                  //console.dir(material);
 
                   resolve(material);
 
                 });//load
 
               }catch(e){
-                const err = `error in skybox.create: ${e.message}`;
+                const err = `error in skybox.create_material: ${e.message}`;
                 console.error(err);
                 reject(err);
               }
@@ -95,14 +95,20 @@ export const Skybox:ActorFactory = class {
           },
 
           create_materials = (urls_):Promise<THREE.Material[]> => {
-            return Promise.all([
+            try{
+              return Promise.all([
                 create_material(urls_[0]),
                 create_material(urls_[1]),
                 create_material(urls_[2]),
                 create_material(urls_[3]),
                 create_material(urls_[4]),
                 create_material(urls_[5])
-            ]);//resolve
+              ]);//resolve
+
+            }catch(e){
+              const err = `error in skybox.create_materials: ${e.message}`;
+              console.error(err);
+            }
           };
 
 
@@ -130,13 +136,13 @@ export const Skybox:ActorFactory = class {
 
           create_materials(urls).then((materials_) => {
             materials = materials_;
-            console.log(`materials = ${materials}`);
-            console.dir(materials[0]);
+            //console.log(`materials = ${materials}`);
+            //console.dir(materials[0]);
           
             // object3D
             cube = new THREE.Mesh(cube_g, materials);
-            console.log(`cube = ${cube}`);
-            console.dir(cube);
+            //console.log(`cube = ${cube}`);
+            //console.dir(cube);
 
             // render order - try to render first - i.e background
             cube.renderOrder = 10;  // larger rO is rendered first
@@ -157,8 +163,6 @@ export const Skybox:ActorFactory = class {
                 transform3d.apply(transform, cube);
               }
             };//delta
-
-            console.log(`cube['delta'] = ${cube['delta']}`);
 
             // return created skybox instance
             resolve(cube);
