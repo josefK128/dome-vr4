@@ -269,7 +269,6 @@ class Narrative implements Cast{
 
   // for actions (usually from server)
   // change state of framework states
-  //async changeState(state:State):void{
   changeState(state:State):void{
     console.log(`\n@@@ narrative.changeState state:`);
     console.dir(state);
@@ -382,12 +381,6 @@ class Narrative implements Cast{
     //console.log('narrative.render()');
     if(_stats){
       stats.update();
-    } 
-    if(sgorbit){
-      sgorbit.update();
-    } 
-    if(vrorbit){
-      vrorbit.update();
     } 
 
 
