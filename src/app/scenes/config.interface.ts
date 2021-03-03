@@ -17,7 +17,7 @@ export interface Config {
   // topology - rendering topology
   topology:{
     // webxr? true => lens.position=[0, 1.6, 0] - avatar 1.6 meters 'tall'
-    _webxr:boolean;
+    _webxr:boolean;   //NOTE:_webxr:true turns off OrbitControls
     topology:number;                 // {1,...,7}: sg=1;rm=2;vr=4 => rm->vr=6
     displayed_scene:string;         //'sg'|'rm'|'vr'
 

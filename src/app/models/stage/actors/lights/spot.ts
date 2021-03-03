@@ -42,8 +42,8 @@
 //};
 import {ActorFactory} from '../actorfactory.interface';
 import {Actor} from '../actor.interface';
-import {transform3d} from '../../../../services/transform3d';
-import {narrative} from '../../../../narrative';
+import {transform3d} from '../../../../services/transform3d.js';
+import {narrative} from '../../../../narrative.js';
 
 
 

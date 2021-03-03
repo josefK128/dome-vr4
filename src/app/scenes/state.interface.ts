@@ -39,6 +39,8 @@ export interface State {
     sg?:{
       lens?:{
         _lens?:boolean,      // t=>create, f=>delete undef=>modify
+        _orbit?:boolean,    //t=>create OrbitControls (default false)
+                           //NOTE:_webxr:true turns off OrbitControls
         fov?:number,
         near?:number,
         far?:number,
@@ -94,6 +96,8 @@ export interface State {
     vr?:{
       lens?:{
         _lens?:boolean, // t=>create, f=>delete undef=>modify
+        _orbit?:boolean,    //t=>create OrbitControls (default false)
+                           //NOTE:_webxr:true turns off OrbitControls
         fov?:number,
         near?:number,
         far?:number,

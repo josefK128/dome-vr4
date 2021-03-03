@@ -118,7 +118,7 @@ const timeline = (shot:Record<string,unknown>) => {
       }
 
       // property to animate - tween['p'] = {{name:value}, ...}
-      tween.p = <Record<string,unknown>>((<TweenMax>tween)['p']) || {};
+      tween.p = <Record<string,unknown>>(<TweenMax>tween)['p'] || {};
 
       // other tween.p properties - nearly identical to timeline-tlp properties
       tween.p['timeScale'] = <number>(tween['p']['timeScale']) || 1.0;
@@ -180,7 +180,7 @@ const timeline = (shot:Record<string,unknown>) => {
 class Animation {
 
   constructor() {
-    console.log(`Animation ctor`);
+    //console.log(`Animation ctor`);
   }
 
 

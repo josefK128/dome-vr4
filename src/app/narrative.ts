@@ -4,24 +4,25 @@
 // and index.html <base href='/dist/'>  
 // so all js-files referenced in narrative.ts are loaded relative to 
 // dome-vr4/dist/app
-// RECALL: jsm-lib is at dome-vr4/dist/jsm, 
-// so the path to the jsm-lib relative to dist/app/narrative is ../jsm
-// exp: import {VRButton} from '../jsm/three/webxr/VRButton.js
+// RECALL: external-lib is at dome-vr4/dist/external, 
+// so the path to the external-lib relative to dist/app/narrative is ../external
+// exp: import {VRButton} from '../external/three/examples/jsm/webxr/VRButton.js
 
 
 
 // modules exterior to dome-vr4
 
 // Three.js
-import * as THREE from '../jsm/three/build/three.module.js';
-import {VRButton} from '../jsm/three/webxr/VRButton.js';
-import Stats from '../jsm/three/stats/stats.module.js'; //default export
+import * as THREE from '../external/three/build/three.module.js';
+import {VRButton} from '../external/three/examples/jsm/webxr/VRButton.js';
+import Stats from '../external/three/examples/jsm/libs/stats/stats.module.js'; //default export
+import {OrbitControls} from '../external/three/examples/jsm/controls/OrbitControls.js'; 
 
 // gsap
-import {gsap, TweenMax, TimelineMax, Quad, Power1} from '../jsm/gsap/all.js';
+import {gsap, TweenMax, TimelineMax, Quad, Power1} from '../external/gsap/all.js';
 
 // tween.js
-import TWEEN from '../jsm/tween.js/tween.esm.js';
+import TWEEN from '../external/tween.js/tween.esm.js';
 
 // make exterior modules available globally 
 window['THREE'] = THREE;
@@ -91,8 +92,10 @@ let narrative:Narrative,
     sglens:THREE.PerspectiveCamera,      // from state/camera
                    // NOTE:TBD 'csphere' is whole apparatus - lens, lights etc
     //sglens_offset:THREE.Object3D,      // _webxr:t => lower camera by 1.6
+    sgorbit:OrbitControls,
     rmlens:THREE.PerspectiveCamera,   // separate camera for rendering rmscene
     vrlens:THREE.PerspectiveCamera,   // separate camera for rendering vrscene,
+    vrorbit:OrbitControls,
     //vrlens_offset:THREE.Object3D, // _webxr:t => lower camera by 1.6
     //controls:Record<string,unknown>,           // vrcontrols
     //keymap:Record<string,unknown>,            // vrcontrols-keymap - vrkeymap
@@ -223,7 +226,8 @@ class Narrative implements Cast{
     console.log(`displayed_scene = ${displayed_scene}`);
 
     // create render
-    narrative.prerender();
+    //narrative.prerender();
+    renderer = create_renderer();
 
     //non-essential rmlens
     aspect = window.innerWidth/window.innerHeight;
@@ -285,9 +289,37 @@ class Narrative implements Cast{
         console.log(`@@@ n.chSt camera_results\n`);
         if(sgscene){
           sglens = <THREE.PerspectiveCamera>(<Record<string,unknown>>camera_results['sg'])['lens'];
+          //sgorbit = <THREE.PerspectiveCamera>(<Record<string,unknown>>camera_results['sg'])['orbit'];
+          console.log(`state['camera']['sg']['lens'] = ${state['camera']['sg']['lens']}`);
+          console.dir(state['camera']['sg']['lens']);
+          console.log(`state['camera']['sg']['lens']['_orbit'] = ${state['camera']['sg']['lens']['_orbit']}`);
+          if(state['camera']['sg']['lens'] && state['camera']['sg']['lens']['_orbit']){
+            sglens.position.z = 5;
+            console.log(`\n*** enabling orbit controls for sglens:`);
+            //console.dir(sglens);
+            sgorbit = new OrbitControls(sglens, renderer.domElement);
+            sgorbit.update();
+            sgorbit.enableDamping = true;
+            sgorbit.dampingFactor = 0.25;
+            sgorbit.enableZoom = true;
+            //sgorbit.autoRotate = true;
+            //console.dir(sgorbit);
+          }
         }
         if(vrscene){
           vrlens = <THREE.PerspectiveCamera>(<Record<string,unknown>>camera_results['vr'])['lens'];
+          //vrorbit = <THREE.PerspectiveCamera>(<Record<string,unknown>>camera_results['vr'])['orbit'];
+          if(state['camera']['vr'] && state['camera']['vr']['_orbit']){
+            console.log(`\n*** enabling orbit controls for vrlens:`);
+            //console.dir(vrlens);
+            vrorbit = new OrbitControls(sglens, renderer.domElement);
+            vrorbit.update();
+            vrorbit.enableDamping = true;
+            vrorbit.dampingFactor = 0.25;
+            vrorbit.enableZoom = true;
+            //vrorbit.autoRotate = true;
+            console.dir(vrorbit);
+          }
         }
       }catch(e){
         console.log(`error in camera.delta: ${e}`);
@@ -337,10 +369,10 @@ class Narrative implements Cast{
   }//changeState
 
 
-  // prerender - prepare secific rendering topology
-  prerender():void {
-    renderer = create_renderer();
-  }
+  // prerender - prepare specific rendering topology
+//  prerender():void {
+//    renderer = create_renderer();
+//  }
 
   // render current frame - frame holds current frame number
   render():void {
@@ -350,6 +382,12 @@ class Narrative implements Cast{
     //console.log('narrative.render()');
     if(_stats){
       stats.update();
+    } 
+    if(sgorbit){
+      sgorbit.update();
+    } 
+    if(vrorbit){
+      vrorbit.update();
     } 
 
 

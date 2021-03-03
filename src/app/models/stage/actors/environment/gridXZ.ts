@@ -21,10 +21,10 @@
 //      actors:{
 //        'ground':{ 
 //          factory:'GridXZ',
-//          url:'./app/models/stage/actors/environment/gridXZ',
+//          url:'../models/stage/actors/environment/gridXZ',
 //          options:{
-//                size:1000
-//                divisions:100
+//                size:1000,
+//                divisions:100,
 //               *colorGrid:'red', 
 //                colorCenterLine:'green', 
 //               *opacity:0.9, 

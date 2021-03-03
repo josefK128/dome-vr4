@@ -21,7 +21,7 @@
 //      actors:{
 //        'rmquad':{ 
 //          factory:'Quad',
-//          url:'./app/models/stage/actors/environment/quad',
+//          url:'../models/stage/actors/environment/quad',
 //          options:{
 //                width:2,
 //                height:2,

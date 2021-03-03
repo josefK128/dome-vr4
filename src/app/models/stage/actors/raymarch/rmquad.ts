@@ -34,7 +34,7 @@
 //};
 import {ActorFactory} from '../actorfactory.interface';
 import {Actor} from '../actor.interface';
-import {transform3d} from '../../../../services/transform3d';
+import {transform3d} from '../../../../services/transform3d.js';
 
 
 

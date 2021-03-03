@@ -44,9 +44,9 @@
 //};
 import {ActorFactory} from '../actorfactory.interface';
 import {Actor} from '../actor.interface';
-import {transform3d} from '../../../../services/transform3d';
-import {morphTargets} from '../../../../services/morphtargets';
-import {generators} from '../../../../models/stage/actors/cloud/generators/generators';
+import {transform3d} from '../../../../services/transform3d.js';
+import {morphTargets} from '../../../../services/morphtargets.js';
+import {generators} from '../../../../models/stage/actors/cloud/generators/generators.js';
 
 
 

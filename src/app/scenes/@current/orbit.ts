@@ -1,4 +1,4 @@
-// @current/scene.ts
+// @current/scene-webgl.ts
 // webGL2, es300 three.js ==0.125.2
  
 
@@ -22,16 +22,16 @@ const config:Config = {
     // rendering topology
     topology:{
       // webxr?
-      _webxr: true,
-      topology: 4,
+      _webxr: false,
+      topology: 1,
      
       // displayed_scene = 'sg|rm|vr'
-      displayed_scene: 'vr', 
+      displayed_scene: 'sg', 
 
 
       // render sgscene either to display, or to sgTarget offscreen for 
       // bg texturing in rmscene or texturing in vrscene
-      _sg: false,
+      _sg: true,
       
       //'sg'|'rm'|'texture'|undefined
       //use frame n-1 sgTarget.tex ('sg') 
@@ -60,7 +60,7 @@ const config:Config = {
     
 
       // render vrscene - which implies displayed_scene = 'vr'
-      _vr:true,
+      _vr:false,
 
       //use frame n-1 vrTarget.tex ('vr') in sghud frame n
       //or image url OR undefined => NO sgpost/sghud
@@ -132,13 +132,14 @@ const state:State = {
     // since sgscene,vrscene are translated by 1.6 in y, in all
     // cases the scene and camera coincide at camera coords (0,0,0)
     camera: {
-        vr:{
+        sg:{
           lens: {
             _lens: true,
+            _orbit: true,
             fov: 90,
             near: 0.001,
             far: 100000,
-            transform: {'t':[0,0,5]}
+            transform: {'t':[0,0,0]}
           },
           fog: {
             _fog: false,
@@ -161,7 +162,7 @@ const state:State = {
         // each scene the has two properties:
         // _actors:true=>create actors; false=>remove actors, undefined=>modify 
         // actors:Record<string,Actor>[] => iterate through actors by 'name'
-        vrscene: {
+        sgscene: {
             _actors: true,
             actors: {
                 'axes': {

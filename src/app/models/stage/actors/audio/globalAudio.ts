@@ -98,7 +98,7 @@
 //
 import {ActorFactory} from '../actorfactory.interface';
 import {Actor} from '../actor.interface';
-import {narrative} from '../../../../narrative';
+import {narrative} from '../../../../narrative.js';
 
 
 

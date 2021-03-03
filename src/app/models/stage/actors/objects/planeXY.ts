@@ -36,7 +36,7 @@
 //};
 import {ActorFactory} from '../actorfactory.interface';
 import {Actor} from '../actor.interface';
-import {transform3d} from '../../../../services/transform3d';
+import {transform3d} from '../../../../services/transform3d.js';
 
 
 
@@ -84,7 +84,7 @@ export const PlaneXY:ActorFactory = class {
       const plane = new THREE.Mesh(plane_g, plane_m);
  
       // transform
-      if(Object.keys(transform).length >0){
+      if(Object.keys(<Record<string,number[]>>transform).length >0){
         //console.log(`planeXY executing transform ${transform}`);
         //transform = {t:[0.0,0.0,0.0],e:[0.0,0.0,0.0],s:[1.0,1.0,1.0]};
         transform3d.apply(transform, plane);
