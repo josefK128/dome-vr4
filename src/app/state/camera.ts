@@ -46,7 +46,7 @@ class Camera {
               far = l['far'] || 10000,
               lens = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
-        if(l['transform']){transform3d.apply(l['transform'],lens);}
+        if(l['transform']){transform3d.apply(l['transform'],lens); }
         //console.log(`camera.create_lens(): created lens = ${lens}:`);
         //console.dir(lens);
 

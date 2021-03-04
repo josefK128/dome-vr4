@@ -107,14 +107,14 @@ let narrative:Narrative,
     _rm:boolean,
     _vr:boolean,
 
-  // scenes
-  sgscene:THREE.Scene,
-  rmscene:THREE.Scene,
-  vrscene:THREE.Scene,
-  displayed_scene:string,
+    // scenes
+    sgscene:THREE.Scene,
+    rmscene:THREE.Scene,
+    vrscene:THREE.Scene,
+    displayed_scene:string,
 
-  // fps-performance meter
-  stats:Stats;
+    // fps-performance meter
+    stats:Stats;
   
 
 // const - initialized
@@ -288,21 +288,25 @@ class Narrative implements Cast{
         console.log(`@@@ n.chSt camera_results\n`);
         if(sgscene){
           sglens = <THREE.PerspectiveCamera>(<Record<string,unknown>>camera_results['sg'])['lens'];
+          console.log(`***n.chState sglens.position:`);
+          console.dir(sglens.position);
+          console.log(`***n.chState sglens.getWorldPosition():`);
+          console.dir(sglens.getWorldPosition(new THREE.Vector3()));
+
           //sgorbit = <THREE.PerspectiveCamera>(<Record<string,unknown>>camera_results['sg'])['orbit'];
           console.log(`state['camera']['sg']['lens'] = ${state['camera']['sg']['lens']}`);
           console.dir(state['camera']['sg']['lens']);
           console.log(`state['camera']['sg']['lens']['_orbit'] = ${state['camera']['sg']['lens']['_orbit']}`);
           if(state['camera']['sg']['lens'] && state['camera']['sg']['lens']['_orbit']){
-            sglens.position.z = 5;
             console.log(`\n*** enabling orbit controls for sglens:`);
-            //console.dir(sglens);
+            console.log(`***n.chState sglens.position:`);
+            console.dir(sglens.position);
             sgorbit = new OrbitControls(sglens, renderer.domElement);
             sgorbit.update();
             sgorbit.enableDamping = true;
             sgorbit.dampingFactor = 0.25;
             sgorbit.enableZoom = true;
-            //sgorbit.autoRotate = true;
-            //console.dir(sgorbit);
+            sgorbit.autoRotate = true;
           }
         }
         if(vrscene){

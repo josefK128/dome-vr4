@@ -22,7 +22,7 @@ const config:Config = {
     // rendering topology
     topology:{
       // webxr?
-      _webxr: false,
+      _webxr: true,
       topology: 1,
      
       // displayed_scene = 'sg|rm|vr'
@@ -137,9 +137,9 @@ const state:State = {
             _lens: true,
             _orbit: true,
             fov: 90,
-            near: 0.001,
+            near: 0.01,
             far: 100000,
-            transform: {'t':[0,0,0]}
+            transform:{t:[0.0,1.0,2.0]}
           },
           fog: {
             _fog: false,
@@ -171,7 +171,7 @@ const state:State = {
                     options: {
                         length: 10000,
                         // setting axes translation-y at -0.01 allows z-axis to be seen
-                        transform: { t: [0.0, 0.0, -0.99] }
+                        transform: { t: [0.0, 0.0, 0.0] }
                     }
                 },
                 'unitcube': {
@@ -179,9 +179,10 @@ const state:State = {
                     url: '../models/stage/actors/objects/unitcube.js',
                     options: { wireframe: false,
                         color: 'white',
-                        opacity: 0.8,
+                        opacity: 0.7,
                         map: './app/media/images/glad.png',
-                        transform: { t: [0.0, 0.15, -0.99], e: [0.0, 0.0, 0.0], s: [0.2, 0.3, 0.2] }
+                        //transform: { t: [0.0, 0.15, -0.99], e: [0.0, 0.0, 0.0], s: [0.2, 0.3, 0.2] }
+                        transform: { t: [0, 0, 0], e: [0.0, 0.0, 0.0], s: [0.5, 1, 0.5] }
                     }
                 },
 
@@ -194,7 +195,7 @@ const state:State = {
                         colorGrid:'red', 
                         colorCenterLine:'green', 
                         opacity:0.9, 
-                        transform:{t:[0.0,-2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
+                        transform:{t:[0.0,-2.0,-3.0001],e:[0.0,0.0,0.0],s:[1.0,3.0,1.0]}
                   } 
                 },
 
