@@ -81,12 +81,9 @@ let narrative:Narrative,
     canvas:HTMLCanvasElement, 
     context:WebGLRenderingContext|CanvasRenderingContext2D,
 
-
     // topology type and corresponding flags
     // see function calculate_topology(sg:boolen,rm:boolean,vr:boolean):number
-    _webxr:boolean,
     topology:number,
-    displayed_scene:string,
     _sg:boolean,
     _rm:boolean,
     _vr:boolean,
@@ -97,7 +94,13 @@ let narrative:Narrative,
 
     // scenes
     sgscene:THREE.Scene,
-    sglens:THREE.PerspectiveCamera,      // from state/camera
+    rmscene:THREE.Scene,
+    vrscene:THREE.Scene,
+    displayed_scene:string,
+
+    // sg
+    //NOTE:'csphere' is whole 'camera' apparatus - lens, lights, hud etc
+    sglens:THREE.PerspectiveCamera,
     sgorbit:OrbitControls,
     sgcsphere:THREE.Mesh,
     sgcontrols:Record<string,unknown>,
@@ -106,14 +109,12 @@ let narrative:Narrative,
     sgRenderTarget:THREE.WebGLRenderTarget,
 
     // rm
-    rmscene:THREE.Scene,
-    rmlens:THREE.PerspectiveCamera,   // separate camera for rendering rmscene
+    rmlens:THREE.PerspectiveCamera,
     rmTargetNames:string[],
     rmRenderTarget:THREE.WebGLRenderTarget,
 
     // vr
-    vrscene:THREE.Scene,
-    vrlens:THREE.PerspectiveCamera,   // separate camera for rendering vrscene,
+    vrlens:THREE.PerspectiveCamera,
     vrorbit:OrbitControls,
     vrcsphere:THREE.Mesh,
     vrcontrols:Record<string,unknown>,
@@ -277,19 +278,17 @@ class Narrative implements Cast{
     //console.dir(renderer);
 
     sgscene = _sg ? new THREE.Scene() : undefined;
-//    rmscene = _rm ? new THREE.Scene() : undefined;
-//    vrscene = _vr ? new THREE.Scene() : undefined;
-//    scenes['sgscene'] = sgscene;
-//    scenes['rmscene'] = rmscene;
-//    scenes['vrscene'] = vrscene;
-//
+    rmscene = _rm ? new THREE.Scene() : undefined;
+    vrscene = _vr ? new THREE.Scene() : undefined;
+    scenes['sgscene'] = sgscene;
+    scenes['rmscene'] = rmscene;
+    scenes['vrscene'] = vrscene;
+
 //    //non-essential rmlens
-//    aspect = window.innerWidth/window.innerHeight;
-//    rmlens = _rm ? new THREE.PerspectiveCamera(90, aspect,.1,1000) : undefined;
 
     if(_sg){
-      const nsg:Record<string,unknown> = {};
-      narrative['sg'] = nsg;
+      narrative['sg'] = {};
+      const nsg:Record<string,unknown> = narrative['sg'];
       sgscene = new THREE.Scene();
       nsg['scene'] = sgscene;
       nsg['lens'] = sglens;
@@ -301,14 +300,28 @@ class Narrative implements Cast{
     }
 
     if(_rm){
-      console.log(``);
+      narrative['rm'] = {};
+      const nrm:Record<string,unknown> = narrative['rm'];
+      rmscene = new THREE.Scene();
+      nrm['scene'] = rmscene;
+      const aspect = window.innerWidth/window.innerHeight;
+      rmlens = new THREE.PerspectiveCamera(90, aspect,.1,1000); // never used
+      nrm['lens'] = rmlens;
+      nrm['targetNames'] = rmTargetNames;
     }
     
     if(_vr){
-      console.log(``);
+      narrative['vr'] = {};
+      const nvr:Record<string,unknown> = narrative['vr'];
+      vrscene = new THREE.Scene();
+      nvr['scene'] = vrscene;
+      nvr['lens'] = vrlens;
+      nvr['orbit'] = vrorbit;
+      nvr['csphere'] = vrcsphere;
+      nvr['controls'] = vrcontrols;
+      nvr['map'] = vrmap;
+      nvr['targetNames'] = vrTargetNames;
     }
-
-
     // returns to bootstrap()
 
   }//initialize()

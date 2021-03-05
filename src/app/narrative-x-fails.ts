@@ -81,45 +81,40 @@ let narrative:Narrative,
     canvas:HTMLCanvasElement, 
     context:WebGLRenderingContext|CanvasRenderingContext2D,
 
+    // webGLRender
+    renderer:THREE.WebGLRenderer, // from state/stage
+                                 // NOTE:renderer.render(sgscene,lens)
+    sgTargetNames:string[],
+    rmTargetNames:string[],
+    vrTargetNames:string[],
+    sgRenderTarget:THREE.WebGLRenderTarget,
+    rmRenderTarget:THREE.WebGLRenderTarget,
+    vrRenderTarget:THREE.WebGLRenderTarget,
+
+    // cameras, controls
+    sglens:THREE.PerspectiveCamera,      // from state/camera
+                   // NOTE:TBD 'csphere' is whole apparatus - lens, lights etc
+    //sglens_offset:THREE.Object3D,      // _webxr:t => lower camera by 1.6
+    sgorbit:OrbitControls,
+    rmlens:THREE.PerspectiveCamera,   // separate camera for rendering rmscene
+    vrlens:THREE.PerspectiveCamera,   // separate camera for rendering vrscene,
+    vrorbit:OrbitControls,
+    //vrlens_offset:THREE.Object3D, // _webxr:t => lower camera by 1.6
+    //controls:Record<string,unknown>,           // vrcontrols
+    //keymap:Record<string,unknown>,            // vrcontrols-keymap - vrkeymap
 
     // topology type and corresponding flags
     // see function calculate_topology(sg:boolen,rm:boolean,vr:boolean):number
-    _webxr:boolean,
     topology:number,
-    displayed_scene:string,
     _sg:boolean,
     _rm:boolean,
     _vr:boolean,
 
-    // webGLRender
-    renderer:THREE.WebGLRenderer, // from state/stage
-                                 // NOTE:renderer.render(sgscene,lens)
-
     // scenes
     sgscene:THREE.Scene,
-    sglens:THREE.PerspectiveCamera,      // from state/camera
-    sgorbit:OrbitControls,
-    sgcsphere:THREE.Mesh,
-    sgcontrols:Record<string,unknown>,
-    sgmap:Record<string,unknown>,
-    sgTargetNames:string[],
-    sgRenderTarget:THREE.WebGLRenderTarget,
-
-    // rm
     rmscene:THREE.Scene,
-    rmlens:THREE.PerspectiveCamera,   // separate camera for rendering rmscene
-    rmTargetNames:string[],
-    rmRenderTarget:THREE.WebGLRenderTarget,
-
-    // vr
     vrscene:THREE.Scene,
-    vrlens:THREE.PerspectiveCamera,   // separate camera for rendering vrscene,
-    vrorbit:OrbitControls,
-    vrcsphere:THREE.Mesh,
-    vrcontrols:Record<string,unknown>,
-    vrmap:Record<string,unknown>,
-    vrTargetNames:string[],
-    vrRenderTarget:THREE.WebGLRenderTarget,
+    displayed_scene:string,
 
     // fps-performance meter
     stats:Stats;
@@ -268,46 +263,25 @@ class Narrative implements Cast{
     topology = config.topology.topology;  //topology=_sg + _rm*2 + _vr*4
     //console.log(`_sg=${_sg} _rm=${_rm} _vr=${_vr}`);
     console.log(`rendering topology type = ${topology}`);
-    displayed_scene = config.topology.displayed_scene;
-    console.log(`displayed_scene = ${displayed_scene}`);
 
     // create WebGLRenderer for all scenes
     renderer = create_renderer();
-    //console.log(`renderer = ${renderer}:`);
-    //console.dir(renderer);
+    console.log(`renderer = ${renderer}:`);
+    console.dir(renderer);
+
 
     sgscene = _sg ? new THREE.Scene() : undefined;
-//    rmscene = _rm ? new THREE.Scene() : undefined;
-//    vrscene = _vr ? new THREE.Scene() : undefined;
-//    scenes['sgscene'] = sgscene;
-//    scenes['rmscene'] = rmscene;
-//    scenes['vrscene'] = vrscene;
-//
-//    //non-essential rmlens
-//    aspect = window.innerWidth/window.innerHeight;
-//    rmlens = _rm ? new THREE.PerspectiveCamera(90, aspect,.1,1000) : undefined;
+    rmscene = _rm ? new THREE.Scene() : undefined;
+    vrscene = _vr ? new THREE.Scene() : undefined;
+    scenes['sgscene'] = sgscene;
+    scenes['rmscene'] = rmscene;
+    scenes['vrscene'] = vrscene;
+    displayed_scene = config.topology.displayed_scene;
+    console.log(`displayed_scene = ${displayed_scene}`);
 
-    if(_sg){
-      const nsg:Record<string,unknown> = {};
-      narrative['sg'] = nsg;
-      sgscene = new THREE.Scene();
-      nsg['scene'] = sgscene;
-      nsg['lens'] = sglens;
-      nsg['orbit'] = sgorbit;
-      nsg['csphere'] = sgcsphere;
-      nsg['controls'] = sgcontrols;
-      nsg['map'] = sgmap;
-      nsg['targetNames'] = sgTargetNames;
-    }
-
-    if(_rm){
-      console.log(``);
-    }
-    
-    if(_vr){
-      console.log(``);
-    }
-
+    //non-essential rmlens
+    aspect = window.innerWidth/window.innerHeight;
+    rmlens = _rm ? new THREE.PerspectiveCamera(90, aspect,.1,1000) : undefined;
 
     // returns to bootstrap()
 
