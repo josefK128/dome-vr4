@@ -32,11 +32,11 @@ class Stage {
   // t/f => create/remove actor(s)
   // undefined => modify actor(s) via actor.delta(options), a method
   // [2] actors = Record<string,unknown>[] = [{name:Actor},...]
-  async scene(scene_name:string, state:Record<string,unknown>, scene:THREE.Scene, narrative:Cast):Promise<void>{
+  async scene(scene_name:string, state:Record<string,unknown>, narrative:Cast):Promise<void>{
 
       // break-resolve if state[scene_name] (exp state['sgscene']) is undefined
       // or if state[scene_name] = {}
-      if(state === undefined){ 
+      if(state === undefined || Object.keys(state).length === 0){ 
         console.log(`@@ stage.scene: ${scene_name} state is undefined`);
         return new Promise((resolve, reject) => {
           resolve();
@@ -45,8 +45,8 @@ class Stage {
       console.log(`@@ stage.scene: ${scene_name} state is defined:`);
       console.dir(state);
 
-
-      const _actors = <boolean>(state['_actors'] || false),
+      const scene = narrative[scene_name]['scene'],
+            _actors = <boolean>(state['_actors'] || false),
             actors = <Record<string,Actor>>(state['actors'] || {});
       //console.log(`_actors = ${_actors}`);
       //console.log(`actors = ${actors}`);
@@ -92,7 +92,7 @@ class Stage {
                   // Panorama is *special case*
                   if(factory === 'Panorama'){
                     console.log(`\nPanorama - adding scene['lens'] to options`);
-                    options['lens'] = scene['lens'];
+                    options['lens'] = narrative[scene_name]['lens'];
                   }
 
                   actor = await (<ActorFactory>m[factory]).create(options);
@@ -156,9 +156,10 @@ class Stage {
   }//scene()
 
 
+
   // process state = state[stage']
-  async delta(state:Record<string,unknown>, scenes:Record<string,THREE.Scene>,narrative:Cast):Promise<void>{
-    console.log(`\n\n@@ stage.delta(state,scenes,narrative) state:`);
+  async delta(state:Record<string,unknown>, narrative:Cast):Promise<void>{
+    console.log(`\n\n@@ stage.delta(state,narrative) state:`);
     console.dir(state);
 
     return new Promise((resolve, reject) => {
@@ -171,9 +172,9 @@ class Stage {
                 vrstate = <Record<string,unknown>>state['vrscene'];
 
           await Promise.all([
-            stage.scene('sgscene', sgstate, scenes['sgscene'], narrative),
-            stage.scene('rmscene', rmstate, scenes['rmscene'], narrative),
-            stage.scene('vrscene', vrstate, scenes['vrscene'], narrative),
+            stage.scene('sg', sgstate, narrative),
+            stage.scene('rm', rmstate, narrative),
+            stage.scene('vr', vrstate, narrative),
           ]);
 
         })();

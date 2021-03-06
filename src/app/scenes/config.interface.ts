@@ -45,6 +45,8 @@ export interface Config {
     _vr:boolean;
     _vrpost?:string;              //post-pr with prv frame 
                                  //use frame n-1 vrTarget.tex in vrhud frame n
+    vrTargetNames?:string[]; //actor names to be textured by vrTarget.texture
+                            //these must be in vrscene such as vrhud
   },//topology
   
 

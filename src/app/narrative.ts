@@ -81,45 +81,50 @@ let narrative:Narrative,
     canvas:HTMLCanvasElement, 
     context:WebGLRenderingContext|CanvasRenderingContext2D,
 
-
     // topology type and corresponding flags
     // see function calculate_topology(sg:boolen,rm:boolean,vr:boolean):number
-    _webxr:boolean,
     topology:number,
-    displayed_scene:string,
     _sg:boolean,
     _rm:boolean,
     _vr:boolean,
+    renderer:THREE.WebGLRenderer, // NOTE:renderer.render(sgscene,lens)
+    displayed_scene:string,
 
-    // webGLRender
-    renderer:THREE.WebGLRenderer, // from state/stage
-                                 // NOTE:renderer.render(sgscene,lens)
 
-    // scenes
+    // cameras, controls
+    // sg
     sgscene:THREE.Scene,
     sglens:THREE.PerspectiveCamera,      // from state/camera
+                   // NOTE:TBD 'csphere' is whole apparatus - lens, lights etc
     sgorbit:OrbitControls,
     sgcsphere:THREE.Mesh,
     sgcontrols:Record<string,unknown>,
     sgmap:Record<string,unknown>,
     sgTargetNames:string[],
     sgRenderTarget:THREE.WebGLRenderTarget,
+    sghud:THREE.Mesh,
+    sgskybox:THREE.Mesh,
+    sgskydome:THREE.Mesh,
 
     // rm
     rmscene:THREE.Scene,
     rmlens:THREE.PerspectiveCamera,   // separate camera for rendering rmscene
-    rmTargetNames:string[],
     rmRenderTarget:THREE.WebGLRenderTarget,
+    rmTargetNames:string[],
+    rmquad:THREE.Mesh,
 
-    // vr
+    //vr 
     vrscene:THREE.Scene,
     vrlens:THREE.PerspectiveCamera,   // separate camera for rendering vrscene,
     vrorbit:OrbitControls,
     vrcsphere:THREE.Mesh,
-    vrcontrols:Record<string,unknown>,
-    vrmap:Record<string,unknown>,
+    vrcontrols:Record<string,unknown>,           // vrcontrols
+    vrmap:Record<string,unknown>,            // vrcontrols-keymap - vrkeymap
     vrTargetNames:string[],
     vrRenderTarget:THREE.WebGLRenderTarget,
+    vrhud:THREE.Mesh,
+    vrskybox:THREE.Mesh,
+    vrskydome:THREE.Mesh,
 
     // fps-performance meter
     stats:Stats;
@@ -198,7 +203,7 @@ class Narrative implements Cast{
   // set up rendering framework and initialize services and state 
   //bootstrap(_config:Config, state:State){
   bootstrap(_config:Config, state:State):void{
-    console.log(`\n@@@ narrative.bootstrap():`);
+    console.log(`\n@@@ narrative.bootstrap:`);
 
     // initialize config
     config = _config;
@@ -211,7 +216,7 @@ class Narrative implements Cast{
     narrative.initialize();
 
     // initialize modules with set of possible actions targets {t:'target',...}
-    // and with ref to narrative (narrative contained in 'actionsTargets')
+    // and with ref to narrative (contained in 'actionsTargets')
     config['actionsTargets'] = actionsTargets;
     director.initialize(config);
     animation.initialize(config);
@@ -243,7 +248,7 @@ class Narrative implements Cast{
       //mediator.connect();
     }
 
-    // initialize state of scene 
+    // initialize state 
     narrative.changeState(state);
 
   }
@@ -273,44 +278,56 @@ class Narrative implements Cast{
 
     // create WebGLRenderer for all scenes
     renderer = create_renderer();
-    //console.log(`renderer = ${renderer}:`);
-    //console.dir(renderer);
+    console.log(`renderer = ${renderer}:`);
+    console.dir(renderer);
 
-    sgscene = _sg ? new THREE.Scene() : undefined;
-//    rmscene = _rm ? new THREE.Scene() : undefined;
-//    vrscene = _vr ? new THREE.Scene() : undefined;
-//    scenes['sgscene'] = sgscene;
-//    scenes['rmscene'] = rmscene;
-//    scenes['vrscene'] = vrscene;
-//
-//    //non-essential rmlens
-//    aspect = window.innerWidth/window.innerHeight;
-//    rmlens = _rm ? new THREE.PerspectiveCamera(90, aspect,.1,1000) : undefined;
 
+    // populate Narrative instance for use in state modules
     if(_sg){
-      const nsg:Record<string,unknown> = {};
-      narrative['sg'] = nsg;
-      sgscene = new THREE.Scene();
+      narrative['sg'] = {};
+      const nsg = narrative['sg'];
+      sgscene = new THREE.Scene;
       nsg['scene'] = sgscene;
+
       nsg['lens'] = sglens;
       nsg['orbit'] = sgorbit;
       nsg['csphere'] = sgcsphere;
       nsg['controls'] = sgcontrols;
       nsg['map'] = sgmap;
-      nsg['targetNames'] = sgTargetNames;
+
+      sgTargetNames = config.topology.sgTargetNames;
     }
 
     if(_rm){
-      console.log(``);
-    }
-    
-    if(_vr){
-      console.log(``);
+      narrative['rm'] = {};
+      const nrm = narrative['rm'];
+      rmscene = new THREE.Scene;
+      nrm['scene'] = rmscene;
+
+      //non-essential rmlens
+      const aspect = window.innerWidth/window.innerHeight;
+      rmlens = new THREE.PerspectiveCamera(90, aspect,.1,1000); //never used
+      nrm['lens'] = rmlens;
+
+      rmTargetNames = config.topology.rmTargetNames;
     }
 
+    if(_vr){
+      narrative['vr'] = {};
+      const nvr = narrative['vr'];
+      vrscene = new THREE.Scene;
+      nvr['scene'] = vrscene;
+
+      nvr['lens'] = vrlens;
+      nvr['orbit'] = vrorbit;
+      nvr['csphere'] = vrcsphere;
+      nvr['controls'] = vrcontrols;
+      nvr['map'] = vrmap;
+
+      vrTargetNames = config.topology.vrTargetNames;
+    }
 
     // returns to bootstrap()
-
   }//initialize()
 
 
@@ -321,95 +338,64 @@ class Narrative implements Cast{
     console.log(`\n@@@ narrative.changeState state:`);
     console.dir(state);
 
-
-    //@TODO - add camera.delta(state['camera']:Record<string,unknow>, narrative:Cast):void to await Promise.all([...]):void[]
     (async () => {
-
-      // state/camera
-      // get camera_results so lens(es) can be attached to corresponding
-      // scenes - needed by some actors created in stage.delta - exp. panorama
+      // camera creates camera components, controls and maps, and fog
+      // stage prepares scenes
+      // audio prepares music/sound
+      // actions prepares sequences - music, animation and changes
       try{
-        const camera_results:Record<string,unknown> = await camera.delta(state['camera'], scenes);
+        const results:unknown[] = await Promise.all([
+          camera.delta(state['camera'], narrative),
+          stage.delta(state['stage'], narrative)
+          //audio.delta(state['audio']),
+          //actions.delta(state['actions'], narrative)
+        ]);
+        console.log(`state-processing results =`);
+        console.dir(results);
 
-        // process camera_results
-        console.log(`\n@@@ n.chSt camera_results:`);
-        console.dir(camera_results);
-        console.log(`@@@ n.chSt camera_results\n`);
+
         if(sgscene){
-          sglens = <THREE.PerspectiveCamera>(<Record<string,unknown>>camera_results['sg'])['lens'];
-          console.log(`***n.chState sglens.position:`);
-          console.dir(sglens.position);
-          console.log(`***n.chState sglens.getWorldPosition():`);
-          console.dir(sglens.getWorldPosition(new THREE.Vector3()));
-
-          //sgorbit = <THREE.PerspectiveCamera>(<Record<string,unknown>>camera_results['sg'])['orbit'];
-          console.log(`state['camera']['sg']['lens'] = ${state['camera']['sg']['lens']}`);
-          console.dir(state['camera']['sg']['lens']);
-          console.log(`state['camera']['sg']['lens']['_orbit'] = ${state['camera']['sg']['lens']['_orbit']}`);
+          sglens = narrative['sg']['lens'];
           if(state['camera']['sg']['lens'] && state['camera']['sg']['lens']['_orbit']){
             console.log(`\n*** enabling orbit controls for sglens:`);
-            console.log(`***n.chState sglens.position:`);
-            console.dir(sglens.position);
-
-            //NOTE:get canvas wo need for any narrative properties
-            const canvas_ = <HTMLCanvasElement>document.getElementsByTagName('canvas')[0];
-            console.log(`canvas_ === canvas is = ${canvas_===canvas}`);
-            console.log(`canvas_ = ${canvas_}:`);
-            console.dir(canvas_);
-
-            //sgorbit = new OrbitControls(sglens, renderer.domElement);
-            sgorbit = new OrbitControls(sglens, canvas_);
-
+            sgorbit = new OrbitControls(sglens, renderer.domElement);
             sgorbit.update();
             sgorbit.enableDamping = true;
             sgorbit.dampingFactor = 0.25;
             sgorbit.enableZoom = true;
-            sgorbit.autoRotate = true;
+            //sgorbit.autoRotate = true;
           }
+          sgcontrols = narrative['sg']['controls'];
+          sgmap = narrative['sg']['map'];
+          sghud = narrative.findActor('sghud');
+          sgskybox = narrative.findActor('sgskybox');
+          sgskydome = narrative.findActor('sgskydome');
         }
+
+        if(rmscene){
+          rmquad = narrative.findActor('rmquad');
+        }
+
         if(vrscene){
-          vrlens = <THREE.PerspectiveCamera>(<Record<string,unknown>>camera_results['vr'])['lens'];
-          //vrorbit = <THREE.PerspectiveCamera>(<Record<string,unknown>>camera_results['vr'])['orbit'];
+          vrlens = narrative['vr']['lens'];
           if(state['camera']['vr'] && state['camera']['vr']['_orbit']){
             console.log(`\n*** enabling orbit controls for vrlens:`);
-            //console.dir(vrlens);
             vrorbit = new OrbitControls(sglens, renderer.domElement);
             vrorbit.update();
             vrorbit.enableDamping = true;
             vrorbit.dampingFactor = 0.25;
             vrorbit.enableZoom = true;
             //vrorbit.autoRotate = true;
-            console.dir(vrorbit);
           }
+          vrcontrols = narrative['vr']['controls'];
+          vrmap = narrative['vr']['map'];
+          vrhud = narrative.findActor('vrhud');
+          vrskybox = narrative.findActor('vrskybox');
+          vrskydome = narrative.findActor('vrskydome');
         }
-      }catch(e){
-        console.log(`error in camera.delta: ${e}`);
-      }
-
-   
-      // non-camera states
-      // stage prepares scenes
-      // audio prepares music/sound
-      // actions prepares sequences - music, animation and changes
-      try{
-        const results:unknown[] = await Promise.all([
-          stage.delta(state['stage'], scenes, narrative),
-          //audio.delta(state['audio']),
-          //actions.delta(state['actions'], narrative)
-        ]);
-
-        // process stage, audio and actions results
-        //console.log(`these results should be [void,void,void]`);
-        console.log(`\n\n@@@ n.chSt: Promise.all([stage,audio,actions]) results[]:`);
-        console.dir(results);
-        console.log(`@@@ n.chSt Promise.all([stage,audio,actions]) results[]:\n`);
 
 
         if(!animating){
-
-          // initialize rendering topology
-          //narrative.prerender();
-
           // start clock, timeline
           clock.start();
           tl.play();
@@ -422,7 +408,6 @@ class Narrative implements Cast{
 
           // setAnimationLoop => begin render-loop
           animating = true;
-          console.log(`renderer = ${renderer}`);
           renderer.setAnimationLoop(narrative.render);
           narrative.render();
         }
@@ -433,13 +418,9 @@ class Narrative implements Cast{
 
     })();//async-IIFE 
 
-  }//changeState()
+  }//changeState
 
 
-  // prerender - prepare specific rendering topology
-  prerender():void {
-    //renderer = create_renderer();
-  }//prerender()
 
 
   // render current frame - frame holds current frame number
@@ -483,7 +464,7 @@ class Narrative implements Cast{
         console.log(`unrecgnized topology ${topology}`);
     }    
 
-  }//render()
+  }//render
 
 
 
@@ -510,7 +491,7 @@ class Narrative implements Cast{
       vrlens.updateProjectionMatrix();
     }
     renderer.setSize(width_, height_);
-  }//onWindowResize()
+  }
 
 
   // method to allow infinite seq-loop mainly for music sequence playing
