@@ -147,6 +147,7 @@ const scenes:Record<string, THREE.Scene> = {},
       // time
       tl = gsap.timeline({paused:true}),
       clock = new THREE.Clock(),    // uses perfomance.now() - fine grain
+      devclock = new THREE.Clock(),    // uses perfomance.now() - fine grain
       timer = (t:number, dt:number, fr:number):void => {
         // sync frame and gsap-frame => no need to increment frame in render()
         frame = fr;
@@ -204,6 +205,7 @@ class Narrative implements Cast{
   //bootstrap(_config:Config, state:State){
   bootstrap(_config:Config, state:State):void{
     console.log(`\n@@@ narrative.bootstrap:`);
+    devclock.start();
 
     // initialize config
     config = _config;
@@ -283,6 +285,7 @@ class Narrative implements Cast{
 
 
     // populate Narrative instance for use in state modules
+    narrative['devclock'] = devclock;
     if(_sg){
       narrative['sg'] = {};
       const nsg = narrative['sg'];
@@ -337,6 +340,8 @@ class Narrative implements Cast{
   changeState(state:State):void{
     console.log(`\n@@@ narrative.changeState state:`);
     console.dir(state);
+    console.log(`\n @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@`);
+    console.log(`changeState: et = ${devclock.getElapsedTime()}`);
 
     (async () => {
       // camera creates camera components, controls and maps, and fog
@@ -344,15 +349,17 @@ class Narrative implements Cast{
       // audio prepares music/sound
       // actions prepares sequences - music, animation and changes
       try{
-        const results:unknown[] = await Promise.all([
+        const results:number[] = await Promise.all([
           camera.delta(state['camera'], narrative),
           stage.delta(state['stage'], narrative)
           //audio.delta(state['audio']),
           //actions.delta(state['actions'], narrative)
         ]);
-        console.log(`state-processing results =`);
+        console.log(`state-processing results are elapsed completion times:`);
         console.dir(results);
 
+        console.log(`\n @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@`);
+        console.log(`changeState end of await Promise.all(states): et = ${devclock.getElapsedTime()}`);
 
         if(sgscene){
           sglens = narrative['sg']['lens'];
@@ -378,9 +385,9 @@ class Narrative implements Cast{
 
         if(vrscene){
           vrlens = narrative['vr']['lens'];
-          if(state['camera']['vr'] && state['camera']['vr']['_orbit']){
+          if(state['camera']['vr']['lens'] && state['camera']['vr']['lens']['_orbit']){
             console.log(`\n*** enabling orbit controls for vrlens:`);
-            vrorbit = new OrbitControls(sglens, renderer.domElement);
+            vrorbit = new OrbitControls(vrlens, renderer.domElement);
             vrorbit.update();
             vrorbit.enableDamping = true;
             vrorbit.dampingFactor = 0.25;
@@ -394,9 +401,22 @@ class Narrative implements Cast{
           vrskydome = narrative.findActor('vrskydome');
         }
 
+        // TEMP !!!!!!!!!!!!!!!!!!!!!!!!!
+        console.log(`\n\n\n########################### vrskybox:`);
+        console.log(`changeState vrskybox: et = ${devclock.getElapsedTime()}`);
+        narrative.reportActors(true);
+
+        if(vrskybox){
+          console.log(`vrskybox.material:`);
+          console.dir(vrskybox.material);
+        }else{
+          console.log(`\n\n\n########################### NO vrskybox!!!!`);
+        }
+
 
         if(!animating){
-          // start clock, timeline
+          // stop devclock, start clock and timeline
+          devclock.stop();
           clock.start();
           tl.play();
     
@@ -417,6 +437,9 @@ class Narrative implements Cast{
       }
 
     })();//async-IIFE 
+
+    console.log(`\n @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@`);
+    console.log(`changeState end after async function: et = ${devclock.getElapsedTime()}`);
 
   }//changeState
 
@@ -526,6 +549,7 @@ class Narrative implements Cast{
   // following two functions are for sgscene-actor management (by actor name)
   addActor(scene:THREE.Scene, name:string, actor:THREE.Object3D):void{
     console.log(`\n@@@ narrative.addActor ${name}`);
+    console.log(`addActor: et = ${devclock.getElapsedTime()}`);
     if(scene && actor && name && name.length > 0){
       if(cast[name]){
         narrative.removeActor(scene, name);  //if replace actor with same name?
@@ -533,7 +557,9 @@ class Narrative implements Cast{
       actor.name = name;  // possible diagnostic use
       cast[name] = actor;
       scene.add(actor);
-      console.log(`n.addActor: scene.children.l = ${scene.children.length}`);
+      //console.log(`n.addActor: scene.children.l = ${scene.children.length}`);
+      //console.log(`n.addActor: cast size = ${Object.keys(cast).length}`);
+      //console.log(`n.addActor: cast = ${Object.keys(cast)}`);
     }else{
       console.log(`n.addActor:FAILED to add actor ${actor} w. name ${name}!!`); 
     }
@@ -553,7 +579,7 @@ class Narrative implements Cast{
 
   // following two functions are for actor report and fetch
   reportActors(display=false):Record<string, THREE.Object3D>{
-    //console.log('\nnarrative.reportActors()');
+    console.log(`\nnarrative.reportActors() display=${display}`);
     if(display){
       for(const [k,v] of Object.entries(cast)){
         console.log(`cast contains actor ${v} with name ${k}`); 

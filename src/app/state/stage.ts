@@ -32,14 +32,14 @@ class Stage {
   // t/f => create/remove actor(s)
   // undefined => modify actor(s) via actor.delta(options), a method
   // [2] actors = Record<string,unknown>[] = [{name:Actor},...]
-  async scene(scene_name:string, state:Record<string,unknown>, narrative:Cast):Promise<void>{
+  async scene(scene_name:string, state:Record<string,unknown>, narrative:Cast):Promise<number>{
 
       // break-resolve if state[scene_name] (exp state['sgscene']) is undefined
       // or if state[scene_name] = {}
       if(state === undefined || Object.keys(state).length === 0){ 
         console.log(`@@ stage.scene: ${scene_name} state is undefined`);
         return new Promise((resolve, reject) => {
-          resolve();
+          resolve(narrative['devclock'].getElapsedTime());
         });
       }
       console.log(`@@ stage.scene: ${scene_name} state is defined:`);
@@ -98,7 +98,7 @@ class Stage {
                   actor = await (<ActorFactory>m[factory]).create(options);
                   
                   // Panorama is *special case*
-                  //if(factory === 'Panorama'){
+                  //if(factory === 'Panorama')
                   if(actor['layers'] && actor['layers'].length > 0){
                     console.log(`\nstage.sc ${scene_name} - adding ${name}.layers to scene`);
                     let i=0;
@@ -118,7 +118,8 @@ class Stage {
                 }catch(e){
                   console.log(`factory.create(${options}) error:${e}`);
                 }
-              }
+
+              }//if(url)
               break;
 
             case false:    // _actor=f => remove actor
@@ -150,7 +151,7 @@ class Stage {
 //      }
 
       return new Promise((resolve, reject) => {
-        resolve();
+        resolve(narrative['devclock'].getElapsedTime());
       });
 
   }//scene()
@@ -158,7 +159,7 @@ class Stage {
 
 
   // process state = state[stage']
-  async delta(state:Record<string,unknown>, narrative:Cast):Promise<void>{
+  async delta(state:Record<string,unknown>, narrative:Cast):Promise<number>{
     console.log(`\n\n@@ stage.delta(state,narrative) state:`);
     console.dir(state);
 
@@ -177,8 +178,8 @@ class Stage {
             stage.scene('vr', vrstate, narrative),
           ]);
 
+          resolve(narrative['devclock'].getElapsedTime());
         })();
-        resolve();
 
       }catch(e){
         console.log(`stage Promise rejected: ${e}`);

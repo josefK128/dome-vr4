@@ -135,6 +135,7 @@ const state:State = {
         vr:{
           lens: {
             _lens: true,
+            _orbit:true,
             fov: 90,
             near: 0.01,
             far: 100000,
@@ -227,7 +228,7 @@ const state:State = {
 //                  }
 //                }
 
-                'skybox':{ 
+                'vrskybox':{ 
                   factory:'Skybox',
                   url:'../models/stage/actors/environment/skybox.js',
                   options:{

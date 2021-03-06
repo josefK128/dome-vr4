@@ -116,7 +116,7 @@ class Camera {
 
   // create objects specified in arg camera-state === state['camera']
   // returns new Promise<Record<string,unknown>>((resolve, reject) => {});
-  delta(state:Record<string,unknown>, narrative:Cast):Promise<Record<string,unknown>>{
+  delta(state:Record<string,unknown>, narrative:Cast):Promise<number>{
     console.log(`\n@@ camera.delta(state, scenes) state:`);
     console.dir(state);
 
@@ -225,11 +225,11 @@ class Camera {
           //console.log(`state['vr']['csphere'] is undefined or empty`);
         }
 
-        resolve();
+        resolve(narrative['devclock'].getElapsedTime());
 
       }else{
         console.log(`state['vr'] is undefined or empty - resolve possible sg`);
-        resolve();
+        resolve(narrative['devclock'].getElapsedTime());
       }
     });
 
