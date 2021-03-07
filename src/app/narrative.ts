@@ -449,6 +449,8 @@ class Narrative implements Cast{
 
       sgskybox = narrative.findActor('sgskybox');
       if(sgskybox){
+        console.log(`Array.isArray(sgskybox.material) = ${Array.isArray(sgskybox.material)}`);
+        console.log(`sgskybox.material.length = ${sgskybox.material.length}`);
         sgskybox_maps = [];
         for(let i=0; i<sgskybox.material.length; i++){
           sgskybox_maps[i] = sgskybox.material[i].map;
@@ -552,8 +554,8 @@ class Narrative implements Cast{
           vrhud_tDiffuse_needsUpdate = true;
           renderer.setRenderTarget(vrTarget);
           renderer.render(vrscene, vrlens);
+          renderer.setRenderTarget(null);
         }
-        renderer.setRenderTarget(null);
         renderer.render(vrscene, vrlens);
         break;
 
@@ -566,8 +568,8 @@ class Narrative implements Cast{
           rmquad_tHud_needsUpdate = true;
           renderer.setRenderTarget(rmTarget);
           renderer.render(rmscene, rmlens);
+          renderer.setRenderTarget(null);
         }
-        renderer.setRenderTarget(null);
         renderer.render(rmscene, rmlens);
         break;
 
@@ -577,8 +579,8 @@ class Narrative implements Cast{
           sghud_tDiffuse_needsUpdate = true;
           renderer.setRenderTarget(sgTarget);
           renderer.render(sgscene, sglens);
+          renderer.setRenderTarget(null);
         }
-        renderer.setRenderTarget(null);
         renderer.render(sgscene, sglens);
         break;
 
