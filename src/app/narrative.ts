@@ -87,12 +87,14 @@ let narrative:Narrative,
     _sg:boolean,
     _rm:boolean,
     _vr:boolean,
+    _sgpost = false,
+    _rmpost = false,
+    _vrpost = false,
     renderer:THREE.WebGLRenderer, // NOTE:renderer.render(sgscene,lens)
     displayed_scene:string,
 
-
-    // cameras, controls
-    // sg
+    
+    // sg - camera components, controls, map, renderTarget, actors
     sgscene:THREE.Scene,
     sglens:THREE.PerspectiveCamera,      // from state/camera
                    // NOTE:TBD 'csphere' is whole apparatus - lens, lights etc
@@ -100,31 +102,48 @@ let narrative:Narrative,
     sgcsphere:THREE.Mesh,
     sgcontrols:Record<string,unknown>,
     sgmap:Record<string,unknown>,
+    sgTarget:THREE.WebGLRenderTarget,
     sgTargetNames:string[],
-    sgRenderTarget:THREE.WebGLRenderTarget,
-    sghud:THREE.Mesh,
-    sgskybox:THREE.Mesh,
-    sgskydome:THREE.Mesh,
 
-    // rm
+    sghud:THREE.Mesh,
+    sghud_tDiffuse_value:THREE.Texture,
+    sghud_tDiffuse_needsUpdate:boolean,
+
+    sgskybox:THREE.Mesh,
+    sgskybox_maps:THREE.Texture[],
+    sgskydome:THREE.Mesh,
+    sgskydome_map:THREE.Texture,
+
+    // rm - lens, renderTarget, actors
     rmscene:THREE.Scene,
     rmlens:THREE.PerspectiveCamera,   // separate camera for rendering rmscene
-    rmRenderTarget:THREE.WebGLRenderTarget,
+    rmTarget:THREE.WebGLRenderTarget,
     rmTargetNames:string[],
-    rmquad:THREE.Mesh,
 
-    //vr 
+    rmquad:THREE.Mesh,
+    rmquad_tDiffuse_value:THREE.Texture,
+    rmquad_tDiffuse_needsUpdate:boolean,
+    rmquad_tHud_value:THREE.Texture,
+    rmquad_tHud_needsUpdate:boolean,
+
+    // vr - camera components, controls, map, renderTarget, actors
     vrscene:THREE.Scene,
     vrlens:THREE.PerspectiveCamera,   // separate camera for rendering vrscene,
     vrorbit:OrbitControls,
     vrcsphere:THREE.Mesh,
     vrcontrols:Record<string,unknown>,           // vrcontrols
     vrmap:Record<string,unknown>,            // vrcontrols-keymap - vrkeymap
+    vrTarget:THREE.WebGLRenderTarget,
     vrTargetNames:string[],
-    vrRenderTarget:THREE.WebGLRenderTarget,
+
     vrhud:THREE.Mesh,
+    vrhud_tDiffuse_value:THREE.Texture,
+    vrhud_tDiffuse_needsUpdate:boolean,
+
     vrskybox:THREE.Mesh,
+    vrskybox_maps:THREE.Texture[],
     vrskydome:THREE.Mesh,
+    vrskydome_map:THREE.Texture,
 
     // fps-performance meter
     stats:Stats;
@@ -272,6 +291,9 @@ class Narrative implements Cast{
     _sg = config.topology._sg;
     _rm = config.topology._rm;
     _vr = config.topology._vr;
+    _sgpost = config.topology._sgpost;
+    _rmpost = config.topology._rmpost;
+    _vrpost = config.topology._vrpost;
     topology = config.topology.topology;  //topology=_sg + _rm*2 + _vr*4
     //console.log(`_sg=${_sg} _rm=${_rm} _vr=${_vr}`);
     console.log(`rendering topology type = ${topology}`);
@@ -358,63 +380,17 @@ class Narrative implements Cast{
         console.log(`state-processing results are elapsed completion times:`);
         console.dir(results);
 
+        // TEMP !!!!!
         console.log(`\n @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@`);
         console.log(`changeState end of await Promise.all(states): et = ${devclock.getElapsedTime()}`);
-
-        if(sgscene){
-          sglens = narrative['sg']['lens'];
-          if(state['camera']['sg']['lens'] && state['camera']['sg']['lens']['_orbit']){
-            console.log(`\n*** enabling orbit controls for sglens:`);
-            sgorbit = new OrbitControls(sglens, renderer.domElement);
-            sgorbit.update();
-            sgorbit.enableDamping = true;
-            sgorbit.dampingFactor = 0.25;
-            sgorbit.enableZoom = true;
-            //sgorbit.autoRotate = true;
-          }
-          sgcontrols = narrative['sg']['controls'];
-          sgmap = narrative['sg']['map'];
-          sghud = narrative.findActor('sghud');
-          sgskybox = narrative.findActor('sgskybox');
-          sgskydome = narrative.findActor('sgskydome');
-        }
-
-        if(rmscene){
-          rmquad = narrative.findActor('rmquad');
-        }
-
-        if(vrscene){
-          vrlens = narrative['vr']['lens'];
-          if(state['camera']['vr']['lens'] && state['camera']['vr']['lens']['_orbit']){
-            console.log(`\n*** enabling orbit controls for vrlens:`);
-            vrorbit = new OrbitControls(vrlens, renderer.domElement);
-            vrorbit.update();
-            vrorbit.enableDamping = true;
-            vrorbit.dampingFactor = 0.25;
-            vrorbit.enableZoom = true;
-            //vrorbit.autoRotate = true;
-          }
-          vrcontrols = narrative['vr']['controls'];
-          vrmap = narrative['vr']['map'];
-          vrhud = narrative.findActor('vrhud');
-          vrskybox = narrative.findActor('vrskybox');
-          vrskydome = narrative.findActor('vrskydome');
-        }
-
-        // TEMP !!!!!!!!!!!!!!!!!!!!!!!!!
-        console.log(`\n\n\n########################### vrskybox:`);
-        console.log(`changeState vrskybox: et = ${devclock.getElapsedTime()}`);
         narrative.reportActors(true);
-
-        if(vrskybox){
-          console.log(`vrskybox.material:`);
-          console.dir(vrskybox.material);
-        }else{
-          console.log(`\n\n\n########################### NO vrskybox!!!!`);
-        }
 
 
         if(!animating){
+          // prepare components and actors for render()
+          narrative.prerender(state);
+          console.log(`prerender() finished!`);
+
           // stop devclock, start clock and timeline
           devclock.stop();
           clock.start();
@@ -431,7 +407,6 @@ class Narrative implements Cast{
           renderer.setAnimationLoop(narrative.render);
           narrative.render();
         }
-
       }catch(e){
         console.log(`n.chSt - error in processing state from scene: ${e}`);
       }
@@ -443,6 +418,109 @@ class Narrative implements Cast{
 
   }//changeState
 
+
+
+  // prepare actors and components for render()
+  prerender(state:State):void {
+    console.log(`\n\n@@@ narrative.prerender()`);
+    if(sgscene){
+      sglens = narrative['sg']['lens'];
+      if(state['camera']['sg']['lens'] && state['camera']['sg']['lens']['_orbit']){
+        console.log(`\n*** enabling orbit controls for sglens:`);
+        sgorbit = new OrbitControls(sglens, renderer.domElement);
+        sgorbit.update();
+        sgorbit.enableDamping = true;
+        sgorbit.dampingFactor = 0.25;
+        sgorbit.enableZoom = true;
+        //sgorbit.autoRotate = true;
+      }
+      sgcontrols = narrative['sg']['controls'];
+      sgmap = narrative['sg']['map'];
+
+      // build rendering components
+      sgTarget = new THREE.WebGLRenderTarget();
+      sghud = narrative.findActor('sghud');
+      if(sghud){
+        sghud_tDiffuse_value = sghud.uniforms.tDiffuse.value;
+        sghud_tDiffuse_needsUpdate = sghud.uniforms.tDiffuse.needsUpdate;
+      }else{
+        _sgpost = false;
+      }
+
+      sgskybox = narrative.findActor('sgskybox');
+      if(sgskybox){
+        sgskybox_maps = [];
+        for(let i=0; i<sgskybox.material.length; i++){
+          sgskybox_maps[i] = sgskybox.material[i].map;
+        }
+      }
+
+      sgskydome = narrative.findActor('sgskydome');
+      if(sgskydome){
+        sgskydome_map = sgskydome.material.map;
+      }
+    }//if(sgscene)
+
+    if(rmscene){
+      rmquad = narrative.findActor('rmquad');
+      if(rmquad){
+        rmTarget = new THREE.WebGLRenderTarget();
+        rmquad_tDiffuse_value = rmquad.uniforms.tDiffuse.value;
+        rmquad_tDiffuse_needsUpdate = rmquad.uniforms.tDiffuse.needsUpdate;
+        if(_rmpost){
+          rmquad_tHud_value = rmquad.uniforms.tHud.value;
+          rmquad_tHud_needsUpdate = rmquad.uniforms.tHud.needsUpdate;
+        }
+      }else{
+        _rm = false;
+        _rmpost = false;
+      }
+    }
+
+    if(vrscene){
+      console.log(`@@ vrscene is defined!`);
+      vrlens = narrative['vr']['lens'];
+      if(state['camera']['vr']['lens'] && state['camera']['vr']['lens']['_orbit']){
+        console.log(`*** enabling orbit controls for vrlens:`);
+        vrorbit = new OrbitControls(vrlens, renderer.domElement);
+        vrorbit.update();
+        vrorbit.enableDamping = true;
+        vrorbit.dampingFactor = 0.25;
+        vrorbit.enableZoom = true;
+        //vrorbit.autoRotate = true;
+      }
+      vrcontrols = narrative['vr']['controls'];
+      vrmap = narrative['vr']['map'];
+
+      // build rendering components
+      vrhud = narrative.findActor('vrhud');
+      if(vrhud){
+        vrTarget = new THREE.WebGLRenderTarget();
+        vrhud_tDiffuse_value = vrhud.uniforms.tDiffuse.value;
+        vrhud_tDiffuse_needsUpdate = vrhud.uniforms.tDiffuse.needsUpdate;
+      }else{
+        _vrpost = false;
+      }
+
+      vrskybox = narrative.findActor('vrskybox');
+      console.log(`vrskybox = ${vrskybox}`);
+      if(vrskybox){
+        console.log(`Array.isArray(vrskybox.material) = ${Array.isArray(vrskybox.material)}`);
+        console.log(`vrskybox.material.length = ${vrskybox.material.length}`);
+        vrskybox_maps = [];
+        for(let i=0; i<vrskybox.material.length; i++){
+          vrskybox_maps[i] = vrskybox.material[i].map;
+        }
+      }
+
+      vrskydome = narrative.findActor('vrskydome');
+      console.log(`vrskydome = ${vrskydome}`);
+      if(vrskydome){
+        vrskydome_map = vrskydome.material.map;
+      }
+    }//if(vrscene)
+
+  }//prerender()
 
 
 
@@ -469,6 +547,13 @@ class Narrative implements Cast{
         break;
 
       case 4:     // vr
+        if(_vrpost){
+          vrhud_tDiffuse_value = vrTarget.texture;
+          vrhud_tDiffuse_needsUpdate = true;
+          renderer.setRenderTarget(vrTarget);
+          renderer.render(vrscene, vrlens);
+        }
+        renderer.setRenderTarget(null);
         renderer.render(vrscene, vrlens);
         break;
 
@@ -476,10 +561,24 @@ class Narrative implements Cast{
         break;
 
       case 2:     // rm
+        if(_rmpost){
+          rmquad_tHud_value = rmTarget.texture;
+          rmquad_tHud_needsUpdate = true;
+          renderer.setRenderTarget(rmTarget);
+          renderer.render(rmscene, rmlens);
+        }
+        renderer.setRenderTarget(null);
         renderer.render(rmscene, rmlens);
         break;
 
       case 1:     // sg
+        if(_sgpost){
+          sghud_tDiffuse_value = sgTarget.texture;
+          sghud_tDiffuse_needsUpdate = true;
+          renderer.setRenderTarget(sgTarget);
+          renderer.render(sgscene, sglens);
+        }
+        renderer.setRenderTarget(null);
         renderer.render(sgscene, sglens);
         break;
 
@@ -604,21 +703,6 @@ class Narrative implements Cast{
       return null;
     }
   }
-
-
-//  findRenderTarget(name:string):THREE.WebGLRenderTarget{
-//    //console.log(`\nnarrative.getRenderTarget: name=${name}`);
-//    if(name && name.length > 0){
-//      if(name.match(/sg/)){return sgRenderTarget;}
-//      if(name.match(/rm/)){return rmRenderTarget;}
-//      if(name.match(/vr/)){return vrRenderTarget;}
-//      console.log(`renderTarget matching ${name} NOT found!`); 
-//    }else{
-//      console.log(`renderTarget name ${name} is malformed!`); 
-//    }
-//    return undefined;
-//  }
-
 
 }//Narrative
 

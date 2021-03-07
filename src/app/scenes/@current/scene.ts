@@ -215,7 +215,7 @@ const state:State = {
                   } 
                 },
 
-//                'skydome':{ 
+//                'vrskydome':{ 
 //                  factory:'Skydome',
 //                  url:'../models/stage/actors/environment/skydome.js',
 //                  options:{

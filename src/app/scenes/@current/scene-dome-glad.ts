@@ -185,7 +185,7 @@ const state:State = {
                     }
                 },
 
-                'skydome':{ 
+                'vrskydome':{ 
                   factory:'Skydome',
                   url:'../models/stage/actors/environment/skydome.js',
                   options:{
@@ -198,7 +198,7 @@ const state:State = {
                   }
                 }
 
-//                'skybox':{ 
+//                'vrskybox':{ 
 //                  factory:'Skybox',
 //                  url:'../models/stage/actors/environment/skybox.js',
 //                  options:{

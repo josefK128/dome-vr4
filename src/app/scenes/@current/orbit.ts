@@ -215,7 +215,7 @@ const state:State = {
                   } 
                 },
 
-//                'skydome':{ 
+//                'sgskydome':{ 
 //                  factory:'Skydome',
 //                  url:'../models/stage/actors/environment/skydome.js',
 //                  options:{
@@ -228,7 +228,7 @@ const state:State = {
 //                  }
 //                }
 
-                'skybox':{ 
+                'sgskybox':{ 
                   factory:'Skybox',
                   url:'../models/stage/actors/environment/skybox.js',
                   options:{

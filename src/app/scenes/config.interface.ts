@@ -25,7 +25,7 @@ export interface Config {
     // render sgscene either to display, or to sgTarget offscreen for 
     // bg texturing in rmscene or texturing in vrscene
     _sg:boolean;                  // render to sgTarget
-    _sgpost?:string;             //post-pr with prv frame 
+    _sgpost?:boolean;            //post-pr with prv frame 
                                 //use frame n-1 sgTarget.tex ('sg') 
     sgTargetNames?:string[]; //actor names to be textured by sgTarget.texture
                             //these can be in vrscene or sgscene
@@ -43,7 +43,7 @@ export interface Config {
 
     // render vrscene - which implies displayed_scene = 'vr'
     _vr:boolean;
-    _vrpost?:string;              //post-pr with prv frame 
+    _vrpost?:boolean;             //post-pr with prv frame 
                                  //use frame n-1 vrTarget.tex in vrhud frame n
     vrTargetNames?:string[]; //actor names to be textured by vrTarget.texture
                             //these must be in vrscene such as vrhud
