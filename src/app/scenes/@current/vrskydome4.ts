@@ -1,4 +1,4 @@
-// @current/scene.ts
+// @current/vrskydome4.ts
 // webGL2, es300 three.js ==0.125.2
  
 
@@ -33,11 +33,8 @@ const config:Config = {
       // bg texturing in rmscene or texturing in vrscene
       _sg: false,
       
-      //'sg'|'rm'|'texture'|undefined
       //use frame n-1 sgTarget.tex ('sg') 
-      //or rmTarget.tex ('rm') in sghud frame n
-      //or image url OR undefined => NO sgpost/sghud
-      _sgpost: undefined,
+      _sgpost: false,
   
       // rmstage or vrstage actors 
       sgTargetNames: [],
@@ -49,9 +46,9 @@ const config:Config = {
       _rm: false,
 
       // rmstage or vrstage actors 
-      _rmpost: undefined,
+      _rmpost: false,
 
-      rmTargetNames: ['vrcube'],
+      rmTargetNames: [],
       //skyfaces:string[];  //used if actor 'skyfaces' exists and is rmTgtName
       //value is some subset of ['f','b','l','r','t','g']
       //order-independent: front,back,left,right,top,ground
@@ -63,8 +60,7 @@ const config:Config = {
       _vr:true,
 
       //use frame n-1 vrTarget.tex ('vr') in sghud frame n
-      //or image url OR undefined => NO sgpost/sghud
-      _vrpost: undefined,
+      _vrpost: false,
 
     },//topology
 
@@ -173,6 +169,7 @@ const state:State = {
                         transform: { t: [0.0, 0.0, 0.0] }
                     }
                 },
+
                 'unitcube': {
                     factory: 'Unitcube',
                     url: '../models/stage/actors/objects/unitcube.js',
@@ -194,7 +191,6 @@ const state:State = {
                      color:'white',
                      opacity: 0.5,    // default 1.0
                      texture:'./app/media/images/glad.png'
-
                   }
                 }
 

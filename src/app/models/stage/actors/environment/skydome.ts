@@ -49,7 +49,7 @@ export const Skydome:ActorFactory = class {
           height:number = <number>options['height'] || 10000,
           color:string = <string>options['color'] || 'black',
           opacity:number = <number>options['opacity'] || 1.0,
-          url = <string[]>options['texture'],
+          url = <string[]>options['texture'] || '',
           transform = <Record<string,number[]>>(options['transform'] || {}),
           textureLoader = new THREE.TextureLoader(); 
 
@@ -75,7 +75,7 @@ export const Skydome:ActorFactory = class {
             color:color,
             opacity:opacity, 
             fog:true,
-            side:THREE.BackSide,
+            side:THREE.DoubleSide,
             map: textureLoader.load(url)
           }); 
           dome_m.blending = THREE.CustomBlending;
@@ -114,10 +114,10 @@ export const Skydome:ActorFactory = class {
               side:THREE.BackSide,
               map: textureLoader.load(url_)
             }); 
-            dome_m.blending = THREE.CustomBlending;
-            dome_m.blendSrc = THREE.SrcAlphaFactor; // default
-            dome_m.blendDst = THREE.OneMinusSrcAlphaFactor; // default
-            dome_m.blendEquation = THREE.AddEquation; // default
+            dome.material.blending = THREE.CustomBlending;
+            dome.material.blendSrc = THREE.SrcAlphaFactor; // default
+            dome.material.blendDst = THREE.OneMinusSrcAlphaFactor; // default
+            dome.material.blendEquation = THREE.AddEquation; // default
 
             if(transform && Object.keys(transform).length > 0){
               //console.log(`dome.delta: transform = ${transform}`);

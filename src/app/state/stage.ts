@@ -80,44 +80,46 @@ class Stage {
 
                 try{
                   m = await import(url);
-                  //console.log(`m:`);
-                  //console.dir(m);
-                  //console.log(`m[${factory}]:`);
-                  //console.dir(m[factory]);
+                  console.log(`m:`);
+                  console.dir(m);
+                  console.log(`m[${factory}]:`);
+                  console.dir(m[factory]);
+
+                  try{
+                    // Panorama is *special case*
+                    if(factory === 'Panorama'){
+                      console.log(`\nPanorama - adding scene['lens'] to options`);
+                      options['lens'] = narrative[scene_name]['lens'];
+                    }
+  
+                    actor = await (<ActorFactory>m[factory]).create(options);
+                    
+                    // Panorama is *special case*
+                    //if(factory === 'Panorama')
+                    if(actor['layers'] && actor['layers'].length > 0){
+                      console.log(`\nstage.sc ${scene_name} - adding ${name}.layers to scene`);
+                      let i=0;
+                      for(const layer of actor['layers']){
+                        narrative.addActor(scene, `${name}.layer${i}`, actor['layers'][i]);
+                        i++;
+                      }
+                    }else{
+                      console.log(`stage.scene ${scene_name} - narrative.addActor(${name})`);
+                      console.log(`add actor = ${actor}`);
+                      console.log(`typeof actor = ${typeof actor}`);
+                      console.log(`typeof scene = ${typeof scene}`);
+                      console.log(`scene = ${scene}`);
+                      console.dir(scene);
+                      narrative.addActor(scene, name, actor);
+                    }
+                  }catch(e){
+                    console.log(`factory.create(${options}) error:${e}`);
+                  }
+
                 }catch(e){
                   console.log(`import(${url}) error:${e}`);
                 }
 
-                try{
-                  // Panorama is *special case*
-                  if(factory === 'Panorama'){
-                    console.log(`\nPanorama - adding scene['lens'] to options`);
-                    options['lens'] = narrative[scene_name]['lens'];
-                  }
-
-                  actor = await (<ActorFactory>m[factory]).create(options);
-                  
-                  // Panorama is *special case*
-                  //if(factory === 'Panorama')
-                  if(actor['layers'] && actor['layers'].length > 0){
-                    console.log(`\nstage.sc ${scene_name} - adding ${name}.layers to scene`);
-                    let i=0;
-                    for(const layer of actor['layers']){
-                      narrative.addActor(scene, `${name}.layer${i}`, actor['layers'][i]);
-                      i++;
-                    }
-                  }else{
-                    console.log(`stage.scene ${scene_name} - narrative.addActor(${name})`);
-                    console.log(`add actor = ${actor}`);
-                    console.log(`typeof actor = ${typeof actor}`);
-                    console.log(`typeof scene = ${typeof scene}`);
-                    console.log(`scene = ${scene}`);
-                    console.dir(scene);
-                    narrative.addActor(scene, name, actor);
-                  }
-                }catch(e){
-                  console.log(`factory.create(${options}) error:${e}`);
-                }
 
               }//if(url)
               break;

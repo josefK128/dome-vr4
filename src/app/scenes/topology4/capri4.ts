@@ -33,11 +33,8 @@ const config:Config = {
       // bg texturing in rmscene or texturing in vrscene
       _sg: false,
       
-      //'sg'|'rm'|'texture'|undefined
       //use frame n-1 sgTarget.tex ('sg') 
-      //or rmTarget.tex ('rm') in sghud frame n
-      //or image url OR undefined => NO sgpost/sghud
-      _sgpost: undefined,
+      _sgpost: false,
   
       // rmstage or vrstage actors 
       sgTargetNames: [],
@@ -47,8 +44,8 @@ const config:Config = {
       // in vrscene - either skybox/skydome/etc. or actors
       // NOTE! true=>must define rmquad and rmTargetName(s)
       _rm: false,
-      _rmpost: undefined,
-      rmTargetNames: ['vrcube'],
+      _rmpost: false,
+      rmTargetNames: [],
       //skyfaces:string[];  //used if actor 'skyfaces' exists and is rmTgtName
       //value is some subset of ['f','b','l','r','t','g']
       //order-independent: front,back,left,right,top,ground
@@ -59,10 +56,8 @@ const config:Config = {
       // render vrscene - which implies displayed_scene = 'vr'
       _vr:true,
 
-      //'vr'|'texture'|undefined
       //use frame n-1 vrTarget.tex ('vr') in sghud frame n
-      //or image url OR undefined => NO sgpost/sghud
-      _vrpost: undefined,
+      _vrpost: false,
 
     },//topology
 
