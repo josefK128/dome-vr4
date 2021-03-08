@@ -305,7 +305,6 @@ class Narrative implements Cast{
     console.log(`renderer = ${renderer}:`);
     console.dir(renderer);
 
-
     // populate Narrative instance for use in state modules
     narrative['devclock'] = devclock;
     if(_sg){
@@ -423,6 +422,34 @@ class Narrative implements Cast{
   // prepare actors and components for render()
   prerender(state:State):void {
     console.log(`\n\n@@@ narrative.prerender()`);
+
+    // load transparent texture for sgTarget.texture, rmTarget.texture, 
+    // vrTarget.texture initialization
+    const loader = new THREE.TextureLoader();
+    let transparent_texture:THREE.Texture;
+    loader.load('./app/media/images/cloud/transparent_1px_files//1px_trpt.png',
+      (t) => {
+        console.log(`t = ${t}:`);
+        console.dir(t);
+        if(sgscene){
+          sgTarget = new THREE.WebGLRenderTarget();
+          sgTarget.texture = t;
+          console.log(`sgTarget.texture = ${sgTarget.texture}`);
+        }
+        if(rmscene){
+          rmTarget = new THREE.WebGLRenderTarget();
+          rmTarget.texture = t;
+          console.log(`rmTarget.texture = ${rmTarget.texture}`);
+        }
+        if(vrscene){
+          vrTarget = new THREE.WebGLRenderTarget();
+          vrTarget.texture = t;
+          console.log(`vrTarget.texture = ${vrTarget.texture}`);
+        }
+      }
+    );
+      
+
     if(sgscene){
       sglens = narrative['sg']['lens'];
       if(state['camera']['sg']['lens'] && state['camera']['sg']['lens']['_orbit']){
@@ -437,8 +464,7 @@ class Narrative implements Cast{
       sgcontrols = narrative['sg']['controls'];
       sgmap = narrative['sg']['map'];
 
-      // build rendering components
-      sgTarget = new THREE.WebGLRenderTarget();
+      // build rendering components, actors
       sghud = narrative.findActor('sghud');
       if(sghud){
         sghud_tDiffuse_value = sghud.uniforms.tDiffuse.value;
@@ -464,6 +490,7 @@ class Narrative implements Cast{
     }//if(sgscene)
 
     if(rmscene){
+      // build rendering components, actors
       rmquad = narrative.findActor('rmquad');
       if(rmquad){
         rmTarget = new THREE.WebGLRenderTarget();
@@ -494,10 +521,10 @@ class Narrative implements Cast{
       vrcontrols = narrative['vr']['controls'];
       vrmap = narrative['vr']['map'];
 
-      // build rendering components
+      // build rendering components, actors
+      vrTarget = new THREE.WebGLRenderTarget();
       vrhud = narrative.findActor('vrhud');
       if(vrhud){
-        vrTarget = new THREE.WebGLRenderTarget();
         vrhud_tDiffuse_value = vrhud.uniforms.tDiffuse.value;
         vrhud_tDiffuse_needsUpdate = vrhud.uniforms.tDiffuse.needsUpdate;
       }else{
@@ -540,16 +567,117 @@ class Narrative implements Cast{
     // render config-defined topology using defined rendering functions
     switch(topology){
       case 7:     // sg-rm-vr
+        if(_sgpost){
+          sghud_tDiffuse_value = sgTarget.texture;
+          sghud_tDiffuse_needsUpdate = true;
+        }
+        renderer.setRenderTarget(sgTarget);
+        renderer.render(sgscene, sglens);
+        if(_rmpost){
+          rmquad_tHud_value = rmTarget.texture;
+          rmquad_tHud_needsUpdate = true;
+        }
+        rmquad_tDiffuse_value = sgTarget.texture;
+        rmquad_tDiffuse_needsUpdate = true;
+        renderer.setRenderTarget(rmTarget);
+        renderer.render(rmscene, rmlens);
+        if(_vrpost){      // <?> <mono-stereo conflict?>
+          vrhud_tDiffuse_value = vrTarget.texture;
+          vrhud_tDiffuse_needsUpdate = true;        
+          renderer.setRenderTarget(vrTarget);
+          renderer.render(vrscene, vrlens);
+          renderer.setRenderTarget(null);
+        }
+        for(const actorname of rmTargetNames){
+          if(actorname === 'vrskybox'){
+            for(let i=0; i<6; i++){
+              vrskybox_maps[i] = rmTarget.texture;
+            }
+          }else{
+            if(actorname === 'vrskydome'){
+              vrskydome_map = rmTarget.texture;
+            }else{
+              let actor:THREE.Object3D;
+              if(actor = narrative.findActor(actorname)){  // if defined
+                actor.material.map = rmTarget.texture;
+              }
+            }
+          }
+        }
+        renderer.render(vrscene, vrlens);
         break;
+
 
       case 6:     // rm-vr
+        if(_rmpost){
+          rmquad_tHud_value = rmTarget.texture;
+          rmquad_tHud_needsUpdate = true;
+        }
+        renderer.setRenderTarget(rmTarget);
+        renderer.render(rmscene, rmlens);
+        if(_vrpost){      // <?> <mono-stereo conflict?>
+          vrhud_tDiffuse_value = vrTarget.texture;
+          vrhud_tDiffuse_needsUpdate = true;        
+          renderer.setRenderTarget(vrTarget);
+          renderer.render(vrscene, vrlens);
+          renderer.setRenderTarget(null);
+        }
+        for(const actorname of rmTargetNames){
+          if(actorname === 'vrskybox'){
+            for(let i=0; i<6; i++){
+              vrskybox_maps[i] = rmTarget.texture;
+            }
+          }else{
+            if(actorname === 'vrskydome'){
+              vrskydome_map = rmTarget.texture;
+            }else{
+              let actor:THREE.Object3D;
+              if(actor = narrative.findActor(actorname)){  // if defined
+                actor.material.map = rmTarget.texture;
+              }
+            }
+          }
+        }
+        renderer.render(vrscene, vrlens);
         break;
+
 
       case 5:     // sg-vr
+        if(_sgpost){
+          sghud_tDiffuse_value = sgTarget.texture;
+          sghud_tDiffuse_needsUpdate = true;
+        }
+        renderer.setRenderTarget(sgTarget);
+        renderer.render(sgscene, sglens);
+        if(_vrpost){      // <?> <mono-stereo conflict?>
+          vrhud_tDiffuse_value = vrTarget.texture;
+          vrhud_tDiffuse_needsUpdate = true;        
+          renderer.setRenderTarget(vrTarget);
+          renderer.render(vrscene, vrlens);
+          renderer.setRenderTarget(null);
+        }
+        for(const actorname of sgTargetNames){
+          if(actorname === 'vrskybox'){
+            for(let i=0; i<6; i++){
+              vrskybox_maps[i] = sgTarget.texture;
+            }
+          }else{
+            if(actorname === 'vrskydome'){
+              vrskydome_map = sgTarget.texture;
+            }else{
+              let actor:THREE.Object3D;
+              if(actor = narrative.findActor(actorname)){  // if defined
+                actor.material.map = sgTarget.texture;
+              }
+            }
+          }
+        }
+        renderer.render(vrscene, vrlens);
         break;
 
+
       case 4:     // vr
-        if(_vrpost){
+        if(_vrpost){  // <possible? - stereo<->mono?>
           vrhud_tDiffuse_value = vrTarget.texture;
           vrhud_tDiffuse_needsUpdate = true;
           renderer.setRenderTarget(vrTarget);
@@ -559,8 +687,26 @@ class Narrative implements Cast{
         renderer.render(vrscene, vrlens);
         break;
 
+
       case 3:     // sg-rm
+        if(_sgpost){
+          sghud_tDiffuse_value = sgTarget.texture;
+          sghud_tDiffuse_needsUpdate = true;
+        }
+        renderer.setRenderTarget(sgTarget);
+        renderer.render(sgscene, sglens);
+        if(_rmpost){
+          rmquad_tHud_value = rmTarget.texture;
+          rmquad_tHud_needsUpdate = true;
+          renderer.setRenderTarget(rmTarget);
+          renderer.render(rmscene, rmlens);
+        }
+        rmquad_tDiffuse_value = sgTarget.texture;
+        rmquad_tDiffuse_needsUpdate = true;
+        renderer.setRenderTarget(null);
+        renderer.render(rmscene, rmlens);
         break;
+
 
       case 2:     // rm
         if(_rmpost){
@@ -573,6 +719,7 @@ class Narrative implements Cast{
         renderer.render(rmscene, rmlens);
         break;
 
+
       case 1:     // sg
         if(_sgpost){
           sghud_tDiffuse_value = sgTarget.texture;
@@ -583,6 +730,7 @@ class Narrative implements Cast{
         }
         renderer.render(sgscene, sglens);
         break;
+
 
       default:    // error
         console.log(`unrecgnized topology ${topology}`);

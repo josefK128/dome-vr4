@@ -49,6 +49,7 @@ module.exports = {
       "eqeqeq": "warn",        // require === and !== (not == and !=)
       "wrap-iife": "warn",    // require (()=>{})() not ()=>{}()
       "no-tabs": "warn",    // enforce spaces for tabs
-      "no-multi-assign": "warn"    // no a=b=c
+      "no-multi-assign": "warn",    // no a=b=c
+      "no-cond-assign":0  // allow assign in conditional - check for undefined
     }
 };
