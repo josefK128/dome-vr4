@@ -679,6 +679,7 @@ class Narrative implements Cast{
           sghud_tDiffuse_needsUpdate = true;
         }
         renderer.setRenderTarget(sgTarget);
+        renderer.clear();
         renderer.render(sgscene, sglens);
         if(_vrpost){      // <?> <mono-stereo conflict?>
             renderer.vr.enabled = false;
@@ -697,9 +698,9 @@ class Narrative implements Cast{
           }else{
             if(actorname === 'vrskydome'){
               //vrskydome_map = sgTarget.texture;
-              vrskydome.material.map = sgTarget.texture;
-              if(frame%100 === 0){
-                console.log(`after: vrskydome.material.map = ${vrskydome.material.map}`);
+              vrskydome_map = sgTarget.texture;
+              if(frame%1000 === 0){
+                console.log(`after: vrskydome_map = ${vrskydome_map}`);
               }
             }else{
               let actor:THREE.Object3D;
@@ -709,6 +710,8 @@ class Narrative implements Cast{
             }
           }
         }
+        renderer.setRenderTarget(null);
+        renderer.clear();
         renderer.render(vrscene, vrlens);
         break;
 

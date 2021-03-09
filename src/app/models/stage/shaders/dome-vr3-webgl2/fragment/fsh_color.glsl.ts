@@ -2,7 +2,7 @@
 // single semi-transparent color
 // Fragment shader program 
 
-export const vsh = `
+export const fsh = `
       #version 300 es
 
       precision highp float;
