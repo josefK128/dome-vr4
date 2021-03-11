@@ -22,7 +22,7 @@
 //      actors:{
 //        'unitsphere':{ 
 //          factory:'Unitsphere',
-//          url:'./app/models/stage/actors/objects/unitsphere',
+//          url:'../models/stage/actors/objects/unitsphere.js',
 //          options:{
 //               *wireframe:false,
 //                material: 'basic' | 'phong',  //default basic
@@ -84,6 +84,10 @@ export const Unitsphere:ActorFactory = class {
                 side:THREE.DoubleSide
               });
 
+      // texture
+      if(map){
+        sphere_m.map = loader.load(map);
+      }
 
       // blending
       // check: need gl.enable(gl.BLEND)

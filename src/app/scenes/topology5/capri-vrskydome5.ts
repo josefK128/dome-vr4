@@ -37,7 +37,7 @@ const config:Config = {
       _sgpost: false,
   
       // rmstage or vrstage actors 
-      sgTargetNames: ['vrskydome'],
+      sgTargetNames: ['vrunitsphere','vrskybox'],
   
   
       // render rmscene to display, or to rmTarget offscreen for texturing 
@@ -150,17 +150,18 @@ const state:State = {
         vr:{
           lens: {
             _lens: true,
+            _orbit:true,
             fov: 90,
             near: 0.01,
             far: 100000,
             transform: {'t':[0,1,2]}
-          },
-          fog: {
-            _fog: true,
-            color: 'pink', //0x00ff00,
-            near: 0.1,
-            far: 300 //default:100
           }
+//          fog: {
+//            _fog: true,
+//            color: 'pink', //0x00ff00,
+//            near: 0.1,
+//            far: 300 //default:100
+//          }
           //controls: {
           //  _controls: true,
           //  controls: 'vr'
@@ -204,7 +205,8 @@ const state:State = {
                     url:'../models/stage/actors/environment/panorama.js',
                     options:{
                       texture_url:'./app/media/images/cube/sun_temple_stripe_stereo.jpg',
-                      ntextures:12
+                      ntextures:12,
+                      color:'white'
                     }
                 }
             } //actors
@@ -223,19 +225,54 @@ const state:State = {
                     }
                 },
 
-                'vrskydome':{ 
-                  factory:'Skydome',
-                  url:'../models/stage/actors/environment/skydome.js',
+                'vrunitsphere':{ 
+                  factory:'Unitsphere',
+                  url:'../models/stage/actors/objects/unitsphere.js',
                   options:{
-                     width:1000,       // default=10000
-                     height:1000,       // default=10000
-                     color:'white',
-                     opacity: 0.5,    // default 1.0
-                     texture: './app/media/images/glad.png',
+                        wireframe:false,
+                        material: 'basic',
+                        radius:1.0,
+                        widthSegments: 10,    // default = 32
+                        heightSegments: 10,  // default = 32
+                        color:'white', 
+                        opacity:0.9
+                        //transform:{e: [0.0,3.14,0.0]} //euler:[px,yawy,rollz]
+                        //transform:{s: [1.0,1.0,-1.0]}  //euler:[px,yawy,rollz]
+
+                  } 
+                },
+
+//                'vrskydome':{ 
+//                  factory:'Skydome',
+//                  url:'../models/stage/actors/environment/skydome.js',
+//                  options:{
+//                     width:1000,       // default=10000
+//                     height:1000,       // default=10000
+//                     color:'white',
+//                     opacity: 1.0    // default 1.0
+//                  }
+//                },
+
+                'vrskybox':{ 
+                  factory:'Skybox',
+                  url:'../models/stage/actors/environment/skybox.js',
+                  options:{
+                      size:10000,        // default=10000
+                      color:'white',
+                      opacity: 1.0,    // default 1.0
+                      textures:[
+                        './app/media/images/escher.jpg',
+                        './app/media/images/escher.jpg',
+                        './app/media/images/escher.jpg',
+                        './app/media/images/escher.jpg',
+                        './app/media/images/escher.jpg',
+                        './app/media/images/escher.jpg' 
+                      ]     // string[] - cube face urls - see below
                   }
                 }
-            }
-        }
+
+            }//actors
+        }//vrscene
 
     },
 

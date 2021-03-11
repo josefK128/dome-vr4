@@ -24,7 +24,8 @@
 //          url:'./app/models/stage/actors/environment/panorama',
 //          options:{
 //            texture_url:'../media/images/cube/sun_temple_stripe__stereo.jpg',
-//            ntextures:12
+//            ntextures:12,
+//            color:'white'
 //          } 
 //        }
 //      }//actors
@@ -74,12 +75,12 @@ export const Panorama:ActorFactory = class {
     return new Promise((resolve, reject) => {
 
       const panorama:Actor = <Actor>{delta: (options:Record<string,unknown>={}):void => {console.log(`panorama.delta(): options=${options}`);}},
-            texture_url = <string>options['texture_url'] ||
+            texture_url:string = <string>options['texture_url'] ||
         '../../../../media/images/cube/sun_temple_stripe_stereo.jpg',
-            ntextures = <number>options['ntextures'] || 12,
-            lens = <THREE.PerspectiveCamera>options['lens'],
-            layers:THREE.Mesh[] = [];
-
+            ntextures:number = <number>options['ntextures'] || 12,
+            lens:THREE.PerspectiveCamera = options['lens'],
+            layers:THREE.Mesh[] = [],
+            color:string = <string>options['color'] || 'green';
 
       try{
         // layerL === layer
@@ -101,7 +102,9 @@ export const Panorama:ActorFactory = class {
         // skyBoxL - geometry to be SHARED with skyBoxR
         const materialsL = [];
         for ( let i = 0; i < 6; i ++ ) {
-          materialsL.push( new THREE.MeshBasicMaterial( { map: textures[ i ] } ) );
+          materialsL.push( new THREE.MeshBasicMaterial( { map: textures[ i ],
+            color:color
+          } ) );
         }
         const skyBoxL = new THREE.Mesh( geometry, materialsL );
         skyBoxL.layers.set( 1 );
@@ -111,7 +114,9 @@ export const Panorama:ActorFactory = class {
         // skyBoxR - geometry shared; material NOT shared - distinct materialsR
         const materialsR = [];
         for ( let i = 6; i < 12; i ++ ) {
-          materialsR.push( new THREE.MeshBasicMaterial( { map: textures[ i ] } ) );
+          materialsR.push( new THREE.MeshBasicMaterial( { map: textures[ i ],
+            color:color
+          } ) );
         }
         const skyBoxR = new THREE.Mesh( geometry, materialsR );
         skyBoxR.layers.set( 2 );

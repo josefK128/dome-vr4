@@ -22,7 +22,7 @@
 //      actors:{
 //        'skybox':{ 
 //          factory:'Skybox',
-//          url:'./app/models/stage/actors/environment/skybox',
+//          url:'../models/stage/actors/environment/skybox.js',
 //          options:{
 //              size:10000,         // default=10000
 //             *color:'black',

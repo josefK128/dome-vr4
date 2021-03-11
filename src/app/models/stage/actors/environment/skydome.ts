@@ -22,7 +22,7 @@
 //      actors:{
 //        'skydome':{ 
 //          factory:'Skydome',
-//          url:'./app/models/stage/actors/environment/skydome',
+//          url:'../models/stage/actors/environment/skydome',
 //          options:{
 //             width:5000,         // default=10000
 //             height:10000,         // default=10000
