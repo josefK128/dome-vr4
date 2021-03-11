@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  	<title>renderTarget-to-texture</title>
+  	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  </head>
+
+  <body>
+  	<div id="container"> </div>
+
+    <!-- tDiffuse -->
+  	<script id="fsh_t" type="x-shader/x-fragment">
+  		varying vec2 vUv;
+  		uniform sampler2D tDiffuse;
+
+  		void main() {
+  			gl_FragColor = vec4(tDiffuse, vUv);  
+  		}
+    </script>
+
+    <!-- color-green -->
+  	<script id="fsh_green" type="x-shader/x-fragment">
+  		void main() {
+  			gl_FragColor = vec4(0.0,1.0,0.0,0.5);
+  		}
+  	</script>
+
+    <!-- color-blue -->
+  	<script id="fsh_blue" type="x-shader/x-fragment">
+  		void main() {
+  			gl_FragColor = vec4(0.0,0.0,1.0,0.5);
+  		}
+  	</script>
+
+    <!-- color-red -->
+  	<script id="fsh_red" type="x-shader/x-fragment">
+  		void main() {
+  			gl_FragColor = vec4(1.0,0.0,0.0,0.5);
+  		}
+  	</script>
+
+  	<script id="vsh" type="x-shader/x-vertex">
+  		varying vec2 vUv;
+  		
+        void main() {
+  			vUv = uv;
+  			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+  		}
+  	</script>
+
+
+  	<script type="module">
+  		import * as THREE from './build/three.module.js';
+  		import Stats from './jsm/libs/stats.module.js';
+
+  		let sglens,
+            rmlens,
+            vrlens,
+
+            bgquad_g,
+            bgquad_m,
+            bgquad,
+
+            sgquad_g,
+            sgquad_m,
+            sgquad,
+            sgTarget,
+
+            rmquad_g,
+            rmquad_m,
+            rmquad,
+            rmTarget,
+
+            vrskydome_g, 
+            vrskydome_m, 
+            vrskydome, 
+
+            vrcube_g, 
+            vrcube_m, 
+            vrcube, 
+
+
+  		    delta = 0.01;
+
+        const container = document.getElementById( 'container' ),
+              stats = new Stats(),
+              renderer = new THREE.WebGLRenderer(),
+  			  vrscene = new THREE.Scene(),
+  			  sgscene = new THREE.Scene(),
+  			  rmscene = new THREE.Scene();
+
+
+
+  		init();
+  		render();
+
+
+  		function init() {
+
+            // lens
+  			sglens = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, .1, 10000 );
+  			rmlens = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, .1, 10000 );
+  			vrlens = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, .1, 10000 );
+  			sglens.position.z = 100;
+  			rmlens.position.z = 100;
+  			vrlens.position.z = 100;
+
+
+            //bgquad -> vrscene
+  			bgquad_g = new THREE.PlaneGeometry( window.innerWidth, window.innerHeight );
+  			bgquad_m = new THREE.ShaderMaterial( {
+  				vertexShader: document.getElementById('vsh').textContent,
+  				fragmentShader: document.getElementById('fsh_red').textContent
+  			} );
+  			bgquad = new THREE.Mesh(bgquad_g, bgquad_m );
+  			bgquad.position.z = - 150;
+  			vrscene.add(bgquad);
+
+
+            //sgquad -> sgscene
+  			sgTarget = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat } );
+
+  			sgquad_g = new THREE.PlaneGeometry( window.innerWidth, window.innerHeight );
+  			sgquad_m = new THREE.ShaderMaterial( {
+  				vertexShader: document.getElementById('vsh').textContent,
+  				fragmentShader: document.getElementById('fsh_green').textContent
+  			} );
+  			sgquad = new THREE.Mesh(sgquad_g, sgquad_m );
+  			sgquad.position.z = - 100;
+  			sgscene.add(sgquad);
+
+
+            //rmquad -> rmscene
+  			rmTarget = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat } );
+
+  			rmquad_g = new THREE.PlaneGeometry( window.innerWidth, window.innerHeight );
+
+  			rmquad_m = new THREE.ShaderMaterial( {
+  				vertexShader: document.getElementById('vsh').textContent,
+  				fragmentShader: document.getElementById('fsh_blue').textContent
+  			} );
+  			rmquad = new THREE.Mesh(rmquad_g, rmquad_m);
+  			rmquad.position.z = - 50;
+  			rmscene.add(rmquad);
+
+
+            //vrskydome -> vrscene
+            vrskydome_g = new THREE.SphereGeometry( 10, 64, 32 );
+            vrskydome_m = new THREE.MeshBasicMaterial( { color: 0xffffff, map: sgTarget.texture } );
+            vrskydome = new THREE.Mesh(vrskydome_g, vrskydome_m);
+  			vrskydome.position.x = 0;
+ 			vrskydome.position.y = 0;
+  			vrskydome.position.z = 0;
+  			vrskydome.rotation.y = - Math.PI / 2;
+            //console.log(`adding vrskydome = ${vrskydome}`);
+  			vrscene.add(vrskydome);
+
+            //vrcube -> vrscene
+            vrcube_g = new THREE.BoxGeometry(20,20);
+            vrcube_m = new THREE.MeshBasicMaterial( { color: 0xffffff, map: rmTarget.texture} );
+            vrcube = new THREE.Mesh(vrcube_g, vrcube_m);
+  			vrcube.position.x = 40;
+ 			vrcube.position.y = 0;
+  			vrcube.position.z = 0;
+  			//vrcube.rotation.y = - Math.PI / 2;
+            //console.log(`adding vrcube = ${vrcube}`);
+  			vrscene.add( vrcube );
+
+
+            // renderer
+  			renderer.setPixelRatio( window.devicePixelRatio );
+  			renderer.setSize( window.innerWidth, window.innerHeight );
+  			renderer.autoClear = false;
+  			container.appendChild( renderer.domElement );
+  			container.appendChild( stats.dom );
+
+        }//init
+
+
+  		function render() {
+  			requestAnimationFrame(render);
+
+  			stats.update();
+            sglens.lookAt(sgscene.position);
+            rmlens.lookAt(rmscene.position);
+            vrlens.lookAt(vrscene.position);
+
+  			// Render first scene (sgquad) into texture
+  			renderer.setRenderTarget(sgTarget);
+  			renderer.clear();
+  			renderer.render(sgscene, sglens);
+
+  			// Render full screen quad (in rmscene) with generated texture
+  			renderer.setRenderTarget(rmTarget);
+  			renderer.clear();
+  			renderer.render(rmscene, rmlens);
+
+  			// Render second scene to screen
+  			// (using first scene as regular texture)
+  			renderer.setRenderTarget(null);
+  			renderer.render(vrscene, vrlens);  //wo this line - no vrskydome w texture
+
+  		}//render
+  	</script>
+  </body>
+</html>
