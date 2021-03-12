@@ -142,6 +142,9 @@ let narrative:Narrative,
     vrskydome:THREE.Mesh,
     vrskydome_map:THREE.Texture,
 
+    // variable actor in narrative.render()
+    actor:THREE.Object3D,
+
     // fps-performance meter
     stats:Stats;
   
@@ -388,11 +391,11 @@ class Narrative implements Cast{
         narrative.reportActors(true);
 
 
-        if(!animating){
-          // prepare components and actors for render()
-          narrative.prerender(state).then((t) => {
-            console.log(`prerender() finished! at et = ${t}`);
+        // prepare components and actors for render()
+        narrative.prerender(state).then((t) => {
+          console.log(`prerender() finished! at et = ${t}`);
 
+          if(!animating){
             // stop devclock, start clock and timeline
             devclock.stop();
             clock.start();
@@ -408,8 +411,9 @@ class Narrative implements Cast{
             animating = true;
             renderer.setAnimationLoop(narrative.render);
             narrative.render();
-          });
-        }
+          }
+
+        });//n.prerender()
 
       }catch(e){
         console.log(`n.chSt - error in processing state from scene: ${e}`);
@@ -430,144 +434,111 @@ class Narrative implements Cast{
 
     return new Promise((resolve, reject) => {
 
-        // load transparent texture for sgTarget.texture, rmTarget.texture, 
-        // vrTarget.texture initialization
-        const loader = new THREE.TextureLoader(),
-              transparent_url = './app/media/images/cloud/transparent_1Kx1K.png'; 
-        let transparent_texture:THREE.Texture;
-        
-        loader.load(transparent_url, 
-          (t) => {
-            transparent_texture = t;
-            if(sgscene){
-              //sgTarget.texture = transparent_texture;
-              //console.log(`sgTarget.texture = ${sgTarget.texture}`);
-              //console.dir(sgTarget.texture);
-            }
-            if(rmscene){
-              //rmTarget.texture = transparent_texture;
-              //console.log(`rmTarget.texture = ${rmTarget.texture}`);
-            }
-            if(vrscene){
-              //vrTarget.texture = transparent_texture;
-              //console.log(`vrTarget.texture = ${vrTarget.texture}`);
-            }
+      if(sgscene){
+        console.log(`@@prerender(): sgscene is defined!`);
+        sglens = narrative['sg']['lens'];
+        if(state['camera']['sg']['lens'] && state['camera']['sg']['lens']['_orbit']){
+          console.log(`\n*** enabling orbit controls for sglens:`);
+          sgorbit = new OrbitControls(sglens, renderer.domElement);
+          sgorbit.update();
+          sgorbit.enableDamping = true;
+          sgorbit.dampingFactor = 0.25;
+          sgorbit.enableZoom = true;
+          //sgorbit.autoRotate = true;
+        }
+        sgcontrols = narrative['sg']['controls'];
+        sgmap = narrative['sg']['map'];
+  
+        // build rendering components, actors
+        sghud = narrative.findActor('sghud');
+        if(sghud){
+          sghud_tDiffuse_value = sghud.uniforms.tDiffuse.value;
+          sghud_tDiffuse_needsUpdate = sghud.uniforms.tDiffuse.needsUpdate;
+        }else{
+          _sgpost = false;
+        }
+  
+        sgskybox = narrative.findActor('sgskybox');
+        if(sgskybox){
+          console.log(`sgskybox actor found`);
+          console.log(`Array.isArray(sgskybox.material) = ${Array.isArray(sgskybox.material)}`);
+          console.log(`sgskybox.material.length = ${sgskybox.material.length}`);
+          sgskybox_materials = [];
+          for(let i=0; i<sgskybox.material.length; i++){
+            sgskybox_materials[i] = (<THREE.Material[]>sgskybox.material)[i];
+          }
+        }
+  
+        sgskydome = narrative.findActor('sgskydome');
+        if(sgskydome){
+          console.log(`sgskydome actor found`);
+          sgskydome_map = sgskydome.material.map;
+        }
+      }//if(sgscene)
+  
+      if(rmscene){
+        console.log(`@@prerender(): rmscene is defined!`);
+        // build rendering components, actors
+        rmquad = narrative.findActor('rmquad');
+        if(rmquad){
+          rmquad_tDiffuse_value = rmquad.uniforms.tDiffuse.value;
+          rmquad_tDiffuse_needsUpdate = rmquad.uniforms.tDiffuse.needsUpdate;
+          if(_rmpost){
+            rmquad_tHud_value = rmquad.uniforms.tHud.value;
+            rmquad_tHud_needsUpdate = rmquad.uniforms.tHud.needsUpdate;
+          }
+        }else{
+          _rm = false;
+          _rmpost = false;
+        }
+      }
+  
+      if(vrscene){
+        console.log(`@@prerender(): vrscene is defined!`);
+        vrlens = narrative['vr']['lens'];
+        if(state['camera']['vr']['lens'] && state['camera']['vr']['lens']['_orbit']){
+          console.log(`*** enabling orbit controls for vrlens:`);
+          vrorbit = new OrbitControls(vrlens, renderer.domElement);
+          vrorbit.update();
+          vrorbit.enableDamping = true;
+          vrorbit.dampingFactor = 0.25;
+          vrorbit.enableZoom = true;
+          //vrorbit.autoRotate = true;
+        }
+        vrcontrols = narrative['vr']['controls'];
+        vrmap = narrative['vr']['map'];
+  
+        // build rendering components, actors
+        vrhud = narrative.findActor('vrhud');
+        if(vrhud){
+          vrhud_tDiffuse_value = vrhud.uniforms.tDiffuse.value;
+          vrhud_tDiffuse_needsUpdate = vrhud.uniforms.tDiffuse.needsUpdate;
+        }else{
+          _vrpost = false;
+        }
+  
+        vrskybox = narrative.findActor('vrskybox');
+        if(vrskybox){
+          console.log(`vrskybox actor found`);
+          console.log(`Array.isArray(vrskybox.material) = ${Array.isArray(vrskybox.material)}`);
+          console.log(`vrskybox.material.length = ${vrskybox.material.length}`);
+          vrskybox_materials = [];
+          for(let i=0; i<vrskybox.material.length; i++){
+            //(<THREE.Materials[]>vrskybox.material)[i].map = sgTarget.texture;
+            vrskybox_materials[i] = (<THREE.Material[]>vrskybox.material)[i];
+          }
+        }
+  
+        vrskydome = narrative.findActor('vrskydome');
+        if(vrskydome){
+          console.log(`vrskydome actor found`);
+          vrskydome_map = vrskydome.material.map;
+        }
+      }//if(vrscene)
 
-            if(sgscene){
-              console.log(`@@prerender(): sgscene is defined!`);
-              sglens = narrative['sg']['lens'];
-              if(state['camera']['sg']['lens'] && state['camera']['sg']['lens']['_orbit']){
-                console.log(`\n*** enabling orbit controls for sglens:`);
-                sgorbit = new OrbitControls(sglens, renderer.domElement);
-                sgorbit.update();
-                sgorbit.enableDamping = true;
-                sgorbit.dampingFactor = 0.25;
-                sgorbit.enableZoom = true;
-                //sgorbit.autoRotate = true;
-              }
-              sgcontrols = narrative['sg']['controls'];
-              sgmap = narrative['sg']['map'];
-        
-              // build rendering components, actors
-              sghud = narrative.findActor('sghud');
-              if(sghud){
-                sghud_tDiffuse_value = sghud.uniforms.tDiffuse.value;
-                sghud_tDiffuse_needsUpdate = sghud.uniforms.tDiffuse.needsUpdate;
-              }else{
-                _sgpost = false;
-              }
-        
-              sgskybox = narrative.findActor('sgskybox');
-              if(sgskybox){
-                console.log(`sgskybox actor found`);
-                console.log(`Array.isArray(sgskybox.material) = ${Array.isArray(sgskybox.material)}`);
-                console.log(`sgskybox.material.length = ${sgskybox.material.length}`);
-                sgskybox_materials = [];
-                for(let i=0; i<sgskybox.material.length; i++){
-                  sgskybox_materials[i] = sgskybox.material[i];
-                }
-              }
-        
-              sgskydome = narrative.findActor('sgskydome');
-              if(sgskydome){
-                console.log(`sgskydome actor found`);
-                sgskydome_map = sgskydome.material.map;
-              }
-            }//if(sgscene)
-        
-            if(rmscene){
-              console.log(`@@prerender(): rmscene is defined!`);
-              // build rendering components, actors
-              rmquad = narrative.findActor('rmquad');
-              if(rmquad){
-                rmquad_tDiffuse_value = rmquad.uniforms.tDiffuse.value;
-                rmquad_tDiffuse_needsUpdate = rmquad.uniforms.tDiffuse.needsUpdate;
-                if(_rmpost){
-                  rmquad_tHud_value = rmquad.uniforms.tHud.value;
-                  rmquad_tHud_needsUpdate = rmquad.uniforms.tHud.needsUpdate;
-                }
-              }else{
-                _rm = false;
-                _rmpost = false;
-              }
-            }
-        
-            if(vrscene){
-              console.log(`@@prerender(): vrscene is defined!`);
-              vrlens = narrative['vr']['lens'];
-              if(state['camera']['vr']['lens'] && state['camera']['vr']['lens']['_orbit']){
-                console.log(`*** enabling orbit controls for vrlens:`);
-                vrorbit = new OrbitControls(vrlens, renderer.domElement);
-                vrorbit.update();
-                vrorbit.enableDamping = true;
-                vrorbit.dampingFactor = 0.25;
-                vrorbit.enableZoom = true;
-                //vrorbit.autoRotate = true;
-              }
-              vrcontrols = narrative['vr']['controls'];
-              vrmap = narrative['vr']['map'];
-        
-              // build rendering components, actors
-              vrhud = narrative.findActor('vrhud');
-              if(vrhud){
-                vrhud_tDiffuse_value = vrhud.uniforms.tDiffuse.value;
-                vrhud_tDiffuse_needsUpdate = vrhud.uniforms.tDiffuse.needsUpdate;
-              }else{
-                _vrpost = false;
-              }
-        
-              vrskybox = narrative.findActor('vrskybox');
-              if(vrskybox){
-                console.log(`vrskybox actor found`);
-                console.log(`Array.isArray(vrskybox.material) = ${Array.isArray(vrskybox.material)}`);
-                console.log(`vrskybox.material.length = ${vrskybox.material.length}`);
-                vrskybox_materials = [];
-                for(let i=0; i<vrskybox.material.length; i++){
-                  //(<THREE.Materials[]>vrskybox.material)[i].map = sgTarget.texture;
-                  vrskybox_materials[i] = vrskybox.material[i];
-                }
-              }
-        
-              vrskydome = narrative.findActor('vrskydome');
-              if(vrskydome){
-                console.log(`vrskydome actor found`);
-                vrskydome_map = vrskydome.material.map;
-              }
-            }//if(vrscene)
+      resolve(devclock.getElapsedTime());
 
-
-            resolve(devclock.getElapsedTime());
-
-          },//loadf
-
-          (e) => {
-            const err = `error loading texture:${e}`;
-            console.error(err);
-            reject(err);
-          }//errorf
-        
-        );//load()
-     });//return new Promise
+    });//return new Promise
 
   }//prerender()
 
@@ -576,17 +547,9 @@ class Narrative implements Cast{
   // render- without post !!!!!!
   // render current frame - frame holds current frame number
   render():void {
-    // time
+
+    // time, fps
     et = clock.getElapsedTime();
-
-    // TEMP - diagnostics
-//    if(frame%1000 === 0){
-//      console.log(`\nrender(): frame=${frame} et = ${et}`);
-//      console.log(`sgTarget = ${sgTarget}`);
-//      console.log(`sgTarget.texture = ${sgTarget.texture}`);
-//    }
-
-    //console.log('narrative.render()');
     if(_stats){
       stats.update();
     } 
@@ -610,12 +573,12 @@ class Narrative implements Cast{
               vrskybox_materials[i].map = rmTarget.texture;
             }
           }else{
-            let actor:THREE.Object3D;
             if(actor = narrative.findActor(actorname)){  // if defined
                 actor.material.map = rmTarget.texture;
             }
           }
         }
+        renderer.setRenderTarget(null);
         renderer.render(vrscene, vrlens);
         break;
 
@@ -630,12 +593,12 @@ class Narrative implements Cast{
               vrskybox_materials[i].map = rmTarget.texture;
             }
           }else{
-            let actor:THREE.Object3D;
             if(actor = narrative.findActor(actorname)){  // if defined
               actor.material.map = rmTarget.texture;
             }
           }
         }
+        renderer.setRenderTarget(null);
         renderer.render(vrscene, vrlens);
         break;
 
@@ -651,7 +614,6 @@ class Narrative implements Cast{
               vrskybox_materials[i].map = sgTarget.texture;
             }
           }else{
-            let actor:THREE.Object3D;
             if(actor = narrative.findActor(actorname)){  // if defined
               actor.material.map = sgTarget.texture;
             }
@@ -702,17 +664,9 @@ class Narrative implements Cast{
   // render-post !!!!!!
   // render current frame - frame holds current frame number
 //  render():void {
-//    // time
+//  
+//    // time and fps
 //    et = clock.getElapsedTime();
-//
-//    // TEMP - diagnostics
-////    if(frame%1000 === 0){
-////      console.log(`\nrender(): frame=${frame} et = ${et}`);
-////      console.log(`sgTarget = ${sgTarget}`);
-////      console.log(`sgTarget.texture = ${sgTarget.texture}`);
-////    }
-//
-//    //console.log('narrative.render()');
 //    if(_stats){
 //      stats.update();
 //    } 

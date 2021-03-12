@@ -80,7 +80,7 @@ export const Panorama:ActorFactory = class {
             ntextures:number = <number>options['ntextures'] || 12,
             lens:THREE.PerspectiveCamera = options['lens'],
             layers:THREE.Mesh[] = [],
-            color:string = <string>options['color'] || 'green';
+            color:string = <string>options['color'] || 'white';
 
       try{
         // layerL === layer

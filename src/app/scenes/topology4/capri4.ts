@@ -128,6 +128,7 @@ const state:State = {
         vr:{
           lens: {
             _lens: true,
+            _orbit: true,
             fov: 90,
             near: 0.01,
             far: 100000,

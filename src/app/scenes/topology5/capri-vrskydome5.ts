@@ -37,7 +37,7 @@ const config:Config = {
       _sgpost: false,
   
       // rmstage or vrstage actors 
-      sgTargetNames: ['vrunitsphere','vrskybox'],
+      sgTargetNames: ['vrunitsphere','vrskydome'],
   
   
       // render rmscene to display, or to rmTarget offscreen for texturing 
@@ -242,34 +242,34 @@ const state:State = {
                   } 
                 },
 
-//                'vrskydome':{ 
-//                  factory:'Skydome',
-//                  url:'../models/stage/actors/environment/skydome.js',
-//                  options:{
-//                     width:1000,       // default=10000
-//                     height:1000,       // default=10000
-//                     color:'white',
-//                     opacity: 1.0    // default 1.0
-//                  }
-//                },
-
-                'vrskybox':{ 
-                  factory:'Skybox',
-                  url:'../models/stage/actors/environment/skybox.js',
+                'vrskydome':{ 
+                  factory:'Skydome',
+                  url:'../models/stage/actors/environment/skydome.js',
                   options:{
-                      size:10000,        // default=10000
-                      color:'white',
-                      opacity: 1.0,    // default 1.0
-                      textures:[
-                        './app/media/images/escher.jpg',
-                        './app/media/images/escher.jpg',
-                        './app/media/images/escher.jpg',
-                        './app/media/images/escher.jpg',
-                        './app/media/images/escher.jpg',
-                        './app/media/images/escher.jpg' 
-                      ]     // string[] - cube face urls - see below
+                     width:1000,       // default=10000
+                     height:1000,       // default=10000
+                     color:'white',
+                     opacity: 1.0    // default 1.0
                   }
                 }
+
+//                'vrskybox':{ 
+//                  factory:'Skybox',
+//                  url:'../models/stage/actors/environment/skybox.js',
+//                  options:{
+//                      size:10000,        // default=10000
+//                      color:'white',
+//                      opacity: 1.0,    // default 1.0
+//                      textures:[
+//                        './app/media/images/escher.jpg',
+//                        './app/media/images/escher.jpg',
+//                        './app/media/images/escher.jpg',
+//                        './app/media/images/escher.jpg',
+//                        './app/media/images/escher.jpg',
+//                        './app/media/images/escher.jpg' 
+//                      ]     // string[] - cube face urls - see below
+//                  }
+//                }
 
             }//actors
         }//vrscene
