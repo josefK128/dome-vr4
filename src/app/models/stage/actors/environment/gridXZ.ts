@@ -89,7 +89,7 @@ export const GridXZ:ActorFactory = class {
  
       // transform
       //console.log(`transform of grid`);
-      if(Object.keys(<Record<string,number[]>>transform).length > 0){
+      if(transform && Object.keys(<Record<string,number[]>>transform).length > 0){
         transform3d.apply(transform, grid);
       } 
 

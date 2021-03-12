@@ -119,10 +119,8 @@ let narrative:Narrative,
     rmTargetNames:string[],
 
     rmquad:THREE.Mesh,
-    rmquad_tDiffuse_value:THREE.Texture,
-    rmquad_tDiffuse_needsUpdate:boolean,
-    rmquad_tHud_value:THREE.Texture,
-    rmquad_tHud_needsUpdate:boolean,
+    rmquad_tDiffuse:THREE.Texture,
+    rmquad_tHud:THREE.Texture,
 
     // vr - camera components, controls, map, renderTarget, actors
     vrscene:THREE.Scene,
@@ -334,11 +332,11 @@ class Narrative implements Cast{
       rmscene = new THREE.Scene;
       nrm['scene'] = rmscene;
 
-      //non-essential rmlens
+      //fixed rmlens 
       const aspect = window.innerWidth/window.innerHeight;
-      rmlens = new THREE.PerspectiveCamera(90, aspect,.1,1000); //never used
+      rmlens = new THREE.PerspectiveCamera(90, aspect,.01,1000);
+      rmlens.position.z = 1.0;
       nrm['lens'] = rmlens;
-
       rmTargetNames = config.topology.rmTargetNames;
     }
 
@@ -476,23 +474,25 @@ class Narrative implements Cast{
         }
       }//if(sgscene)
   
+
       if(rmscene){
         console.log(`@@prerender(): rmscene is defined!`);
         // build rendering components, actors
         rmquad = narrative.findActor('rmquad');
+        console.log(`n.prerender(): rmquad = ${rmquad}`);
+        console.dir(rmquad);
         if(rmquad){
-          rmquad_tDiffuse_value = rmquad.uniforms.tDiffuse.value;
-          rmquad_tDiffuse_needsUpdate = rmquad.uniforms.tDiffuse.needsUpdate;
+          rmquad_tDiffuse = rmquad.material.uniforms.tDiffuse;
           if(_rmpost){
-            rmquad_tHud_value = rmquad.uniforms.tHud.value;
-            rmquad_tHud_needsUpdate = rmquad.uniforms.tHud.needsUpdate;
+            rmquad_tHud = rmquad.material.uniforms.tHud;
           }
         }else{
           _rm = false;
           _rmpost = false;
         }
       }
-  
+
+
       if(vrscene){
         console.log(`@@prerender(): vrscene is defined!`);
         vrlens = narrative['vr']['lens'];
@@ -561,8 +561,8 @@ class Narrative implements Cast{
         renderer.setRenderTarget(sgTarget);
         renderer.render(sgscene, sglens);
 
-        rmquad_tDiffuse_value = sgTarget.texture;
-        rmquad_tDiffuse_needsUpdate = true;
+        rmquad_tDiffuse.value = sgTarget.texture;
+        rmquad_tDiffuse.needsUpdate = true;
         renderer.setRenderTarget(rmTarget);
         renderer.render(rmscene, rmlens);
 
@@ -633,8 +633,8 @@ class Narrative implements Cast{
         renderer.setRenderTarget(sgTarget);
         renderer.render(sgscene, sglens);
 
-        rmquad_tDiffuse_value = sgTarget.texture;
-        rmquad_tDiffuse_needsUpdate = true;
+        rmquad_tDiffuse['value'] = sgTarget.texture;
+        rmquad_tDiffuse['needsUpdate'] = true;
         renderer.setRenderTarget(null);
         renderer.render(rmscene, rmlens);
         break;

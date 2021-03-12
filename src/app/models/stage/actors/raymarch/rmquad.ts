@@ -21,12 +21,13 @@
 //      actors:{
 //        'rmquad':{ 
 //          factory:'Rmquad',
-//          url:'./app/models/stage/actors/objects/rmquad',
+//          url:'../models/stage/actors/objects/rmquad.js',
 //          options:{
 //               *color:'red', 
 //               *opacity:0.9, 
-//                fsh:url,
-//                vsh:url,
+//                uniforms:
+//                fsh:'../models/stage/shaders/webgl2/fragment/fsh_rm_texquad.glsl.js'
+//                vsh:'../models/stage/shaders/webgl2/fragment/vsh_default.glsl.js'
 //                texture?:url   // test ONLY! - not for production use!
 //          } 
 //        }
@@ -43,12 +44,13 @@ export const Rmquad:ActorFactory = class {
 
   static create(options:Record<string,unknown>={}):Promise<Actor>{
     // options
-    const color = <string>options['color'] || 'white',
+    const color = <string>options['color'] || 'white', 
           opacity = <number>options['opacity'] || 1.0,
-          vsh = <string>options['vsh'], 
-          fsh = <string>options['fsh'], 
+          vsh = <string>options['vsh'] || '../models/stage/shaders/webgl2/vertex/vsh_default.glsl.js',
+          fsh = <string>options['fsh'] || '../models/stage/shaders/webgl2/fragment/fsh_rm_texquad.glsl.js',
           texture = <THREE.Texture>options['texture'];
-
+          //transform = <Record<string,number[]>>options['transform']; 
+          //no effect
 
 
     return new Promise((resolve, reject) => {    
@@ -76,6 +78,8 @@ export const Rmquad:ActorFactory = class {
 
         plane_g = new THREE.PlaneBufferGeometry(2,2,1,1);
         plane_m = new THREE.ShaderMaterial({
+                color:color,
+                opacity:opacity,
                 vertexShader: vshader,
                 uniforms: uniforms, 
                 fragmentShader: fshader,
@@ -83,14 +87,24 @@ export const Rmquad:ActorFactory = class {
                 side:THREE.DoubleSide,
               });
 
-        // blending
-        // check: need gl.enable(gl.BLEND)
+        // blending - check: need gl.enable(gl.BLEND)
         plane_m.blendSrc = THREE.SrcAlphaFactor; // default
         plane_m.blendDst = THREE.OneMinusSrcAlphaFactor; //default
-        //grid_m.depthTest = false;  //default
+        //plane_m.depthTest = true;  //default is f
 
         // plane
         plane = new THREE.Mesh(plane_g, plane_m);
+
+        //transform
+//        console.log(`rmquad: transform = ${transform}:`);
+//        console.dir(transform);
+//        if(transform && Object.keys(<Record<string,number[]>>transform).length > 0){
+//          console.log(`rmquad: *** executing transform`);
+//          transform3d.apply(transform, plane);
+//          console.log(`rmquad.position.x = ${plane.position.x}`);
+//          console.log(`rmquad.position.y = ${plane.position.y}`);
+//          console.log(`rmquad.position.z = ${plane.position.z}`);
+//        } 
 
 
         // test ONLY!!!
@@ -102,12 +116,10 @@ export const Rmquad:ActorFactory = class {
         }
 
 
-        // ACTOR.INTERFACE method
-        // delta method for modifying properties
+        // ACTOR.INTERFACE delta method for modifying properties
         plane['delta'] = (options:Record<string,unknown>={}) => {
           //console.log(`rmquad.delta: options = ${options}:`);
-          //console.dir(options);
-  
+          //console.dir(options); 
           const color = <string>options['color'] || 'black',
               opacity = <number>options['opacity'] || 0.0;
               
@@ -118,11 +130,7 @@ export const Rmquad:ActorFactory = class {
             plane_m.opacity = opacity;
           }
         };
-  
-
-        // render method - not needed in this case
-        //plane['render'] = (et:number=0, options:object={}) => {}
-   
+     
         // return actor ready to be added to scene
         resolve(plane);
       }//load()

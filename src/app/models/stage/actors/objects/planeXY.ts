@@ -72,12 +72,13 @@ export const PlaneXY:ActorFactory = class {
               side:THREE.DoubleSide
             });
 
+      console.log(`\n\n############# planeXY opacity = ${opacity}`);
 
       // blending
       // check: need gl.enable(gl.BLEND)
       plane_m.blendSrc = THREE.SrcAlphaFactor; // default
       plane_m.blendDst = THREE.OneMinusSrcAlphaFactor; //default
-      //grid_m.depthTest = false;  //default
+      //plane_m.depthTest = true;  //default is f
 
 
       // plane

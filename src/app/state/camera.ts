@@ -228,7 +228,7 @@ class Camera {
         resolve(narrative['devclock'].getElapsedTime());
 
       }else{
-        console.log(`state['vr'] is undefined or empty - resolve possible sg`);
+        console.log(`state['vr'] is undefined or empty`);
         resolve(narrative['devclock'].getElapsedTime());
       }
     });
