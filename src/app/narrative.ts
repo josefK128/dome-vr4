@@ -119,8 +119,9 @@ let narrative:Narrative,
     rmTargetNames:string[],
 
     rmquad:THREE.Mesh,
-    rmquad_tDiffuse:THREE.Texture,
-    rmquad_tHud:THREE.Texture,
+    rmquad_tDiffuse:Record<string,unknown>,
+    rmhud:THREE.Mesh,
+    rmhud_tDiffuse:Record<string,unknown>,
 
     // vr - camera components, controls, map, renderTarget, actors
     vrscene:THREE.Scene,
@@ -149,7 +150,9 @@ let narrative:Narrative,
 
 // const - initialized
       // dictionary of all scenes
-const scenes:Record<string, THREE.Scene> = {},
+const initial_width:number = window.innerWidth,
+      initial_height:number = window.innerHeight,
+      scenes:Record<string, THREE.Scene> = {},
     
       // dictionary of all actors.
       cast:Record<string, THREE.Object3D> = {},
@@ -165,6 +168,14 @@ const scenes:Record<string, THREE.Scene> = {},
       sgTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight),
       rmTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight),
       vrTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight),
+
+
+      // test-textures
+      tloader = new THREE.TextureLoader(),
+      escher:THREE.Texture = <THREE.Texture>tloader.load('./app/media/images/escher.jpg'),
+      glad:THREE.Texture = <THREE.Texture>tloader.load('./app/media/images/glad.png'),
+      lotus:THREE.Texture = <THREE.Texture>tloader.load('./app/media/images/lotus_64.png'),
+      moon:THREE.Texture = <THREE.Texture>tloader.load('./app/media/images/moon_tr.png'),
 
 
       // time
@@ -479,12 +490,17 @@ class Narrative implements Cast{
         console.log(`@@prerender(): rmscene is defined!`);
         // build rendering components, actors
         rmquad = narrative.findActor('rmquad');
+        rmhud = narrative.findActor('rmhud');
         console.log(`n.prerender(): rmquad = ${rmquad}`);
+        console.log(`n.prerender(): rmhud = ${rmhud}`);
         console.dir(rmquad);
         if(rmquad){
           rmquad_tDiffuse = rmquad.material.uniforms.tDiffuse;
-          if(_rmpost){
-            rmquad_tHud = rmquad.material.uniforms.tHud;
+          if(rmhud){
+            rmhud_tDiffuse = rmhud.material.uniforms.tDiffuse;
+            transform3d.apply({s:[initial_width, initial_height, 1.0]},rmhud);
+          }else{
+            _rmpost = false;
           }
         }else{
           _rm = false;
@@ -635,12 +651,36 @@ class Narrative implements Cast{
 
         rmquad_tDiffuse['value'] = sgTarget.texture;
         rmquad_tDiffuse['needsUpdate'] = true;
-        renderer.setRenderTarget(null);
+        if(_rmpost){
+          rmhud_tDiffuse['value'] = rmTarget.texture;
+          rmhud_tDiffuse['needsUpdate'] = true;
+          renderer.setRenderTarget(rmTarget);
+          renderer.render(rmscene, rmlens);
+          renderer.setRenderTarget(null);
+        }
         renderer.render(rmscene, rmlens);
         break;
 
 
-      case 2:     // rm
+      case 2:     // rm:  k shader-layers (in this case k=2)
+        //if(_rmpost){  //cannot read from and write to the same texture
+          renderer.setRenderTarget(rmTarget);
+          renderer.render(rmscene, rmlens);
+          //rmhud_tDiffuse['value'] = rmTarget.texture;
+          //rmhud_tDiffuse['needsUpdate'] = true;
+        //}
+        if(frame%120 < 60){
+          rmquad_tDiffuse['value'] = glad;
+          rmquad_tDiffuse['needsUpdate'] = true;
+          rmhud_tDiffuse['value'] = moon;
+          rmhud_tDiffuse['needsUpdate'] = true;
+        }else{
+          rmquad_tDiffuse['value'] = moon;
+          rmquad_tDiffuse['needsUpdate'] = true;
+          rmhud_tDiffuse['value'] = glad;
+          rmhud_tDiffuse['needsUpdate'] = true;
+        }
+        renderer.setRenderTarget(null);
         renderer.render(rmscene, rmlens);
         break;
 
@@ -869,9 +909,25 @@ class Narrative implements Cast{
   // reset params based on window resize event
   onWindowResize():void {
     const width_:number = window.innerWidth,
-          height_:number = window.innerHeight;
+          height_:number = window.innerHeight,
+          ratiow:number = width_/initial_width,
+          ratioh:number = height_/initial_height;
  
+
+    console.log(`resize: initial_width=${initial_width}`);
+    console.log(`resize: initial_height=${initial_height}`);
     console.log(`resize: width=${width_} height=${height_}`);
+    console.log(`resize: ratiow=${ratiow}`);
+    console.log(`resize: ratioh=${ratioh}`);
+    console.log(`rmhud = ${rmhud}`);
+
+
+    // rmhud
+    if(rmhud){
+      let t = {s:[ratiow, ratioh, 1.0]};
+      transform3d.apply(t, rmhud);
+    }
+
     canvas.width = width_;
     canvas.height = height_;
     aspect = width_/height_;

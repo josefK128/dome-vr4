@@ -23,12 +23,13 @@
 //          factory:'Rmquad',
 //          url:'../models/stage/actors/objects/rmquad.js',
 //          options:{
-//               *color:'red', 
 //               *opacity:0.9, 
 //                uniforms:
 //                fsh:'../models/stage/shaders/webgl2/fragment/fsh_rm_texquad.glsl.js'
 //                vsh:'../models/stage/shaders/webgl2/fragment/vsh_default.glsl.js'
 //                texture?:url   // test ONLY! - not for production use!
+//                transform:{s:[1,1,1]}  //effect depends on shader also
+//                            //raymarch fsh NOT effected by grid transform
 //          } 
 //        }
 //      }//actors
@@ -44,13 +45,12 @@ export const Rmquad:ActorFactory = class {
 
   static create(options:Record<string,unknown>={}):Promise<Actor>{
     // options
-    const color = <string>options['color'] || 'white', 
-          opacity = <number>options['opacity'] || 1.0,
+    const opacity = <number>options['opacity'] || 1.0,
           vsh = <string>options['vsh'] || '../models/stage/shaders/webgl2/vertex/vsh_default.glsl.js',
           fsh = <string>options['fsh'] || '../models/stage/shaders/webgl2/fragment/fsh_rm_texquad.glsl.js',
-          texture = <THREE.Texture>options['texture'];
-          //transform = <Record<string,number[]>>options['transform']; 
-          //no effect
+          texture = <THREE.Texture>options['texture'],
+          transform = <Record<string,number[]>>options['transform']; 
+
 
 
     return new Promise((resolve, reject) => {    
@@ -78,7 +78,6 @@ export const Rmquad:ActorFactory = class {
 
         plane_g = new THREE.PlaneBufferGeometry(2,2,1,1);
         plane_m = new THREE.ShaderMaterial({
-                color:color,
                 opacity:opacity,
                 vertexShader: vshader,
                 uniforms: uniforms, 
@@ -95,16 +94,29 @@ export const Rmquad:ActorFactory = class {
         // plane
         plane = new THREE.Mesh(plane_g, plane_m);
 
+
         //transform
 //        console.log(`rmquad: transform = ${transform}:`);
 //        console.dir(transform);
-//        if(transform && Object.keys(<Record<string,number[]>>transform).length > 0){
+        if(transform && Object.keys(<Record<string,number[]>>transform).length > 0){
 //          console.log(`rmquad: *** executing transform`);
-//          transform3d.apply(transform, plane);
+          transform3d.apply(transform, plane);
 //          console.log(`rmquad.position.x = ${plane.position.x}`);
 //          console.log(`rmquad.position.y = ${plane.position.y}`);
 //          console.log(`rmquad.position.z = ${plane.position.z}`);
-//        } 
+        } 
+
+
+        // ACTOR.INTERFACE delta method for modifying properties
+        plane['delta'] = (options:Record<string,unknown>={}) => {
+          //console.log(`rmquad.delta: options = ${options}:`);
+          //console.dir(options); 
+          const opacity = <number>options['opacity'] || 0.0;
+
+          if(opacity !== undefined){
+            plane_m.opacity = opacity;
+          }
+        };
 
 
         // test ONLY!!!
@@ -112,27 +124,15 @@ export const Rmquad:ActorFactory = class {
           loader.load(texture, (t) => {
             plane_m.uniforms.tDiffuse.value = t;
             plane_m.uniforms.tDiffuse.needsUpdate = true;
+
+            // return textured rmquad ready to be added to scene
+            resolve(plane);
           });
+        }else{
+          // return untextured rmquad ready to be added to scene
+          resolve(plane);
         }
-
-
-        // ACTOR.INTERFACE delta method for modifying properties
-        plane['delta'] = (options:Record<string,unknown>={}) => {
-          //console.log(`rmquad.delta: options = ${options}:`);
-          //console.dir(options); 
-          const color = <string>options['color'] || 'black',
-              opacity = <number>options['opacity'] || 0.0;
-              
-          if(color !== undefined){
-            plane_m.color = color;
-          }
-          if(opacity !== undefined){
-            plane_m.opacity = opacity;
-          }
-        };
      
-        // return actor ready to be added to scene
-        resolve(plane);
       }//load()
 
       load();

@@ -154,7 +154,6 @@ const state:State = {
                     factory: 'Rmquad',
                     url: '../models/stage/actors/raymarch/rmquad.js',
                     options: {
-                        color:'green',
                         opacity:0.5,
 //                      vsh:'../../../stage/shaders/webgl2/vertex/vsh_default.glsl.js',
 //                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_color.glsl.js',
@@ -164,22 +163,36 @@ const state:State = {
                     }
                 },
 
+                'rmhud': {
+                    factory: 'Rmquad',
+                    url: '../models/stage/actors/raymarch/rmquad.js',
+                    options: {
+                        opacity:0.5,
+//                      vsh:'../../../stage/shaders/webgl2/vertex/vsh_default.glsl.js',
+//                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_color.glsl.js',
+                      vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
+                      fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_tDiffuse.glsl.js',
+                      //texture:'./app/media/images/glad.png',
+                      transform:{t:[0.0,0.0,0.001], s:[.5,.5,1.0]}
+                    }
+                }
+
                 //hud-planeXY is at z=.001 - i.e. (0,0,.001) 
                 //whereas rmquad (due to fsh) is at z=0, i.e (0,0,0)
                 //rmlens is at (0,0,1)
-                'rmhud':{ 
-                  factory:'PlaneXY',
-                  url:'../models/stage/actors/objects/planeXY.js',
-                  options:{
-                        wireframe:false, 
-                        color:'blue', 
-                        opacity:0.5, 
-                        width:2,
-                        height:2,
-                        transform:{t:[0,0,.001]} 
-                        //neg z-values ruin transparency  ?!!
-                  } 
-                },
+//                'rmhud':{ 
+//                  factory:'PlaneXY',
+//                  url:'../models/stage/actors/objects/planeXY.js',
+//                  options:{
+//                        wireframe:false, 
+//                        color:'blue', 
+//                        opacity:0.5, 
+//                        width:2,
+//                        height:2,
+//                        transform:{t:[0,0,.001]} 
+//                        //neg z-values ruin transparency  ?!!
+//                  } 
+//                },
 
               }//actors
 
