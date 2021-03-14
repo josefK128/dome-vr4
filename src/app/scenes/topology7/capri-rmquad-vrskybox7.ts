@@ -23,10 +23,10 @@ const config:Config = {
     topology:{
       // webxr?
       _webxr: true,
-      topology: 3,
+      topology: 7,
      
       // displayed_scene = 'sg|rm|vr'
-      displayed_scene: 'rm', 
+      displayed_scene: 'vr', 
 
 
       // render sgscene either to display, or to sgTarget offscreen for 
@@ -48,7 +48,7 @@ const config:Config = {
       // rmstage or vrstage actors 
       _rmpost: false,
 
-      rmTargetNames: [],
+      rmTargetNames: ['vrskybox'],
       //skyfaces:string[];  //used if actor 'skyfaces' exists and is rmTgtName
       //value is some subset of ['f','b','l','r','t','g']
       //order-independent: front,back,left,right,top,ground
@@ -57,7 +57,7 @@ const config:Config = {
     
 
       // render vrscene - which implies displayed_scene = 'vr'
-      _vr:false,
+      _vr:true,
 
       //use frame n-1 vrTarget.tex ('vr') in sghud frame n
       _vrpost: false,
@@ -149,7 +149,24 @@ const state:State = {
           //},
           //csphere: {
           //}
+        },
+
+        vr:{
+          lens: {
+            _lens: true,
+            fov: 90,
+            near: 0.01,
+            far: 100000,
+            transform: {'t':[0,1,2]}
+          },
+          //controls: {
+          //  _controls: true,
+          //  controls: 'vr'
+          //},
+          //csphere: {
+          //}
         }
+
     },
 
     // stage - initialization and management of stats performance meter,
@@ -243,7 +260,104 @@ const state:State = {
 
             }//actors
 
-        }//rmscene
+        },//rmscene
+
+        vrscene: {
+            _actors: true,
+            actors: {
+                'axes': {
+                    factory: 'Axes',
+                    url: '../models/stage/actors/objects/axes.js',
+                    options: {
+                        length: 10000,
+                        // setting axes translation-y at -0.01 allows z-axis to be seen
+                        transform: { t: [0.0, 0.0, 0.0] }
+                    }
+                },
+                'unitcube': {
+                    factory: 'Unitcube',
+                    url: '../models/stage/actors/objects/unitcube.js',
+                    options: { wireframe: false,
+                        color: 'white',
+                        opacity: 0.7,
+                        map: './app/media/images/glad.png',
+                        //transform: { t: [0.0, 0.15, -0.99], e: [0.0, 0.0, 0.0], s: [0.2, 0.3, 0.2] }
+                        transform: { t: [0, 0, 0], e: [0.0, 0.0, 0.0], s: [0.5, 1, 0.5] }
+                    }
+                },
+
+                'ground':{ 
+                  factory:'GridXZ',
+                  url:'../models/stage/actors/environment/gridXZ.js',
+                  options:{
+                        size:1000,
+                        divisions:100,
+                        colorGrid:'red', 
+                        colorCenterLine:'green', 
+                        opacity:0.9, 
+                        transform:{t:[0.0,-2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
+                  } 
+                },
+
+                'unitsphere':{ 
+                  factory:'Unitsphere',
+                  url:'../models/stage/actors/objects/unitsphere.js',
+                  options:{
+                        wireframe:false,
+                        material:'phong',  //default basic
+                        radius:1.0,
+                        widthSegments: 10,    // default = 32
+                        heightSegments: 10,  // default = 32
+                        color:'green', 
+                        opacity:0.4, 
+                        map:'./app/media/images/glad.png',
+                        transform:{t:[0.0,2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
+                  } 
+                },
+
+//                'vrskydome':{ 
+//                  factory:'Skydome',
+//                  url:'../models/stage/actors/environment/skydome.js',
+//                  options:{
+//                     width:1000,       // default=10000
+//                     height:1000,       // default=10000
+//                     color:'white',
+//                     opacity: 0.5,    // default 1.0
+//                     texture:'./app/media/images/glad.png'
+//
+//                  }
+//                }
+
+                'vrskybox':{ 
+                  factory:'Skybox',
+                  url:'../models/stage/actors/environment/skybox.js',
+                  options:{
+                     size:1000,       // default=10000
+                     color:'white',
+                     opacity: 1.0,    // default 1.0
+                     textures:[
+                       './app/media/images/skybox/sky/sky_posX.jpg',
+                       './app/media/images/skybox/sky/sky_negX.jpg',
+                       './app/media/images/skybox/sky/sky_posY.jpg',
+                       './app/media/images/skybox/sky/sky_negY.jpg',
+                       './app/media/images/skybox/sky/sky_posZ.jpg',
+                       './app/media/images/skybox/sky/sky_negZ.jpg'
+                     ]
+                  }
+                }
+
+//                'panorama':{
+//                    factory:'Panorama',
+//                    url:'../models/stage/actors/environment/panorama.js',
+//                    options:{
+//                      texture_url:'./app/media/images/cube/sun_temple_stripe_stereo.jpg',
+//                      ntextures:12
+//                    }
+//                }
+            } //actors
+
+        } //vrscene
+
     },
 
 

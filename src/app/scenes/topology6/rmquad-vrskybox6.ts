@@ -23,21 +23,21 @@ const config:Config = {
     topology:{
       // webxr?
       _webxr: true,
-      topology: 3,
+      topology: 6,
      
       // displayed_scene = 'sg|rm|vr'
-      displayed_scene: 'rm', 
+      displayed_scene: 'vr', 
 
 
       // render sgscene either to display, or to sgTarget offscreen for 
       // bg texturing in rmscene or texturing in vrscene
-      _sg: true,
+      _sg: false,
       
       //use frame n-1 sgTarget.tex ('sg') 
       _sgpost: false,
   
       // rmstage or vrstage actors 
-      sgTargetNames: ['rmquad', 'rmhud'],
+      sgTargetNames: [],
   
   
       // render rmscene to display, or to rmTarget offscreen for texturing 
@@ -48,7 +48,7 @@ const config:Config = {
       // rmstage or vrstage actors 
       _rmpost: false,
 
-      rmTargetNames: [],
+      rmTargetNames: ['vrskybox'],
       //skyfaces:string[];  //used if actor 'skyfaces' exists and is rmTgtName
       //value is some subset of ['f','b','l','r','t','g']
       //order-independent: front,back,left,right,top,ground
@@ -57,7 +57,7 @@ const config:Config = {
     
 
       // render vrscene - which implies displayed_scene = 'vr'
-      _vr:false,
+      _vr:true,
 
       //use frame n-1 vrTarget.tex ('vr') in sghud frame n
       _vrpost: false,
@@ -128,7 +128,7 @@ const state:State = {
     // since sgscene,vrscene are translated by 1.6 in y, in all
     // cases the scene and camera coincide at camera coords (0,0,0)
     camera: {
-        sg:{
+        vr:{
           lens: {
             _lens: true,
             _orbit:true,
@@ -136,12 +136,6 @@ const state:State = {
             near: 0.01,
             far: 100000,
             transform: {'t':[0,1,2]}
-          },
-          fog: {
-            _fog: true,
-            color: 'white', //0x00ff00,
-            near: 0.1,
-            far: 1000 //default:100
           }
           //controls: {
           //  _controls: true,
@@ -150,46 +144,12 @@ const state:State = {
           //csphere: {
           //}
         }
+
     },
 
     // stage - initialization and management of stats performance meter,
     // and actors in one of two possible scenes, sgscene and/or vrscene
     stage: {
-        sgscene:{
-            _actors: true,
-            actors: {
-                'axes': {
-                    factory: 'Axes',
-                    url: '../models/stage/actors/objects/axes.js',
-                    options: {
-                        length: 10000,
-                        // setting axes translation-y at -0.01 allows z-axis to be seen
-                        transform: { t: [0.0, -0.01, -0.99] }
-                    }
-                },
-                'unitcube': {
-                    factory: 'Unitcube',
-                    url: '../models/stage/actors/objects/unitcube.js',
-                    options: { wireframe: false,
-                        color: 'white',
-                        opacity: 0.7,
-                        map: './app/media/images/glad.png',
-                        //transform: { t: [0.0, -0.01, -0.99], e: [0.0, 0.0, 0.0], s: [0.2, 0.6, 0.4] }
-                        transform: { t: [0, 0, 0], e: [0.0, 0.0, 0.0], s: [0.5, 1, 0.5] }
-                    }
-                },
-                'panorama':{
-                    factory:'Panorama',
-                    url:'../models/stage/actors/environment/panorama.js',
-                    options:{
-                      texture_url:'./app/media/images/cube/sun_temple_stripe_stereo.jpg',
-                      ntextures:12
-                    }
-                }
-            } //actors
-        }, //sgscene
-
-
         // each scene the has two properties:
         // _actors:true=>create actors; false=>remove actors, undefined=>modify 
         // actors:Record<string,Actor>[] => iterate through actors by 'name'
@@ -206,7 +166,7 @@ const state:State = {
 //                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_color.glsl.js',
                       vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
                       fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_default.glsl.js',
-                      texture:'./app/media/images/escher.jpg'
+                      texture:'./app/media/images/moon_tr.png'
                     }
                 },
 
@@ -219,31 +179,89 @@ const state:State = {
 //                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_color.glsl.js',
                       vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
                       fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_tDiffuse.glsl.js',
-                      //texture:'./app/media/images/glad.png',
                       transform:{t:[0.0,0.0,0.001]}
                     }
                 }
 
-                //hud-planeXY is at z=.001 - i.e. (0,0,.001) 
-                //whereas rmquad (due to fsh) is at z=0, i.e (0,0,0)
-                //rmlens is at (0,0,1)
-//                'rmhud':{ 
-//                  factory:'PlaneXY',
-//                  url:'../models/stage/actors/objects/planeXY.js',
-//                  options:{
-//                        wireframe:false, 
-//                        color:'blue', 
-//                        opacity:0.5, 
-//                        width:2,
-//                        height:2,
-//                        transform:{t:[0,0,.001]} 
-//                        //neg z-values ruin transparency  ?!!
-//                  } 
-//                },
-
             }//actors
 
-        }//rmscene
+        },//rmscene
+
+        vrscene: {
+            _actors: true,
+            actors: {
+                'axes': {
+                    factory: 'Axes',
+                    url: '../models/stage/actors/objects/axes.js',
+                    options: {
+                        length: 10000,
+                        // setting axes translation-y at -0.01 allows z-axis to be seen
+                        transform: { t: [0.0, 0.0, 0.0] }
+                    }
+                },
+                'unitcube': {
+                    factory: 'Unitcube',
+                    url: '../models/stage/actors/objects/unitcube.js',
+                    options: { wireframe: false,
+                        color: 'white',
+                        opacity: 0.7,
+                        map: './app/media/images/glad.png',
+                        //transform: { t: [0.0, 0.15, -0.99], e: [0.0, 0.0, 0.0], s: [0.2, 0.3, 0.2] }
+                        transform: { t: [0, 0, 0], e: [0.0, 0.0, 0.0], s: [0.5, 1, 0.5] }
+                    }
+                },
+
+                'ground':{ 
+                  factory:'GridXZ',
+                  url:'../models/stage/actors/environment/gridXZ.js',
+                  options:{
+                        size:1000,
+                        divisions:100,
+                        colorGrid:'red', 
+                        colorCenterLine:'green', 
+                        opacity:0.9, 
+                        transform:{t:[0.0,-2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
+                  } 
+                },
+
+                'unitsphere':{ 
+                  factory:'Unitsphere',
+                  url:'../models/stage/actors/objects/unitsphere.js',
+                  options:{
+                        wireframe:false,
+                        material:'phong',  //default basic
+                        radius:1.0,
+                        widthSegments: 10,    // default = 32
+                        heightSegments: 10,  // default = 32
+                        color:'green', 
+                        opacity:0.4, 
+                        map:'./app/media/images/glad.png',
+                        transform:{t:[0.0,2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
+                  } 
+                },
+
+                'vrskybox':{ 
+                  factory:'Skybox',
+                  url:'../models/stage/actors/environment/skybox.js',
+                  options:{
+                     size:1000,       // default=10000
+                     color:'white',
+                     opacity: 1.0,    // default 1.0
+                     textures:[
+                       './app/media/images/skybox/sky/sky_posX.jpg',
+                       './app/media/images/skybox/sky/sky_negX.jpg',
+                       './app/media/images/skybox/sky/sky_posY.jpg',
+                       './app/media/images/skybox/sky/sky_negY.jpg',
+                       './app/media/images/skybox/sky/sky_posZ.jpg',
+                       './app/media/images/skybox/sky/sky_negZ.jpg'
+                     ]
+                  }
+                }
+
+            } //actors
+
+        } //vrscene
+
     },
 
 

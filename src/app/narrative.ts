@@ -496,13 +496,12 @@ class Narrative implements Cast{
         console.dir(rmquad);
         if(rmquad){
           rmquad_tDiffuse = rmquad.material.uniforms.tDiffuse;
-          if(rmhud){
-            rmhud_tDiffuse = rmhud.material.uniforms.tDiffuse;
-            transform3d.apply({s:[initial_width, initial_height, 1.0]},rmhud);
-          }else{
-            _rmpost = false;
-          }
-        }else{
+        }
+        if(rmhud){
+          rmhud_tDiffuse = rmhud.material.uniforms.tDiffuse;
+          transform3d.apply({s:[initial_width, initial_height, 1.0]},rmhud);
+        }
+        if(!rmquad && !rmhud){
           _rm = false;
           _rmpost = false;
         }
@@ -577,8 +576,16 @@ class Narrative implements Cast{
         renderer.setRenderTarget(sgTarget);
         renderer.render(sgscene, sglens);
 
-        rmquad_tDiffuse.value = sgTarget.texture;
-        rmquad_tDiffuse.needsUpdate = true;
+        rmquad_tDiffuse['value'] = sgTarget.texture;
+        rmquad_tDiffuse['needsUpdate'] = true;
+        rmhud_tDiffuse['value'] = moon;
+        rmhud_tDiffuse['needsUpdate'] = true;
+        if(_rmpost){  // FAILS
+          rmhud_tDiffuse['value'] = rmTarget.texture;
+          rmhud_tDiffuse['needsUpdate'] = true;
+          renderer.setRenderTarget(rmTarget);
+          renderer.render(rmscene, rmlens);
+        }
         renderer.setRenderTarget(rmTarget);
         renderer.render(rmscene, rmlens);
 
@@ -651,13 +658,15 @@ class Narrative implements Cast{
 
         rmquad_tDiffuse['value'] = sgTarget.texture;
         rmquad_tDiffuse['needsUpdate'] = true;
-        if(_rmpost){
+        rmhud_tDiffuse['value'] = moon;
+        rmhud_tDiffuse['needsUpdate'] = true;
+        if(_rmpost){  // FAILS
           rmhud_tDiffuse['value'] = rmTarget.texture;
           rmhud_tDiffuse['needsUpdate'] = true;
           renderer.setRenderTarget(rmTarget);
           renderer.render(rmscene, rmlens);
-          renderer.setRenderTarget(null);
         }
+        renderer.setRenderTarget(null);
         renderer.render(rmscene, rmlens);
         break;
 
@@ -924,7 +933,7 @@ class Narrative implements Cast{
 
     // rmhud
     if(rmhud){
-      let t = {s:[ratiow, ratioh, 1.0]};
+      const t = {s:[ratiow, ratioh, 1.0]};
       transform3d.apply(t, rmhud);
     }
 
