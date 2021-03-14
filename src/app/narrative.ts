@@ -144,6 +144,9 @@ let narrative:Narrative,
     // variable actor in narrative.render()
     actor:THREE.Object3D,
 
+    // test-quad
+    rmplane:THREE.Mesh,
+
     // fps-performance meter
     stats:Stats;
   
@@ -176,7 +179,6 @@ const initial_width:number = window.innerWidth,
       glad:THREE.Texture = <THREE.Texture>tloader.load('./app/media/images/glad.png'),
       lotus:THREE.Texture = <THREE.Texture>tloader.load('./app/media/images/lotus_64.png'),
       moon:THREE.Texture = <THREE.Texture>tloader.load('./app/media/images/moon_tr.png'),
-
 
       // time
       tl = gsap.timeline({paused:true}),
@@ -505,6 +507,8 @@ class Narrative implements Cast{
           _rm = false;
           _rmpost = false;
         }
+        //TEMP - test
+        rmplane = <THREE.Mesh>narrative.findActor('rmplane');
       }
 
 
@@ -653,6 +657,13 @@ class Narrative implements Cast{
 
 
       case 3:     // sg-rm
+        if(_rmpost){  // FAILS
+          //rmhud_tDiffuse['value'] = rmTarget.texture;
+          //rmhud_tDiffuse['needsUpdate'] = true;
+          rmhud_tDiffusePost['value'] = rmTarget.texture;
+          rmhud_tDiffusePost['needsUpdate'] = true;
+        }
+
         renderer.setRenderTarget(sgTarget);
         renderer.render(sgscene, sglens);
 
@@ -660,24 +671,30 @@ class Narrative implements Cast{
         rmquad_tDiffuse['needsUpdate'] = true;
         rmhud_tDiffuse['value'] = moon;
         rmhud_tDiffuse['needsUpdate'] = true;
+        renderer.setRenderTarget(null);
+        renderer.render(rmscene, rmlens);
+
         if(_rmpost){  // FAILS
-          rmhud_tDiffuse['value'] = rmTarget.texture;
-          rmhud_tDiffuse['needsUpdate'] = true;
           renderer.setRenderTarget(rmTarget);
           renderer.render(rmscene, rmlens);
         }
-        renderer.setRenderTarget(null);
-        renderer.render(rmscene, rmlens);
+
+        //TEMP test !!!
+        //rmplane.rotation.z = 50*Math.sin(et);
+        //rmplane.rotation.z += 0.4;
+        rmplane.position.x = 0.6*Math.sin(4.0*et);
+        if(frame%100 === 0){
+          console.log(`rmplane.rotatation.z = ${rmplane.rotation.z}`);
+        }
         break;
 
 
       case 2:     // rm:  k shader-layers (in this case k=2)
-        //if(_rmpost){  //cannot read from and write to the same texture
-          renderer.setRenderTarget(rmTarget);
-          renderer.render(rmscene, rmlens);
-          //rmhud_tDiffuse['value'] = rmTarget.texture;
-          //rmhud_tDiffuse['needsUpdate'] = true;
-        //}
+        //_rmpost=false;
+        if(_rmpost){  //cannot read from and write to the same texture
+          rmhud.material.uniforms.tDiffusePost['value'] = rmTarget.texture;
+          rmhud.material.uniforms.tDiffusePost['needsUpdate'] = true;
+        }
         if(frame%120 < 60){
           rmquad_tDiffuse['value'] = glad;
           rmquad_tDiffuse['needsUpdate'] = true;
@@ -691,6 +708,19 @@ class Narrative implements Cast{
         }
         renderer.setRenderTarget(null);
         renderer.render(rmscene, rmlens);
+
+        if(_rmpost){  //cannot read from and write to the same texture
+          renderer.setRenderTarget(rmTarget);
+          renderer.render(rmscene, rmlens);
+        }
+
+        //TEMP test !!!
+        //rmplane.rotation.z = 50*Math.sin(et);
+        //rmplane.rotation.z += 0.4;
+        rmplane.position.x = 0.6*Math.sin(4.0*et);
+        if(frame%100 === 0){
+          console.log(`rmplane.rotatation.z = ${rmplane.rotation.z}`);
+        }
         break;
 
 
