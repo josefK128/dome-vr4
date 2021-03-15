@@ -202,6 +202,7 @@ const state:State = {
           }
         }
 
+              //spritecloud-vrcloud is NOT SEEN - probably behind panorama!
 //                'panorama':{
 //                    factory:'Panorama',
 //                    url:'../models/stage/actors/environment/panorama.js',
