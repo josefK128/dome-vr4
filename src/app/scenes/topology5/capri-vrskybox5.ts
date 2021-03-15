@@ -38,6 +38,7 @@ const config:Config = {
   
       // rmstage or vrstage actors 
       sgTargetNames: ['vrunitsphere','vrskybox'],
+      sgvrSkyboxFaces: ['px','nx','pz','nz'],
   
   
       // render rmscene to display, or to rmTarget offscreen for texturing 

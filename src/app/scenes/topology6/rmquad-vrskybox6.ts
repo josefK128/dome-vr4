@@ -54,6 +54,7 @@ const config:Config = {
       //order-independent: front,back,left,right,top,ground
       // raymarch - via fragment shader in rmquad ShaderMaterial
       // NOTE! obviously requires rm:t and a vr-actor name in rmTargetNames
+      rmvrSkyboxFaces: ['px','nx','nz'],
     
 
       // render vrscene - which implies displayed_scene = 'vr'

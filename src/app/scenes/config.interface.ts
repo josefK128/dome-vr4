@@ -29,6 +29,9 @@ export interface Config {
                                 //use frame n-1 sgTarget.tex ('sg') 
     sgTargetNames?:string[]; //actor names to be textured by sgTarget.texture
                             //these can be in vrscene or sgscene
+    sgvrSkyboxFaces?:string[];  // if 'vrskybox' is in sgTargetNames then
+                    // specify which of 6 faces to texture - default is all 6
+                   // faces are 'px' (positive-x) 'nx', 'py', 'ny', 'pz', 'nz'
 
 
     // render rmscene to display, or to rmTarget offscreen for texturing 
@@ -39,6 +42,9 @@ export interface Config {
     _rmpost?:boolean;         //post-pr with prv frame 
     rmTargetNames?:string[]; //actor names to be textured by rmTarget.texture
                             //these can be in vrscene or sgscene
+    rmvrSkyboxFaces?:string[];  // if 'vrskybox' is in rmTargetNames then
+                    // specify which of 6 faces to texture - default is all 6
+                   // faces are 'px' (positive-x) 'nx', 'py', 'ny', 'pz', 'nz'
 
 
     // render vrscene - which implies displayed_scene = 'vr'

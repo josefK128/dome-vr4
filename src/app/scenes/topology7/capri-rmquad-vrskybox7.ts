@@ -54,6 +54,7 @@ const config:Config = {
       //order-independent: front,back,left,right,top,ground
       // raymarch - via fragment shader in rmquad ShaderMaterial
       // NOTE! obviously requires rm:t and a vr-actor name in rmTargetNames
+      rmvrSkyboxFaces: ['pz','nz','px','nx'],
     
 
       // render vrscene - which implies displayed_scene = 'vr'
@@ -131,7 +132,6 @@ const state:State = {
         sg:{
           lens: {
             _lens: true,
-            _orbit:true,
             fov: 90,
             near: 0.01,
             far: 100000,
@@ -154,6 +154,7 @@ const state:State = {
         vr:{
           lens: {
             _lens: true,
+            _orbit:true,
             fov: 90,
             near: 0.01,
             far: 100000,
@@ -223,7 +224,7 @@ const state:State = {
 //                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_color.glsl.js',
                       vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
                       fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_default.glsl.js',
-                      texture:'./app/media/images/escher.jpg'
+                      texture:'./app/media/images/moon_tr.png'
                     }
                 },
 
@@ -240,23 +241,6 @@ const state:State = {
                       transform:{t:[0.0,0.0,0.001]}
                     }
                 }
-
-                //hud-planeXY is at z=.001 - i.e. (0,0,.001) 
-                //whereas rmquad (due to fsh) is at z=0, i.e (0,0,0)
-                //rmlens is at (0,0,1)
-//                'rmhud':{ 
-//                  factory:'PlaneXY',
-//                  url:'../models/stage/actors/objects/planeXY.js',
-//                  options:{
-//                        wireframe:false, 
-//                        color:'blue', 
-//                        opacity:0.5, 
-//                        width:2,
-//                        height:2,
-//                        transform:{t:[0,0,.001]} 
-//                        //neg z-values ruin transparency  ?!!
-//                  } 
-//                },
 
             }//actors
 
@@ -315,19 +299,6 @@ const state:State = {
                   } 
                 },
 
-//                'vrskydome':{ 
-//                  factory:'Skydome',
-//                  url:'../models/stage/actors/environment/skydome.js',
-//                  options:{
-//                     width:1000,       // default=10000
-//                     height:1000,       // default=10000
-//                     color:'white',
-//                     opacity: 0.5,    // default 1.0
-//                     texture:'./app/media/images/glad.png'
-//
-//                  }
-//                }
-
                 'vrskybox':{ 
                   factory:'Skybox',
                   url:'../models/stage/actors/environment/skybox.js',
@@ -346,14 +317,6 @@ const state:State = {
                   }
                 }
 
-//                'panorama':{
-//                    factory:'Panorama',
-//                    url:'../models/stage/actors/environment/panorama.js',
-//                    options:{
-//                      texture_url:'./app/media/images/cube/sun_temple_stripe_stereo.jpg',
-//                      ntextures:12
-//                    }
-//                }
             } //actors
 
         } //vrscene
