@@ -1,14 +1,14 @@
 // services/morphtargets.ts  
 
-import {generators} from '../models/stage/actors/cloud/generators/generators';
+import {generators} from '../models/stage/actors/cloud/generators/generators.js';
 
 
 // constants - targets is all names of position generators
 const targets:string[] = Object.keys(generators);
 
 // closure var instance of MorphTargets
-let morphTargets:MorphTargets,
-    positions:number[];
+let morphTargets:MorphTargets;
+const positions:number[] = [];
 
 
 
