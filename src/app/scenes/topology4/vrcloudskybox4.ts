@@ -200,17 +200,25 @@ const state:State = {
                     duration:2000,  // 2000           //options
                     transform:{t:[0.0,0.0,-1000.0]}
                   }
+                },
+        
+                'vrskybox':{ 
+                  factory:'Skybox',
+                  url:'../models/stage/actors/environment/skybox.js',
+                  options:{
+                     size:10000,       // default=10000
+                     color:'white',
+                     opacity: 1.0,    // default 1.0
+                     textures:[
+                       './app/media/images/skybox/sky/sky_posX.jpg',
+                       './app/media/images/skybox/sky/sky_negX.jpg',
+                       './app/media/images/skybox/sky/sky_posY.jpg',
+                       './app/media/images/skybox/sky/sky_negY.jpg',
+                       './app/media/images/skybox/sky/sky_posZ.jpg',
+                       './app/media/images/skybox/sky/sky_negZ.jpg'
+                     ]
+                  }
                 }
-
-                //spritecloud-vrcloud is NOT SEEN - probably behind panorama!
-//                'panorama':{
-//                    factory:'Panorama',
-//                    url:'../models/stage/actors/environment/panorama.js',
-//                    options:{
-//                      texture_url:'./app/media/images/cube/sun_temple_stripe_stereo.jpg',
-//                      ntextures:12
-//                    }
-//                }
 
             } //actors
         } //vrscene
