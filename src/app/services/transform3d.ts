@@ -24,6 +24,11 @@
 //   Thus [ei] !== [ai]
 
 
+import {Config} from '../scenes/config.interface';
+
+
+
+
 // singleton instance - exported
 let transform3d:Transform3d;
 
@@ -42,7 +47,7 @@ class Transform3d {
   }
 
 
-  initialize(config:Record<string,unknown>){
+  initialize(config:Config):void{
     console.log(`services/transform3d initializing`);
   }
 

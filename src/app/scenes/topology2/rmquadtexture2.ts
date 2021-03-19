@@ -5,10 +5,9 @@
 // CONFIG
 // [1] config:Config (interface) is used once for initialization
 // [2] substates are dynamic - used for initialization AND subsequent variation
-// [3] There are 4 substates:
+// [3] There are 3 substates:
 //   stage,    // stage (scenegraph) 
 //   camera, 
-//   audio
 //   actions
 
 
@@ -200,10 +199,6 @@ const state:State = {
     },
 
 
-    // audio
-    audio:{
-    },
-
 
     // actions - default fifo=[] in queue
     // _actions = t/f/undefined => load seq/remove seq:load []/append seq
@@ -214,6 +209,8 @@ const state:State = {
     //                               // array of Action-Objects 
     //                              // (see models/actions/sequence.interface.ts
     actions: {
+        _actions: true,
+        sequence_url: '../models/actions/sequences/audio/startonly.js'
     } //actions:{}
 };
 

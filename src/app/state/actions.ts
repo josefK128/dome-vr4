@@ -8,7 +8,8 @@
 
 
 import {Action} from '../models/actions/action.interface';
-import {queue} from '../services/actions/queue';
+import {Cast} from '../cast.interface';
+import {queue} from '../services/actions/queue.js';
 
 
 // singleton closure-instance variable
@@ -32,11 +33,14 @@ class Actions {
 
   // new Promise<Record<string,unknown>>((resolve, reject) => {});
   // state['_actions']: t=>q.load; f=>empty queue; undefined=>append to queue
-  delta(state:Record<string,unknown>={}):Promise<Record<string,unknown>>{
-    console.log(`\n state/actions.delta state:`);
-    console.dir(state);
+  delta(state:Record<string,unknown>={}, narrative:Cast):Promise<number>{
+    //console.log(`\n state/actions.delta state:`);
+    //console.dir(state);
 
     const result:Record<string,unknown> = {actions:{}};
+    const devclock = narrative['devclock'];
+    //console.log(`devclock = ${devclock}`);
+
 
     return new Promise((resolve, reject) => {
       // process state
@@ -46,21 +50,16 @@ class Actions {
 
         //diagnostics
         //console.log(`actions: _actions=${_actions}:`);
-        //console.log(`actions: sequence_url=${sequence_url}:`);
+        console.log(`actions: sequence_url=${sequence_url} _actions=${_actions}:`);
 
         if(_actions === false){   // _actions:f => load []
           queue.load([]);
           result['_actions'] = false;
-          resolve(result);     // don't reject because ruins Promise.all
+          resolve(devclock.getElapsedTime());     // don't reject because ruins Promise.all
           //reject(new Error("emptying queue failed")); 
         }else{               // _actions:t => load actions[] from sequence_url
           if(sequence_url){ 
             import(sequence_url as string).then((sequence) => {
-
-              // diagnostics
-              //console.log(`sequence=${sequence}:`);
-              //console.dir(sequence);
-              //console.log(`sequence['actions'] = ${sequence['actions']}`);
 
               if(sequence['actions']){
                 if(_actions === true){
@@ -69,16 +68,15 @@ class Actions {
                   queue.append(sequence['actions']);  // append actions to queue
                 }
               }
-              result['_actions'] = _actions;
-              resolve(result); // don't reject because ruins Promise.all
+              resolve(devclock.getElapsedTime()); // don't reject because ruins Promise.all
               //reject(new Error("emptying queue failed")); 
             });
           }
-          resolve(result);  // don't reject because ruins Promise.all
+          resolve(devclock.getElapsedTime());  // don't reject because ruins Promise.all
           //reject(new Error("stage: malformed state:undefined or {}")); 
         }
       }else{
-        resolve(result); //{}
+        resolve(devclock.getElapsedTime()); //{}
       }
     });//return Promise
   }//delta

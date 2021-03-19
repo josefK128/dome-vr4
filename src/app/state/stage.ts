@@ -37,13 +37,13 @@ class Stage {
       // break-resolve if state[scene_name] (exp state['sgscene']) is undefined
       // or if state[scene_name] = {}
       if(state === undefined || Object.keys(state).length === 0){ 
-        console.log(`@@ stage.scene: ${scene_name} state is undefined`);
+        //console.log(`@@ stage.scene: ${scene_name} state is undefined`);
         return new Promise((resolve, reject) => {
           resolve(narrative['devclock'].getElapsedTime());
         });
       }
       console.log(`@@ stage.scene: ${scene_name} state is defined:`);
-      console.dir(state);
+      //console.dir(state);
 
       const scene = narrative[scene_name]['scene'],
             _actors = <boolean>(state['_actors'] || false),
@@ -64,31 +64,31 @@ class Stage {
                 url = <string>descriptor['url'],
                 options = <Record<string,unknown>>descriptor['options'];
 
-          console.log(`\n\n*************************************`);
-          console.log(`actors[${name}] = ${actors[name]}`);
-          console.dir(actors[name]);
-          console.log(`options = ${options}`);
-          console.dir(options);
-          console.log(`typeof factory = ${typeof factory}`);
+          //console.log(`\n\n*************************************`);
+          //console.log(`actors[${name}] = ${actors[name]}`);
+          //console.dir(actors[name]);
+          //console.log(`options = ${options}`);
+          //console.dir(options);
+          //console.log(`typeof factory = ${typeof factory}`);
 
 
 
           switch(_actors){
             case true:     // _actor=t => create actor
               if(url){
-                console.log(`creating actor - url = ${url}`);
+                console.log(`creating actor ${url}`);
 
                 try{
                   m = await import(url);
-                  console.log(`m:`);
-                  console.dir(m);
-                  console.log(`m[${factory}]:`);
-                  console.dir(m[factory]);
+                  //console.log(`m:`);
+                  //console.dir(m);
+                  //console.log(`m[${factory}]:`);
+                  //console.dir(m[factory]);
 
                   try{
                     // Panorama is *special case*
                     if(factory === 'Panorama'){
-                      console.log(`\nPanorama - adding scene['lens'] to options`);
+                      //console.log(`\nPanorama - adding scene['lens'] to options`);
                       options['lens'] = narrative[scene_name]['lens'];
                     }
   
@@ -104,12 +104,8 @@ class Stage {
                         i++;
                       }
                     }else{
-                      console.log(`stage.scene ${scene_name} - narrative.addActor(${name})`);
-                      console.log(`add actor = ${actor}`);
-                      console.log(`typeof actor = ${typeof actor}`);
-                      console.log(`typeof scene = ${typeof scene}`);
-                      console.log(`scene = ${scene}`);
-                      console.dir(scene);
+                      //console.log(`stage.scene ${scene_name} - narrative.addActor(${name})`);
+                      //console.log(`add actor = ${actor}`);
                       narrative.addActor(scene, name, actor);
                     }
                   }catch(e){
@@ -162,8 +158,8 @@ class Stage {
 
   // process state = state[stage']
   async delta(state:Record<string,unknown>, narrative:Cast):Promise<number>{
-    console.log(`\n\n@@ stage.delta(state,narrative) state:`);
-    console.dir(state);
+    console.log(`\n@@ stage.delta(state,narrative) state:`);
+    //console.dir(state);
 
     return new Promise((resolve, reject) => {
 

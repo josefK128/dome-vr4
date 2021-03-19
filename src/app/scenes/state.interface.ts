@@ -206,20 +206,6 @@ export interface State {
   }//stage,
 
 
-  audio:{
-    _audio?:boolean,
-    url?:string,
-    refDistance?:number,
-    maxDistance?:number,
-    playbackRate?:number,
-    volume?:number,
-    loop?:boolean,
-    delay?:number,
-    play?:boolean,
-    pause?:boolean,
-    stop?:boolean
-  }
-
 
   actions:{
     _actions?:boolean,

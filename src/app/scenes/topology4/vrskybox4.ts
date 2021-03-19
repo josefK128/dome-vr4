@@ -1,14 +1,13 @@
-// @current/vrskydome4.ts
+// @current/vrskybox4.ts
 // webGL2, es300 three.js ==0.125.2
  
 
 // CONFIG
 // [1] config:Config (interface) is used once for initialization
 // [2] substates are dynamic - used for initialization AND subsequent variation
-// [3] There are 4 substates:
+// [3] There are 3 substates:
 //   stage,    // stage (scenegraph) 
 //   camera, 
-//   audio
 //   actions
 
 
@@ -170,7 +169,6 @@ const state:State = {
                         transform: { t: [0.0, 0.0, 0.0] }
                     }
                 },
-
                 'unitcube': {
                     factory: 'Unitcube',
                     url: '../models/stage/actors/objects/unitcube.js',
@@ -183,35 +181,65 @@ const state:State = {
                     }
                 },
 
-                'vrskydome':{ 
-                  factory:'Skydome',
-                  url:'../models/stage/actors/environment/skydome.js',
+                'ground':{ 
+                  factory:'GridXZ',
+                  url:'../models/stage/actors/environment/gridXZ.js',
                   options:{
-                     width:1000,       // default=10000
-                     height:1000,       // default=10000
-                     color:'white',
-                     opacity: 0.5,    // default 1.0
-                     texture:'./app/media/images/glad.png'
-                  }
-                }
+                        size:1000,
+                        divisions:100,
+                        colorGrid:'red', 
+                        colorCenterLine:'green', 
+                        opacity:0.9, 
+                        transform:{t:[0.0,-2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
+                  } 
+                },
 
-//                'vrskybox':{ 
-//                  factory:'Skybox',
-//                  url:'../models/stage/actors/environment/skybox.js',
+                'unitsphere':{ 
+                  factory:'Unitsphere',
+                  url:'../models/stage/actors/objects/unitsphere.js',
+                  options:{
+                        wireframe:false,
+                        material:'phong',  //default basic
+                        radius:1.0,
+                        widthSegments: 10,    // default = 32
+                        heightSegments: 10,  // default = 32
+                        color:'green', 
+                        opacity:0.4, 
+                        map:'./app/media/images/glad.png',
+                        transform:{t:[0.0,2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
+                  } 
+                },
+
+//                'vrskydome':{ 
+//                  factory:'Skydome',
+//                  url:'../models/stage/actors/environment/skydome.js',
 //                  options:{
-//                     size:1000,       // default=10000
-//                     color:'black',
+//                     width:1000,       // default=10000
+//                     height:1000,       // default=10000
+//                     color:'white',
 //                     opacity: 0.5,    // default 1.0
-//                     textures:[
-//                       './app/media/images/skybox/space/space_posX.jpg',
-//                       './app/media/images/skybox/space/space_negX.jpg',
-//                       './app/media/images/skybox/space/space_posY.jpg',
-//                       './app/media/images/skybox/space/space_negY.jpg',
-//                       './app/media/images/skybox/space/space_posZ.jpg',
-//                       './app/media/images/skybox/space/space_negZ.jpg'
-//                     ]
+//                     texture:'./app/media/images/glad.png'
+//
 //                  }
 //                }
+
+                'vrskybox':{ 
+                  factory:'Skybox',
+                  url:'../models/stage/actors/environment/skybox.js',
+                  options:{
+                     size:1000,       // default=10000
+                     color:'white',
+                     opacity: 1.0,    // default 1.0
+                     textures:[
+                       './app/media/images/skybox/sky/sky_posX.jpg',
+                       './app/media/images/skybox/sky/sky_negX.jpg',
+                       './app/media/images/skybox/sky/sky_posY.jpg',
+                       './app/media/images/skybox/sky/sky_negY.jpg',
+                       './app/media/images/skybox/sky/sky_posZ.jpg',
+                       './app/media/images/skybox/sky/sky_negZ.jpg'
+                     ]
+                  }
+                }
 
 //                'panorama':{
 //                    factory:'Panorama',
@@ -226,11 +254,6 @@ const state:State = {
     },
 
 
-    // audio
-    audio:{
-        _audio:false
-    },
-
 
     // actions - default fifo=[] in queue
     // _actions = t/f/undefined => load seq/remove seq:load []/append seq
@@ -242,7 +265,7 @@ const state:State = {
     //                              // (see models/actions/sequence.interface.ts
     actions: {
         _actions: true,
-        sequence_url: './app/models/actions/sequences/bezier/rmbezier-actorbezier'
+        sequence_url: '../models/actions/sequences/audio/startonly.js'
     } //actions:{}
 };
 

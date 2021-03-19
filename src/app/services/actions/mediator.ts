@@ -2,13 +2,13 @@
 
 
 // socket.io.js
-import * as io from '../../../jsm/socket.io/socket.io.js';
+import * as io from '../../../external/socket.io/socket.io.js';
 
 
 // dome-vr4
 import {Config} from '../../scenes/config.interface';
 import {Action} from '../../models/actions/action.interface';
-import {queue} from './queue';
+import {queue} from './queue.js';
 
 
 

@@ -80,7 +80,7 @@ const objects:THREE.Object3D[] = [],
       transition = () => {
         const offset:number = current * particles * 3;
   
-        console.log(`current target = ${current} offset=${offset}`);
+        //console.log(`current target = ${current} offset=${offset}`);
         for(let i = 0, j = offset; i < particles; i++, j += 3 ) {
           object_ = objects[ i ];
   
@@ -118,8 +118,8 @@ export const Spritecloud:ActorFactory = class {
         loaded = 0;
 
 
-    console.log(`\n\n\n **************** state = ${state}:`);
-    console.dir(state);
+    //console.log(`\n\n\n **************** state = ${state}:`);
+    //console.dir(state);
 
 
     particles = <number>state['particles'] || particles;
@@ -138,7 +138,7 @@ export const Spritecloud:ActorFactory = class {
     lights = <boolean>state['lights'] || lights;
 
 
-    console.log(`targets = ${targets}`);
+    //console.log(`targets = ${targets}`);
 
 
     return new Promise((resolve, reject) => {
@@ -168,18 +168,18 @@ export const Spritecloud:ActorFactory = class {
               }
               if(loaded === N){
                 console.log(`cld texture loading complete - ${loaded} images`);
-                console.log(`textures complete - objs.l = ${objects.length}`);
+                //console.log(`textures complete - objs.l = ${objects.length}`);
   
                 // if state_positions = [] or undefined generate morph positions
                 if(state_positions.length === 0){ 
-                  console.log(`initially positions.length = ${positions.length}`);
+                  //console.log(`initially positions.length = ${positions.length}`);
                   positions = morphTargets.generate(state);
-                  console.log(`after positions.length = ${positions.length}`);
+                  //console.log(`after positions.length = ${positions.length}`);
                   //for(let i=0; i<positions.length; i++){
                   //  console.log(`positions[${i}] = ${positions[i]}`);
                   //}
                 }else{
-                  console.log(`initially positions.length = ${positions.length}`);
+                  //console.log(`initially positions.length = ${positions.length}`);
                   positions = state_positions;
                   console.log(`after positions.length = ${positions.length}`);
                 }
@@ -190,8 +190,8 @@ export const Spritecloud:ActorFactory = class {
                 targets = positions.length/(particles * 3);
   
                 // start animation cycle
-                console.log(`at cld.transition: pos.l=${positions.length}`);
-                console.log(`targets=${targets}`);
+                //console.log(`at cld.transition: pos.l=${positions.length}`);
+                //console.log(`targets=${targets}`);
                 transition();
               }
             },

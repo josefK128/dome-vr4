@@ -47,7 +47,7 @@ import {State} from './scenes/state.interface';
 // at compile time tsc is smart enough to load <module>.ts even though the 
 // file-extension is .js - note that .js is needed for runtime usage
 // services
-//import {mediator} from './services/actions/mediator.js';
+import {mediator} from './services/actions/mediator.js';
 import {director} from './services/actions/director.js';
 import {queue} from './services/actions/queue.js';
 import {transform3d} from './services/transform3d.js';
@@ -59,13 +59,12 @@ if(typeof queue !== undefined){
 // state
 import {stage} from './state/stage.js';
 import {camera} from './state/camera.js';
-//import {audio} from './state/audio.js';
-//import {actions} from './state/actions.js';
+import {actions} from './state/actions.js';
 
 // models
 import {Actor} from './models/stage/actors/actor.interface';  
 import {Panorama} from './models/stage/actors/environment/Panorama.js';  
-//import {Action} from './models/actions/action.interface';
+import {Action} from './models/actions/action.interface';
 //import {vrcontrols} from './models/camera/controls/vrcontrols';  
 //import {vrkeymap} from './models/camera/keymaps/vrkeymap';  
 //// for actors/cloud/spritecloud.ts
@@ -176,9 +175,8 @@ const initial_width:number = window.innerWidth,
           //via narrative.addActor(scene, name, actor) 
 
       // dictionary of targets of actions 
-      actionsTargets:Record<string,unknown> = { 
-        'narrative':narrative
-      },
+      actionsTargets:Record<string,unknown> = {}, 
+
 
       // renderTargets
       sgTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight),
@@ -245,6 +243,7 @@ class Narrative implements Cast{
   }
 
   foo():string{
+    console.log(`narrative.foo()!`);
     return 'foo';
   }
 
@@ -266,11 +265,22 @@ class Narrative implements Cast{
     //NOTE: config is not needed as arg since it is a closure var of narrative
     narrative.initialize();
 
+
+    // initialize actionsTargets
     // initialize modules with set of possible actions targets {t:'target',...}
     // and with ref to narrative (contained in 'actionsTargets')
+    actionsTargets['narrative'] = narrative;
+    actionsTargets['animation'] = animation;    // services
+    actionsTargets['mediator'] = mediator;
     config['actionsTargets'] = actionsTargets;
+
+
+    // initialize services
     director.initialize(config);
     animation.initialize(config);
+    //mediator.initialize(config);
+    queue.initialize(config);
+    transform3d.initialize(config);
 
 
     // webxr
@@ -312,6 +322,7 @@ class Narrative implements Cast{
   initialize():void{
     console.log(`@@@ narrative.initialize():`);
 
+
     // canvas DOM-singularity, and webgl2-context
     canvas = <HTMLCanvasElement>document.getElementById(config.renderer.canvas_id);
     context = canvas.getContext('webgl2', {antialias:true});
@@ -325,15 +336,12 @@ class Narrative implements Cast{
     _rmpost = config.topology._rmpost;
     _vrpost = config.topology._vrpost;
     topology = config.topology.topology;  //topology=_sg + _rm*2 + _vr*4
-    //console.log(`_sg=${_sg} _rm=${_rm} _vr=${_vr}`);
-    console.log(`rendering topology type = ${topology}`);
+    //console.log(`rendering topology type = ${topology}`);
     displayed_scene = config.topology.displayed_scene;
-    console.log(`displayed_scene = ${displayed_scene}`);
+    //console.log(`displayed_scene = ${displayed_scene}`);
 
     // create WebGLRenderer for all scenes
     renderer = create_renderer();
-    console.log(`renderer = ${renderer}:`);
-    console.dir(renderer);
 
     // populate Narrative instance for use in state modules
     narrative['devclock'] = devclock;
@@ -389,35 +397,23 @@ class Narrative implements Cast{
   // for actions (usually from server)
   // change state of framework states
   changeState(state:State):void{
-    console.log(`\n@@@ narrative.changeState state:`);
-    console.dir(state);
-    console.log(`\n @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@`);
-    console.log(`changeState: et = ${devclock.getElapsedTime()}`);
+    console.log(`\n@@@ narrative.changeState:`);
 
     (async () => {
       // camera creates camera components, controls and maps, and fog
-      // stage prepares scenes
-      // audio prepares music/sound
+      // stage prepares scenes - all actors and associated media
       // actions prepares sequences - music, animation and changes
       try{
         const results:number[] = await Promise.all([
           camera.delta(state['camera'], narrative),
-          stage.delta(state['stage'], narrative)
-          //audio.delta(state['audio']),
-          //actions.delta(state['actions'], narrative)
+          stage.delta(state['stage'], narrative),
+          actions.delta(state['actions'], narrative)
         ]);
-        console.log(`state-processing results are elapsed completion times:`);
-        console.dir(results);
-
-        // TEMP !!!!!
-        console.log(`\n @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@`);
-        console.log(`changeState end of await Promise.all(states): et = ${devclock.getElapsedTime()}`);
-        narrative.reportActors(true);
 
 
         // prepare components and actors for render()
         narrative.prerender(state).then((t) => {
-          console.log(`prerender() finished! at et = ${t}`);
+          //console.log(`prerender() finished! at et = ${t}`);
 
           if(!animating){
             // stop devclock, start clock and timeline
@@ -445,21 +441,18 @@ class Narrative implements Cast{
 
     })();//async-IIFE 
 
-    console.log(`\n @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@`);
-    console.log(`changeState end after async function: et = ${devclock.getElapsedTime()}`);
-
   }//changeState
 
 
 
   // prepare actors and components for render()
   prerender(state:State):Promise<number> {
-    console.log(`\n\n@@@ narrative.prerender()`);
+    console.log(`\n@@@ narrative.prerender()`);
 
     return new Promise((resolve, reject) => {
 
       if(sgscene){
-        console.log(`@@prerender(): sgscene is defined!`);
+        //console.log(`prerender(): sgscene is defined!`);
         sglens = narrative['sg']['lens'];
         if(state['camera']['sg']['lens'] && state['camera']['sg']['lens']['_orbit']){
           console.log(`\n*** enabling orbit controls for sglens:`);
@@ -507,13 +500,13 @@ class Narrative implements Cast{
   
 
       if(rmscene){
-        console.log(`@@prerender(): rmscene is defined!`);
+        //console.log(`prerender(): rmscene is defined!`);
         // build rendering components, actors
         rmquad = narrative.findActor('rmquad');
         rmhud = narrative.findActor('rmhud');
-        console.log(`n.prerender(): rmquad = ${rmquad}`);
-        console.log(`n.prerender(): rmhud = ${rmhud}`);
-        console.dir(rmquad);
+        //console.log(`n.prerender(): rmquad = ${rmquad}`);
+        //console.log(`n.prerender(): rmhud = ${rmhud}`);
+        //console.dir(rmquad);
         if(rmquad){
           rmquad_tDiffuse = rmquad.material.uniforms.tDiffuse;
         }
@@ -531,7 +524,7 @@ class Narrative implements Cast{
 
 
       if(vrscene){
-        console.log(`@@prerender(): vrscene is defined!`);
+        //console.log(`prerender(): vrscene is defined!`);
         vrlens = narrative['vr']['lens'];
         if(state['camera']['vr']['lens'] && state['camera']['vr']['lens']['_orbit']){
           console.log(`*** enabling orbit controls for vrlens:`);
@@ -555,13 +548,13 @@ class Narrative implements Cast{
   
         vrskybox = narrative.findActor('vrskybox');
         if(vrskybox){
-          console.log(`vrskybox actor found`);
-          console.log(`Array.isArray(vrskybox.material) = ${Array.isArray(vrskybox.material)}`);
-          console.log(`vrskybox.material.length = ${vrskybox.material.length}`);
+          //console.log(`vrskybox actor found`);
+          //console.log(`Array.isArray(vrskybox.material) = ${Array.isArray(vrskybox.material)}`);
+          //console.log(`vrskybox.material.length = ${vrskybox.material.length}`);
           if(Array.isArray(vrskybox.material)){
             vrskybox_materials = [];
             for(let i=0; i<6; i++){
-              console.log(`\n________________setting vrskybox_materials[${i}]`);
+              //console.log(`\n________________setting vrskybox_materials[${i}]`);
               //(<THREE.Materials[]>vrskybox.material)[i].map = sgTarget.texture;
               vrskybox_materials[i] = vrskybox.material[i] || new THREE.Material();
             }
@@ -572,7 +565,7 @@ class Narrative implements Cast{
   
         vrskydome = narrative.findActor('vrskydome');
         if(vrskydome){
-          console.log(`vrskydome actor found`);
+          //console.log(`vrskydome actor found`);
           vrskydome_map = vrskydome.material.map;
         }
 
@@ -595,8 +588,12 @@ class Narrative implements Cast{
   // render current frame - frame holds current frame number
   render():void {
 
-    // time, fps
-    et = clock.getElapsedTime();
+    // time-ms, check msgs
+    et = 1000.*clock.getElapsedTime();
+    if(frame%1000 === 0){      // period is approximately 160ms 
+      director.look(et);
+    }
+    // fps
     if(_stats){
       stats.update();
     } 
@@ -605,6 +602,12 @@ class Narrative implements Cast{
     if(sgcloud || vrcloud){
       TWEEN.update();
     }
+
+    //check messages
+    if(frame%10 === 0){      // period is approximately 160ms 
+      director.look(et);
+    }
+
 
     // animate sgscene spritecloud
     if(sgcloud){
@@ -908,9 +911,9 @@ class Narrative implements Cast{
         //rmplane.rotation.z = 50*Math.sin(et);
         //rmplane.rotation.z += 0.4;
         rmplane.position.x = 0.6*Math.sin(4.0*et);
-        if(frame%100 === 0){
-          console.log(`rmplane.rotatation.z = ${rmplane.rotation.z}`);
-        }
+//        if(frame%100 === 0){
+//          console.log(`rmplane.rotatation.z = ${rmplane.rotation.z}`);
+//        }
         break;
 
 
@@ -1001,7 +1004,7 @@ class Narrative implements Cast{
 //          console.dir(seq['actions']);
 //          queue.load(seq['actions']);   // load sequence to repeat
 //          clock.start();  //reset clock to zero for re-play of sequence 
-//          console.log(`clock.ellapsedTime=${clock.elapsedTime}`);
+//          console.log(`clock.elapsedTime=${clock.elapsedTime}`);
 //        }
 //      });
 //    }
@@ -1011,8 +1014,8 @@ class Narrative implements Cast{
 
   // following two functions are for sgscene-actor management (by actor name)
   addActor(scene:THREE.Scene, name:string, actor:THREE.Object3D):void{
-    console.log(`\n@@@ narrative.addActor ${name}`);
-    console.log(`addActor: et = ${devclock.getElapsedTime()}`);
+    console.log(`@@@ narrative.addActor ${name}`);
+    //console.log(`addActor: et = ${devclock.getElapsedTime()}`);
     if(scene && actor && name && name.length > 0){
       if(cast[name]){
         narrative.removeActor(scene, name);  //if replace actor with same name?
@@ -1059,7 +1062,7 @@ class Narrative implements Cast{
         //console.log(`narrative.find: cast[${name}] = ${cast[name]}`);
         return cast[name];
       }else{
-        console.log(`actor name ${name} NOT found - returning undefined!`); 
+        //console.log(`actor name ${name} NOT found - returning undefined!`); 
         return undefined;
       }
     }else{

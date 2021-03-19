@@ -30,16 +30,16 @@ class MorphTargets {
       requestedTargets = targets;
     }
 
-    console.log(`\n\n ((((((((((((( MorphTargets.generate(state):`);
-    console.dir(state);
-    console.log(`requestedTargets:`);
-    console.dir(requestedTargets);
+    //console.log(`\n\n ((((((((((((( MorphTargets.generate(state):`);
+    //console.dir(state);
+    //console.log(`requestedTargets:`);
+    //console.dir(requestedTargets);
 
 
     for(const t of requestedTargets){
       vertices = generators[t](state);
       //console.log(`vertices = ${vertices}`);
-      console.log(`${t} generated vertices has length ${vertices.length}`);
+      //console.log(`${t} generated vertices has length ${vertices.length}`);
       for(let i=0; i<vertices.length; i++){
         positions.push(vertices[i]);
       }

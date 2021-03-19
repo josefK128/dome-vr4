@@ -1,14 +1,13 @@
-// topology4/vrcloud4.ts 
+// topology4/audio-vrcloud4.ts 
 // webGL2, es300 three.js ==0.125.2
  
 
 // CONFIG
 // [1] config:Config (interface) is used once for initialization
 // [2] substates are dynamic - used for initialization AND subsequent variation
-// [3] There are 4 substates:
+// [3] There are 3 substates:
 //   stage,    // stage (scenegraph) 
 //   camera, 
-//   audio
 //   actions
 
 
@@ -81,7 +80,7 @@ const config:Config = {
     server:{
       server_connect: false,
       server_host: 'localhost',
-      server_port: 8081,
+      server_port: 8082,
       log: false,
       channels: ['actions', 'log']
     },
@@ -202,25 +201,10 @@ const state:State = {
                   }
                 }
 
-                //spritecloud-vrcloud is NOT SEEN - probably behind panorama!
-//                'panorama':{
-//                    factory:'Panorama',
-//                    url:'../models/stage/actors/environment/panorama.js',
-//                    options:{
-//                      texture_url:'./app/media/images/cube/sun_temple_stripe_stereo.jpg',
-//                      ntextures:12
-//                    }
-//                }
-
             } //actors
         } //vrscene
     },
 
-
-    // audio
-    audio:{
-        _audio:false
-    },
 
 
     // actions - default fifo=[] in queue
@@ -233,7 +217,7 @@ const state:State = {
     //                              // (see models/actions/sequence.interface.ts
     actions: {
         _actions: true,
-        sequence_url: './app/models/actions/sequences/bezier/rmbezier-actorbezier'
+        sequence_url: '../models/actions/sequences/audio/startonly.js'
     } //actions:{}
 };
 

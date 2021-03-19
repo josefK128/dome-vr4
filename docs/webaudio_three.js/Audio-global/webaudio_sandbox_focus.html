@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+	<body>
+		<div id="overlay">
+			<button id="startButton">Play</button>
+		</div>
+
+
+		<script type="module">
+
+			const startButton = document.getElementById( 'startButton' );
+			startButton.addEventListener( 'click', init );
+
+
+			function init() {
+				const overlay = document.getElementById( 'overlay' );
+				overlay.remove();
+
+				const listener = new THREE.AudioListener();
+				camera.add( listener );
+
+
+				// sound spheres
+				const audioLoader = new THREE.AudioLoader();
+
+				// global ambient audio
+				const sound4 = new THREE.Audio( listener );
+				audioLoader.load( 'sounds/Project_Utopia.ogg', function ( buffer ) {
+
+					sound4.setBuffer( buffer );
+					sound4.setLoop( true );
+					sound4.setVolume( 0.5 );
+					sound4.play();
+				} );
+			}
+
+		</script>
+	</body>
+</html>

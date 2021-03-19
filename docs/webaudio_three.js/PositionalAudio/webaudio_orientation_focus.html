@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<body>
+	<audio loop id="music" preload="auto" style="display: none">
+		<source src="sounds/376737_Skullbeatz___Bad_Cat_Maste.ogg" type="audio/ogg">
+		<source src="sounds/376737_Skullbeatz___Bad_Cat_Maste.mp3" type="audio/mpeg">
+	</audio>
+
+	<div id="overlay">
+		<button id="startButton">Play</button>
+	</div>
+	<div id="container"></div>
+
+
+	<audio loop id="music" preload="auto" style="display: none">
+		<source src="sounds/376737_Skullbeatz___Bad_Cat_Maste.ogg" type="audio/ogg">
+		<source src="sounds/376737_Skullbeatz___Bad_Cat_Maste.mp3" type="audio/mpeg">
+	</audio>
+
+
+
+	<script type="module">
+		import { PositionalAudioHelper } from './jsm/helpers/PositionalAudioHelper.js';
+		const startButton = document.getElementById( 'startButton' );
+		startButton.addEventListener( 'click', init );
+
+		function init() {
+			const overlay = document.getElementById( 'overlay' );
+			overlay.remove();
+
+			const mesh = new THREE.Mesh( new THREE.PlaneGeometry( 50, 50 ), new THREE.MeshPhongMaterial( { color: 0x999999, depthWrite: false } ) );
+x			scene.add( mesh );
+
+
+            // AudioListener
+			const listener = new THREE.AudioListener();
+			camera.add( listener );
+
+			const audioElement = document.getElementById( 'music' );
+			audioElement.play();
+
+            // PositionalAudio
+			const positionalAudio = new THREE.PositionalAudio( listener );
+
+            //set sound source
+			positionalAudio.setMediaElementSource( audioElement );
+			positionalAudio.setRefDistance( 1 );
+			positionalAudio.setDirectionalCone( 180, 230, 0.1 );
+
+			const helper = new PositionalAudioHelper( positionalAudio, 0.1 );
+			positionalAudio.add( helper );
+
+
+            // mesh (boombox) to attach PositionalAudio node
+     		boomBox.add( positionalAudio );
+			scene.add( boomBox );
+			animate();
+        }
+	</script>
+</body>
+</html>

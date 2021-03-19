@@ -47,14 +47,18 @@ class Director {
     while(!done){
       try{
         const action = <Action>await queue.peek(); //promise returned by 
-                // queue.peek() resolves to queue.fifo[0] if it exists
+        // queue.peek() resolves to queue.fifo[0] if it exists
+        //console.log(`director.exec: action['ms']=${action['ms']} et=${et}`);
+        //console.dir(action);
         // if exists, test the timestamp against elapsed time et
         // promise resolved => action exists - so the first check is unneeded
-        if(action && action['ms'] < et){
-          console.log(`director.look: action['ms']=${action['ms']} et=${et}`);
+        //console.log(`action['ms']<et is ${action['ms']<et}`);
+        if(action && (action['ms'] < et)){
+          //console.log(`director.exec: action['ms']=${action['ms']} et=${et}`);
           director.exec(<Action>queue.pop());
         }else{
           done=true;   // no actions are ready to be executed
+          //console.log(`director.exec: done = ${done}`);
         }
       } catch(e) {   //promise returned by queue.peek() rejected => queue empty
         done=true;
@@ -77,6 +81,11 @@ class Director {
         name:string = names[0];
 
     let target:Record<string,unknown>;
+
+
+    //console.log(`d.exec(): name = ${name}`);
+    //console.log(`d.exec(): target = ${actionsTargets[name]}:`);
+    //console.dir(actionsTargets[name]);
 
 
     if(actionsTargets[name]){
