@@ -177,6 +177,8 @@ const initial_width:number = window.innerWidth,
       // dictionary of targets of actions 
       actionsTargets:Record<string,unknown> = {}, 
 
+      // AudioListener - needed to create audio actors 
+      audioListener = new THREE.AudioListener(),
 
       // renderTargets
       sgTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight),
@@ -337,8 +339,13 @@ class Narrative implements Cast{
     _vrpost = config.topology._vrpost;
     topology = config.topology.topology;  //topology=_sg + _rm*2 + _vr*4
     //console.log(`rendering topology type = ${topology}`);
+
+    // displayed_scene needed in state/camera to add audioListener to 
+    // lens from displayed_scene
+    narrative['audioListener'] = audioListener;
     displayed_scene = config.topology.displayed_scene;
-    //console.log(`displayed_scene = ${displayed_scene}`);
+    narrative['displayed_scene'] = displayed_scene; //'sg'|'rm'|'vr'
+    console.log(`n['displayed_scene'] = ${narrative['displayed_scene']}`);
 
     // create WebGLRenderer for all scenes
     renderer = create_renderer();

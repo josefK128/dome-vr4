@@ -200,11 +200,28 @@ class Camera {
           //console.log(`state['vr']['csphere'] is undefined or empty`);
         }
 
+
+        //HACK!!! attach audioListener to lens from displayed scene
+        const dslens:THREE.PerspectiveCamera = <THREE.PerspectiveCamera>narrative[narrative['displayed_scene']]['lens'];
+        //console.log(`\n\n ### camera: dslens = ${dslens}`);
+        //console.dir(dslens);
+        //console.log(`before dslens.children.length = ${dslens.children.length}`);
+        console.log(`attaching audioListener to ${narrative['displayed_scene']}lens`);
+        dslens.add(narrative['audioListener']);
+        //console.log(`after dslens.children.length = ${dslens.children.length}`);
+        //console.log(`dslens.children[0]:`);
+        //console.dir(dslens.children[0]);
         resolve(narrative['devclock'].getElapsedTime());
 
       }else{
+
         //console.log(`state['vr'] is undefined or empty`);
+        //HACK!!! attach audioListener to lens from displayed scene
+        const dslens:THREE.PerspectiveCamera = <THREE.PerspectiveCamera>narrative[narrative['displayed_scene']]['lens'];
+        console.log(`attaching audioListener to ${narrative['displayed_scene']}lens`);
+        dslens.add(narrative['audioListener']);
         resolve(narrative['devclock'].getElapsedTime());
+
       }
     });
 
