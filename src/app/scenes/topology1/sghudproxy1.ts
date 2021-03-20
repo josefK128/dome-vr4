@@ -163,7 +163,7 @@ const state:State = {
                     options: {
                         length: 10000,
                         // setting axes translation-y at -0.01 allows z-axis to be seen
-                        transform: { t: [0.0, -0.01, -0.99] }
+                        transform: { t: [0.0, 0.0, 0.0] }
                     }
                 },
 
@@ -189,7 +189,28 @@ const state:State = {
                         //transform: { t: [0.0, -0.01, -0.99], e: [0.0, 0.0, 0.0], s: [0.2, 0.6, 0.4] }
                         transform: { t: [0, 0, 0], e: [0.0, 0.0, 0.0], s: [0.5, 1, 0.5] }
                     }
+                },
+
+                'sgpoint':{
+                  factory:'Point',
+                  url:'../models/stage/actors/objects/point.js',
+                  options:{
+                      position:[0,0,0.7],
+                      pointsize:.01,
+                      transform:{}
+                  }
+                },
+
+                'sgpoints':{
+                  factory:'Points',
+                  url:'../models/stage/actors/objects/points.js',
+                  options:{
+                      positions:[[0,0,0.5],[1.0,0,0.5], [-1.0,0,0.5]],
+                      pointsize:.01,
+                      transform:{}
+                  }
                 }
+
             } //actors
         } //sgscene
     },
