@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <base href="/dist/"> <!-- all urls relative to base href='./dist/'> -->
+    <title>
+      button:three0.125.02-webGL2-es300:base-href-dist
+    </title>
+    <!--<link href="./index.css" rel="stylesheet"> - same as below -->
+    <style>
+      body { margin: 0;
+             padding: 0;
+             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 
+               'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 
+               'Droid Sans', 'Helvetica Neue', sans-serif;
+               -webkit-font-smoothing: antialiased;
+               -moz-osx-font-smoothing: grayscale;
+      }
+      #canvas-container{
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      canvas { width: 100%; height: 100%; z-index:-1; position:absolute; }
+      #startAudio {position:absolute; z-index:10; left:30%; top:40%;
+        color:'white';}
+
+      #startAudio {
+        position:absolute;
+        left:30%;
+        top:40%
+      }
+
+      code {
+        font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+          monospace;
+      }    
+    </style>
+  </head>
+
+  <body>
+    <!-- NOTE:canvas is styled exactly as Singularity.css -->
+    <div id="canvas-container">
+    <canvas id='webgl' style='width:100vw; height:100vh; background-color:black; position:absolute; left:0px; top:0px;'/>
+    </div>
+    <!-- <div id='overlay' style='width:100vw; height:100vh; display:none'>-->  
+    <!-- <div id='overlay'> --> 
+      <button id='startAudio'>Start Audio</button>
+    <!-- </div> -->
+
+  </body>
+</html>

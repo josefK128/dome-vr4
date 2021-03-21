@@ -92,7 +92,7 @@ class Stage {
                       options['lens'] = narrative[scene_name]['lens'];
                     }
   
-                    actor = await (<ActorFactory>m[factory]).create(options);
+                    actor = await (<ActorFactory>m[factory]).create(options, narrative);
                     
                     // Panorama is *special case*
                     //if(factory === 'Panorama')

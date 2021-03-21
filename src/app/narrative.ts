@@ -177,8 +177,13 @@ const initial_width:number = window.innerWidth,
       // dictionary of targets of actions 
       actionsTargets:Record<string,unknown> = {}, 
 
+  
+      // 'startAudio' - enable audio button
+      startAudio = document.getElementById('startAudio'),
+
       // AudioListener - needed to create audio actors 
       audioListener = new THREE.AudioListener(),
+
 
       // renderTargets
       sgTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight),
@@ -246,6 +251,11 @@ class Narrative implements Cast{
 
   foo():string{
     console.log(`narrative.foo()!`);
+//
+//    const gaudio = narrative.findActor('globalaudio');
+//    if(gaudio){
+//      gaudio['startAudio']();
+//    }
     return 'foo';
   }
 
@@ -259,7 +269,6 @@ class Narrative implements Cast{
 
     // initialize config
     config = _config;
-
 
     // initialize needed narrative closure variables and copy references
     // to narrative instance object for use in state modules camera, stage
@@ -430,6 +439,30 @@ class Narrative implements Cast{
     
             // set timer to report time passage - t, dt, frames
             gsap.ticker.add(timer);
+
+
+            // listen for enable audio event from startAudio button
+            // and on click start audio actors - singleton globalaudio and
+            // zero or more pointaudio actors
+            startAudio.addEventListener('click', function(){
+              // remove startAudio button
+              startAudio.remove();
+
+              // match actor names to /audio/ 
+              // exps 'globalaudio', 'pointaudio1', 'pointaudio2'
+              // match => call startAudio() on audio actor to initialize play
+              for(const name of Object.keys(cast)){
+                //console.log(`testing /audio/ match with name = ${name}`);
+                //console.log(`cast[name] = ${cast[name]}:`);
+                //console.dir(cast[name]);
+                if(/[aA]udio/.test(name)){
+                  console.log(`/[aA]udio/ MATCH with name = ${name}`);
+                  cast[name].startAudio();
+                }else{
+                  //console.log(`/[aA]udio/ NO MATCH with name = ${name}`);
+                }
+              }
+            });
 
             // listen for resize events
             window.addEventListener( 'resize', narrative.onWindowResize, false );
@@ -1021,7 +1054,8 @@ class Narrative implements Cast{
 
   // following two functions are for sgscene-actor management (by actor name)
   addActor(scene:THREE.Scene, name:string, actor:THREE.Object3D):void{
-    console.log(`@@@ narrative.addActor ${name}`);
+    console.log(`\n@@@ narrative.addActor ${name} actor=${actor}:`);
+    //console.dir(actor);
     //console.log(`addActor: et = ${devclock.getElapsedTime()}`);
     if(scene && actor && name && name.length > 0){
       if(cast[name]){
@@ -1029,6 +1063,7 @@ class Narrative implements Cast{
       }
       actor.name = name;  // possible diagnostic use
       cast[name] = actor;
+      console.log(`addActor: et = ${devclock.getElapsedTime()}`);
       scene.add(actor);
       //console.log(`n.addActor: scene.children.l = ${scene.children.length}`);
       //console.log(`n.addActor: cast size = ${Object.keys(cast).length}`);
