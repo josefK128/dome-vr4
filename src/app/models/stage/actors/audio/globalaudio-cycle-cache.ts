@@ -60,9 +60,9 @@
 //          actors:{
 //            'globalaudio':{      // audio actorname
 //              options:{
-//                url:[
+//                urls:[
 //                  ./app/media/audio/music/test1.mp3',
-//                ],
+//                  ./app/media/audio/music/test2.mp3'],
 //                volume:0.7,           // default=1.0
 //                playbackRate:1.2,    // default=1.0 (>1=> faster, <1=>slower)
 //                loop:true,          // def=f  (true=>infinite loop)
@@ -84,10 +84,9 @@
 //        factory:'GlobalAudio',
 //        url:'./app/models/stage/actors/audio/globalaudio',
 //        options:{
-//           url:string,
+//           urls:string[],
 //           *volume:number,         // default=1.0
 //           *playbackRate:number,  // default=1.0 (>1=> faster, <1=>slower)
-//           *loop:boolean,        // def=f  (true=>infinite loop)
 //                                // effects only globalaudio.delta function!
 //                               // NOTE:autoplay NOT used in globalaudio.delta
 //           *play:boolean,     // (delta only - starts or resumes audio)
@@ -119,11 +118,10 @@ export const Globalaudio:ActorFactory = class {
       // return Promise<Actor> ready to be added to scene
       // globalaudio
       //const urls = <string[]>options['urls'],
-      const url= <string>options['url'],
+      const urls= <string[]>options['urls'],
             autoplay = <boolean>options['autoplay'] || true,
             playbackRate = <number>options['playbackRate'] || 1.0,
             volume = <number>options['volume'] || 1.0,
-            loop = <boolean>options['loop'] || false,
             play = false,
             pause = false,
             stop = true,
@@ -133,7 +131,6 @@ export const Globalaudio:ActorFactory = class {
       //console.log(`\n\n&&& globalaudio: urls=${urls} sound=${sound}`);
       sound.setVolume(volume);
       sound.setPlaybackRate(playbackRate);
-      sound.setLoop(loop);
       console.log(`sound=${sound}:`); 
       console.dir(sound);
 
@@ -142,20 +139,65 @@ export const Globalaudio:ActorFactory = class {
       sound['startAudio'] = () => {
         console.log(`\n *** sound.startAudio`);
 
-        audioLoader.load(url, (buffer) => {
-          console.log(`audioLoader loaded ${buffer} from url=${url}`);
-          sound.setBuffer(buffer);
-          console.log(`audioLoader: playing sound=${sound}`);
-          sound.play();
-        },
-        (progress) => {
-          console.log(); 
-        },
-        (err) => {
-          console.log(`error loading url:${err}`);
-        });
+        const buffers:unknown[] = [];
+        let j:number,
+            N:number;
+            
+        async function* asyncloop(urls:string[]){
+          N = urls.length;        
+          for(let i=0;;i++){
+            j = i%N;
+            yield new Promise((resolve, reject) => {
+              // sf.play onEnded resolves Promise
+              sound['onEnded'] = () => {
+                resolve(j);
+              };
 
-      };//startAudio
+              if(buffers[j]){
+                console.log(`buffers[${j}] exists!`);
+                sound.setBuffer(buffers[j]);
+                if(!sound.isPlaying){
+                  sound.play();
+                }
+              }else{
+                console.log(`buffers[${j}] does NOT exist! => load buffer`);
+                // load url f(buffer)
+                audioLoader.load(urls[j], (buffer) => {
+                  console.log(`audioLoader loaded ${buffer} from url=${urls[j]}`);
+                  buffers[j] = buffer;
+                  sound.setBuffer(buffer);
+                  console.log(`audioLoader: playing sound=${sound}`);
+                  if(!sound.isPlaying){
+                    sound.play();
+                  }
+                },
+                (progress) => {
+                  console.log(); 
+                },
+                (err) => {
+                  console.log(`error loading url:${err}`);
+                });
+              }
+            });
+          }
+        }//async generator asyncloop
+  
+
+         (async () => {
+          const loop = asyncloop(urls);
+          for await (const k of loop){
+            // Prints sf-url index just played
+            console.log(`await - sf ${k} complete.`);
+            sound.stop();
+          }
+        })();
+//        (async () => {
+//          await asyncloop(urls);
+//          sound.stop();
+//          console.log(`await - sf complete.`);
+//        })();
+
+      };//sound['startAudio']
 
 
       // ACTOR.INTERFACE method

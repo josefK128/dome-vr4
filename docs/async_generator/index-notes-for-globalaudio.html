@@ -58,31 +58,59 @@
       import * as THREE from './three.module.js';
 
 
-      let j,
-          N,
-          sf;
+      // preliminary audio preparation
+      const audioListener = new THREE.AudioListener(),
+            lens = new THREE.PerspectiveCamera(),
+            sound = new THREE.Audio(audioListener),
+            audioLoader = new THREE.AudioLoader();
 
-      async function* asyncloop(urls){
-        N = urls.length;
-
-        for(let i=0;;i++){
-          j = i%N;
-          yield new Promise((resolve, reject) => {
-            setTimeout(() => {
-              console.log(`asyncloop resolving j = ${j}`);
-              resolve(j);
-            }, 3000);
-          });
-        }
-      }
+      lens.add(audioListener);
 
 
-      (async () => {
-        let loop = asyncloop(['s','t','u','v','w','x','y','z']);
-        for await (let k of loop){
-          console.log(`await - sf ${k} complete.`); // Prints sf-url index just played
-        }
-      })();
+      // called in startAudio button click-event handler
+      sound['startAudio'] = () => {
+        console.log(`\n *** sound.startAudio`);
+
+        let j,
+            N,
+            sf;
+        async function* asyncloop(urls){
+          N = urls.length;        
+          for(let i=0;;i++){
+            j = i%N;
+            yield new Promise((resolve, reject) => {
+              // sf.play onEnded resolves Promise
+              sound['onEnded'] = () => {
+                resolve(j);
+              }
+  
+              // load url f(buffer)
+              audioLoader.load(url, (buffer) => {
+                console.log(`audioLoader loaded ${buffer} from url=${url}`);
+                sound.setBuffer(buffer);
+                console.log(`audioLoader: playing sound=${sound}`);
+                sound.play();
+              },
+              (progress) => {
+                console.log(); 
+              },
+              (err) => {
+                console.log(`error loading url:${err}`);
+              });
+            });
+          }
+        }//async generator asyncloop
+  
+  
+        (async () => {
+          let loop = asyncloop(['s','t','u','v','w','x','y','z']);
+          for await (let k of loop){
+            // Prints sf-url index just played
+            console.log(`await - sf ${k} complete.`);
+          }
+        })();
+
+      }//sound['startAudio']
 
     </script>
   </body>

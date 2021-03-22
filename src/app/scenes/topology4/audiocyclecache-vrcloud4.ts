@@ -1,4 +1,4 @@
-// topology4/audio-vrcloud4.ts 
+// topology4/audiocyclecache-vrcloud4.ts 
 // webGL2, es300 three.js ==0.125.2
  
 
@@ -201,20 +201,20 @@ const state:State = {
                   }
                 },
 
-                'audio':{ 
+                'audiocyclecache':{ 
                   factory:'Globalaudio',
-                  url:'../models/stage/actors/audio/globalaudio.js',
+                  url:'../models/stage/actors/audio/globalaudio-cycle-cache.js',
                   options:{ 
-                    url: './app/media/audio/music/test2.mp3',
-//                    urls:[
-//                      './app/media/audio/music/test1.mp3',
-//                      './app/media/audio/music/test2.mp3'
-//                    ],
-//                    autoplay:true,
+//                    url: './app/media/audio/music/test1.mp3',
+                    urls:[
+                      './app/media/audio/music/test1.mp3',
+                      './app/media/audio/music/test2.mp3'
+                    ],
+                    autoplay:true,
                     volume:0.7,         // default=1.0
-                    playbackRate:0.8,  // default=1.0 (>1=> faster, <1=>slower)
+                    playbackRate:1.2  // default=1.0 (>1=> faster, <1=>slower)
                     //loop:false        // def=f  (true=>infinite loop)
-                    loop:true        // def=f  (true=>infinite loop)
+//                    loop:true        // def=f  (true=>infinite loop)
                   }
                 }
 
