@@ -231,9 +231,6 @@ export const Globalaudio:ActorFactory = class {
         //console.log(`globalaudio.delta: options = ${options}:`);
         //console.dir(options);
 
-        if(options['volume']){sound.volume = <number>options['volume'];}
-        if(options['playbackRate']){sound.playbackRate = <number>options['playbackRate'];}
-        if(options['loop']){sound.loop = <boolean>options['loop'];}
         if(options['play']){sound.play = <boolean>options['play'];}
         if(options['pause']){sound.pause = <boolean>options['pause'];}
         if(options['stop']){sound.stop = <boolean>options['stop'];}
