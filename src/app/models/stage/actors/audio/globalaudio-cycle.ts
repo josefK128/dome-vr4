@@ -1,4 +1,4 @@
-// globalaudio.ts
+// globalaudio-cycle.ts
 // Actor is a Factory interface - so GlobalAudio 'creates' instances using the
 // options Object as variations, i.e. GlobalAudio is a factory and NOT a singleton
 //
@@ -40,10 +40,9 @@
 //    a:'o',              // arg type - object
 //    ms:'0',             // timestamp
 //    o:{                 // arg-object
-//      url:string,
-//      volume:0.7,           // default=1.0
-//      playbackRate:1.2,    // default=1.0 (>1=> faster, <1=>slower)
-//      loop:true,          // def=f  (true=>infinite loop)
+//      urls:string[],
+//      volume:[0.7],     // default=1.0 NOTE:if 1 value - use for all urls
+//      playbackRate:[1.2],    // default=1.0 (>1=> faster, <1=>slower)
 //      play:true,         // (delta only - starts or resumes audio)
 //    }}
 //
@@ -82,11 +81,12 @@
 //    actors:{
 //      'globalaudio':{ 
 //        factory:'GlobalAudio',
-//        url:'./app/models/stage/actors/audio/globalaudio',
+//        url:'./app/models/stage/actors/audio/globalaudio-cycle.js',
 //        options:{
 //           urls:string[],
-//           *volume:number,         // default=1.0
-//           *playbackRate:number,  // default=1.0 (>1=> faster, <1=>slower)
+//           cache:boolean,  //cache=t => cache sfs upon (single) load - def=f
+//           *volume:number[],         // default=1.0
+//           *playbackRate:number[],  // default=1.0 (>1=> faster, <1=>slower)
 //                                // effects only globalaudio.delta function!
 //                               // NOTE:autoplay NOT used in globalaudio.delta
 //           *play:boolean,     // (delta only - starts or resumes audio)
@@ -95,6 +95,7 @@
 //        }
 //      }
 //    }//actors
+
 //
 import {ActorFactory} from '../actorfactory.interface';
 import {Actor} from '../actor.interface';
@@ -106,7 +107,7 @@ import {Cast} from '../../../../cast.interface.js';
 export const Globalaudio:ActorFactory = class {
 
   static create(options:Record<string,unknown>={}, narrative:Cast):Promise<Actor>{    
-    console.log(`\n\n&&& globalaudio: url=${options['url']}`);
+    console.log(`\n\n&&& Globalaudio.create() globalaudio-cycle:}`);
 //    console.log(`narrative['audioListener'] = ${narrative['audioListener']}`);
 //    for(const p in options){
 //      console.log(`options[${p}] = ${options[p]}`);
@@ -119,29 +120,49 @@ export const Globalaudio:ActorFactory = class {
       // globalaudio
       //const urls = <string[]>options['urls'],
       const urls= <string[]>options['urls'],
-            //autoplay = <boolean>options['autoplay'] || true,
-            playbackRate = <number>options['playbackRate'] || 1.0,
-            volume = <number>options['volume'] || 1.0,
+            cache= <boolean>options['cache'] || false,
             play = false,
             pause = false,
             stop = true,
             audioLoader = new THREE.AudioLoader(),
             sound = new THREE.Audio(narrative['audioListener']);
 
-      //console.log(`\n\n&&& globalaudio: urls=${urls} sound=${sound}`);
-      sound.setVolume(volume);
-      sound.setPlaybackRate(playbackRate);
-      console.log(`sound=${sound}:`); 
-      console.dir(sound);
+      let volume = <number[]>options['volume'] || [],
+          playbackRate = <number[]>options['playbackRate'] || [];
+
+
+
+      // prepare volume and playbackRate if necessary [] -> [1.0,...]
+      if(volume.length === 0){
+        volume = new Array(urls.length).fill(1.0);
+      }else{
+        if(volume.length < urls.length){
+          const n = urls.length - volume.length;
+          for(let k=0; k<n; k++){
+            volume[volume.length + k] = 1.0;
+          }
+        }
+      }
+      if(playbackRate.length === 0){
+        playbackRate = new Array(urls.length).fill(1.0);
+      }else{
+        if(playbackRate.length < urls.length){
+          const n = urls.length - playbackRate.length;
+          for(let k=0; k<n; k++){
+            playbackRate[playbackRate.length + k] = 1.0;
+          }
+        }
+      }
 
 
       // called in startAudio button click-event handler
       sound['startAudio'] = () => {
         console.log(`\n *** sound.startAudio`);
 
-        let j,
-            N,
-            sf;
+        const buffers:unknown[] = [];
+        let j:number,
+            N:number;
+            
         async function* asyncloop(urls:string[]){
           N = urls.length;        
           for(let i=0;;i++){
@@ -151,22 +172,37 @@ export const Globalaudio:ActorFactory = class {
               sound['onEnded'] = () => {
                 resolve(j);
               };
-  
-              // load url f(buffer)
-              audioLoader.load(urls[j], (buffer) => {
-                console.log(`audioLoader loaded ${buffer} from url=${urls[j]}`);
-                sound.setBuffer(buffer);
-                console.log(`audioLoader: playing sound=${sound}`);
+
+              if(cache && buffers[j]){
+                console.log(`cache=t AND buffers[${j}] exists! => use cached buffer`);
+                sound.setBuffer(buffers[j]);
+                sound.setVolume(volume[j]);
+
+                sound.setPlaybackRate(playbackRate[j]);
+
                 if(!sound.isPlaying){
                   sound.play();
                 }
-              },
-              (progress) => {
-                console.log(); 
-              },
-              (err) => {
-                console.log(`error loading url:${err}`);
-              });
+              }else{
+                console.log(`cache=f or buffers[${j}] does NOT exist! => load buffer`);
+                // load url f(buffer)
+                audioLoader.load(urls[j], (buffer) => {
+                  console.log(`audioLoader loaded ${buffer} from url=${urls[j]}`);
+                  buffers[j] = buffer;
+                  sound.setBuffer(buffer);
+                  sound.setVolume(volume[j]);
+                  sound.setPlaybackRate(playbackRate[j]);
+                  if(!sound.isPlaying){
+                    sound.play();
+                  }
+                },
+                (progress) => {
+                  console.log(); 
+                },
+                (err) => {
+                  console.log(`error loading url:${err}`);
+                });
+              }
             });
           }
         }//async generator asyncloop
@@ -182,6 +218,7 @@ export const Globalaudio:ActorFactory = class {
         })();
 //        (async () => {
 //          await asyncloop(urls);
+//          sound.stop();
 //          console.log(`await - sf complete.`);
 //        })();
 

@@ -107,7 +107,7 @@ import {Cast} from '../../../../cast.interface.js';
 export const Globalaudio:ActorFactory = class {
 
   static create(options:Record<string,unknown>={}, narrative:Cast):Promise<Actor>{    
-    console.log(`\n\n&&& globalaudio: url=${options['url']}`);
+    console.log(`\n\n&&& Globalaudio.create() globalaudio: ${options['url']}`);
 //    console.log(`narrative['audioListener'] = ${narrative['audioListener']}`);
 //    for(const p in options){
 //      console.log(`options[${p}] = ${options[p]}`);

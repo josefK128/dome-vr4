@@ -205,16 +205,14 @@ const state:State = {
                   factory:'Globalaudio',
                   url:'../models/stage/actors/audio/globalaudio-cycle.js',
                   options:{ 
-//                    url: './app/media/audio/music/test1.mp3',
                     urls:[
                       './app/media/audio/music/test1.mp3',
                       './app/media/audio/music/test2.mp3'
                     ],
-                    autoplay:true,
-                    volume:0.7,         // default=1.0
-                    playbackRate:1.2  // default=1.0 (>1=> faster, <1=>slower)
-                    //loop:false        // def=f  (true=>infinite loop)
-//                    loop:true        // def=f  (true=>infinite loop)
+                    cache:true,         // default=f
+                    //volume:[1.0,0.7],         // default=1.0 for all urls
+                    playbackRate:[1.4]  // default=1.0 for all urls
+                                           // (>1=> faster, <1=>slower)
                   }
                 }
 

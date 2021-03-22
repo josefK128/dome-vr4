@@ -206,14 +206,8 @@ const state:State = {
                   url:'../models/stage/actors/audio/globalaudio.js',
                   options:{ 
                     url: './app/media/audio/music/test2.mp3',
-//                    urls:[
-//                      './app/media/audio/music/test1.mp3',
-//                      './app/media/audio/music/test2.mp3'
-//                    ],
-//                    autoplay:true,
                     volume:0.7,         // default=1.0
                     playbackRate:0.8,  // default=1.0 (>1=> faster, <1=>slower)
-                    //loop:false        // def=f  (true=>infinite loop)
                     loop:true        // def=f  (true=>infinite loop)
                   }
                 }
