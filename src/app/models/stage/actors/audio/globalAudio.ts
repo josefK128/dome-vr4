@@ -108,17 +108,12 @@ export const Globalaudio:ActorFactory = class {
 
   static create(options:Record<string,unknown>={}, narrative:Cast):Promise<Actor>{    
     console.log(`\n\n&&& Globalaudio.create() globalaudio: ${options['url']}`);
-//    console.log(`narrative['audioListener'] = ${narrative['audioListener']}`);
-//    for(const p in options){
-//      console.log(`options[${p}] = ${options[p]}`);
-//    }
 
 
+    // return Promise<Actor> ready to be added to scene
+    // globalaudio
     return new Promise((resolve, reject) => {
 
-      // return Promise<Actor> ready to be added to scene
-      // globalaudio
-      //const urls = <string[]>options['urls'],
       const url= <string>options['url'],
             autoplay = <boolean>options['autoplay'] || true,
             playbackRate = <number>options['playbackRate'] || 1.0,

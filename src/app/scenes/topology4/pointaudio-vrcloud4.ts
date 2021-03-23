@@ -1,4 +1,4 @@
-// topology4/audio-vrcloud4.ts 
+// topology4/pointaudio-vrcloud4.ts 
 // webGL2, es300 three.js ==0.125.2
  
 
@@ -201,12 +201,15 @@ const state:State = {
                   }
                 },
 
-                'audio':{ 
-                  factory:'Globalaudio',
-                  url:'../models/stage/actors/audio/globalaudio.js',
+                'pointaudio':{ 
+                  factory:'Pointaudio',
+                  url:'../models/stage/actors/audio/pointaudio.js',
                   options:{ 
-                    url: './app/media/audio/music/test2.mp3',
                     //url: './app/media/audio/music/Mar18_mox.m4a',//m4a works!
+                    url: './app/media/audio/music/test1.mp3',
+                    actorname:'unitcube',
+                    refd:10.,          // d at which attenuation begins
+                    maxd:10000.,        // d at which audibility ends
                     volume:0.7,         // default=1.0
                     playbackRate:0.8,  // default=1.0 (>1=> faster, <1=>slower)
                     loop:true        // def=f  (true=>infinite loop)
