@@ -53,12 +53,12 @@ export interface State {
         far?:number                 //default:100
       },
       controls?:{
-        _controls?:boolean,    // t=>create, f=>delete
-        controls?:string,     //url
-        _keymap?:boolean,    // t=>create, f=>delete 
-        keymap?:string,       //url
-        target?:string,
-        rotationTarget?:string
+        controls?:string,         //url
+        controls_speed?:number,  //default 0.1
+        keymap?:string,         //url
+        keymap_speed?:number,  //default 0.01
+        target?:string, //trgt of mouse move (if cntrls), keymap (if map)
+        rotationTarget?:string //if defined specific keymap trgt for rot.
       },
       csphere?:{
         _csphere:boolean,    // t=>create, f=>delete undef=>modify
@@ -112,12 +112,12 @@ export interface State {
         far?:number                  //default:100
       },
       controls?:{
-        _controls?:boolean, // t=>create, f=>delete undef=>modify
-        controls?:string,
-        _keymap?:boolean,    // t=>create, f=>delete 
-        keymap?:string,       //url
-        target?:string,
-        rotationTarget?:string
+        controls?:string,         //url
+        controls_speed?:number,  //default 0.1
+        keymap?:string,         //url
+        keymap_speed?:number,  //default 0.01
+        target?:string, //trgt of mouse move (if cntrls), keymap (if map)
+        rotationTarget?:string //if defined specific keymap trgt for rot.
       },
       csphere?:{
         _csphere:boolean,    // t=>create, f=>delete undef=>modify

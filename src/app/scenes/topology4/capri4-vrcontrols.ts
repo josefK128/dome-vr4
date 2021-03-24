@@ -140,12 +140,12 @@ const state:State = {
             far: 300 //default:100
           },
           controls: {
-            _controls: true,
             controls: '../models/camera/controls/vrcontrols.js',
-            _keymap:true,
+            controls_speed:0.1,  //default 0.1
             keymap: '../models/camera/keymaps/vrkeymap.js',
-            target:'vrscene',
-            rotationTarget:'vrscene'
+            keymap_speed:0.01,  //default 0.01
+            target:'vrscene', //trgt of mouse move (if cntrls), keymap (if map)
+            rotationTarget:'vrscene' //if defined specific keymap trgt for rot.
           }
           //csphere: {
           //}

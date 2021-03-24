@@ -11,7 +11,13 @@ import {Keymap} from '../models/camera/keymaps/keymap.interface';
 
 
 // singleton closure-instance variable
-let camera:Camera;
+let camera:Camera,
+    sgcontrols:Controls,
+    sgkeymap:Keymap,
+    vrcontrols:Controls,
+    vrkeymap:Keymap,
+    sgcsphere:THREE.Mesh,
+    vrcsphere:THREE.Mesh;
 
 
 
@@ -31,10 +37,10 @@ class Camera {
 
   // l = state['sg'|'vr']['lens']  - return THREE.PerspectiveCamera if created
   create_lens(l:Record<string,unknown>, scene:THREE.Scene, lens:THREE.PerspectiveCamera):THREE.PerspectiveCamera{
-  console.log(`camera.create_lens(): creating lens camera component`);
+    console.log(`camera.create_lens(): creating lens camera component`);
 
-  // lens 
-  // NOTE: l['_lens'] is only true or undefined (create or modify)
+    // lens 
+    // NOTE: l['_lens'] is only true or undefined (create or modify)
     //console.log(`l['_lens'] = ${l['_lens']}`);
     if(l['_lens']){   //t=>create
       const aspect = window.innerWidth/window.innerHeight,
@@ -99,8 +105,10 @@ class Camera {
   }//create_csphere
 
 
-  create_controls(cs:Record<string,unknown>, scene:THREE.Scene, narrative:Cast):void{
+  create_controls(cs:Record<string,unknown>, scene:THREE.Scene, narrative:Cast, scenename:string):void{
     console.log('camera.create_controls(cs,scene,controls) camera component');
+    console.log('scenename = ${scenename}');
+
 
   }//create_controls
 
@@ -149,7 +157,7 @@ class Camera {
         // controls
         const sgc = <Record<string,unknown>>(state_sg['controls']);
         if(sgc && Object.keys(sgc).length > 0){
-          camera.create_controls(sgc, scene, narrative);
+          camera.create_controls(sgc, scene, narrative, 'sg');
         }else{
           //console.log(`state['sg']['controls'] is undefined or empty`);
         }
@@ -193,7 +201,7 @@ class Camera {
         // controls
         const vrc = <Record<string,unknown>>(state_vr['controls']);
         if(vrc && Object.keys(vrc).length > 0){
-          camera.create_controls(vrc, scene, narrative);
+          camera.create_controls(vrc, scene, narrative, 'vr');
         }else{
           //console.log(`state['vr']['controls'] is undefined or empty`);
         }

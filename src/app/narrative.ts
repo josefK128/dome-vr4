@@ -338,8 +338,7 @@ class Narrative implements Cast{
     //console.log(`rendering topology type = ${topology}`);
 
 
-    // canvas and _webxr needed in camera.delta
-    narrative['_webxr'] = config.topology._webxr;
+    // canvas needed in camera.delta for vrcontrols and possibly others
     narrative['canvas'] = canvas;
 
     // displayed_scene needed in state/camera to add audioListener to 
