@@ -6,7 +6,8 @@
 //import {OrbitControls} from '../models/camera/controls/OrbitControls';
 import {Cast} from '../cast.interface';
 import {transform3d} from '../services/transform3d.js';
-import {Controls} from '../models/camera/controls/Controls.interface';
+import {Controls} from '../models/camera/controls/controls.interface';
+import {Keymap} from '../models/camera/keymaps/keymap.interface';
 
 
 // singleton closure-instance variable
@@ -30,35 +31,33 @@ class Camera {
 
   // l = state['sg'|'vr']['lens']  - return THREE.PerspectiveCamera if created
   create_lens(l:Record<string,unknown>, scene:THREE.Scene, lens:THREE.PerspectiveCamera):THREE.PerspectiveCamera{
-    console.log(`camera.create_lens(): creating lens camera component`);
+  console.log(`camera.create_lens(): creating lens camera component`);
 
-    // lens 
-    // NOTE: l['_lens'] is only true or undefined (create or modify)
-    if(l && Object.keys(l).length > 0){
-      //console.log(`l['_lens'] = ${l['_lens']}`);
-      if(l['_lens']){   //t=>create
-        const aspect = window.innerWidth/window.innerHeight,
-              fov = l['fov'] || 90,
-              near = l['near'] || .01,
-              far = l['far'] || 10000;
+  // lens 
+  // NOTE: l['_lens'] is only true or undefined (create or modify)
+    //console.log(`l['_lens'] = ${l['_lens']}`);
+    if(l['_lens']){   //t=>create
+      const aspect = window.innerWidth/window.innerHeight,
+            fov = l['fov'] || 90,
+            near = l['near'] || .01,
+            far = l['far'] || 10000;
 
-        // create lens
-        lens = new THREE.PerspectiveCamera(fov, aspect, near, far);
-        //console.log(`camera.create_lens(): created lens = ${lens}:`);
-        //console.dir(lens);
+      // create lens
+      lens = new THREE.PerspectiveCamera(fov, aspect, near, far);
+      //console.log(`camera.create_lens(): created lens = ${lens}:`);
+      //console.dir(lens);
 
-        if(l['transform']){transform3d.apply(l['transform'], lens); }
+      if(l['transform']){transform3d.apply(l['transform'], lens); }
 
-      }else{      //undefined=>modify
-        //console.log(`\ncamera.create_lens(): modifying lens`);
-        if(lens){
-          if(l['fov']){lens.fov = l['fov'];}
-          if(l['near']){lens.near = l['near'];}
-          if(l['far']){lens.far = l['far'];}
-          if(l['transform']){transform3d.apply(l['transform'],lens);}
-        }
+    }else{      //undefined=>modify
+      //console.log(`\ncamera.create_lens(): modifying lens`);
+      if(lens){
+        if(l['fov']){lens.fov = l['fov'];}
+        if(l['near']){lens.near = l['near'];}
+        if(l['far']){lens.far = l['far'];}
+        if(l['transform']){transform3d.apply(l['transform'],lens);}
       }
-    }//l
+    }
     return(lens);
 
   }//create_lens
@@ -93,18 +92,17 @@ class Camera {
   }//create_fog
 
 
-  create_controls(cs:Record<string,unknown>, scene:THREE.Scene, controls:Record<string,unknown>):Record<string,unknown>{
-    console.log('camera.create_controls(cs,scene,controls) camera component');
-    //controls = controls;
-    return controls;
-  }//create_controls
-
-
   create_csphere(ss:Record<string,unknown>, scene:THREE.Scene, csphere:THREE.Mesh):THREE.Mesh{
     console.log('camera.create_csphere(ss,scene,csphere) camera component');
-    //csphere = csphere;
+
     return csphere;
   }//create_csphere
+
+
+  create_controls(cs:Record<string,unknown>, scene:THREE.Scene, narrative:Cast):void{
+    console.log('camera.create_controls(cs,scene,controls) camera component');
+
+  }//create_controls
 
 
 
@@ -125,7 +123,7 @@ class Camera {
 
         // lens
         const sgl = <Record<string,unknown>>state_sg['lens'];
-        if(sgl){
+        if(sgl && Object.keys(sgl).length > 0){
           narrative['sg']['lens'] = camera.create_lens(sgl, scene, narrative['sg']['lens']);
         }
 
@@ -139,21 +137,21 @@ class Camera {
         }
 
 
-        // controls
-        const sgc = <Record<string,unknown>>(state_sg['controls']);
-        if(sgc && Object.keys(sgc).length > 0){
-          narrative['sg']['controls'] = camera.create_controls(sgc, scene, narrative['sg']['controls']);
-        }else{
-          //console.log(`state['sg']['controls'] is undefined or empty`);
-        }
-
-
         // csphere
         const sgs = <Record<string,unknown>>(state_sg['csphere']);
         if(sgs && Object.keys(sgs).length > 0){
           narrative['sg']['csphere'] = camera.create_csphere(sgs, scene, narrative['sg']['csphere']);
         }else{
           //console.log(`state['sg']['csphere'] is undefined or empty`);
+        }
+
+
+        // controls
+        const sgc = <Record<string,unknown>>(state_sg['controls']);
+        if(sgc && Object.keys(sgc).length > 0){
+          camera.create_controls(sgc, scene, narrative);
+        }else{
+          //console.log(`state['sg']['controls'] is undefined or empty`);
         }
 
       }else{
@@ -183,15 +181,6 @@ class Camera {
         }
 
 
-        // controls
-        const vrc = <Record<string,unknown>>(state_vr['controls']);
-        if(vrc && Object.keys(vrc).length > 0){
-          narrative['vr']['controls'] = camera.create_controls(vrc, scene, narrative['vr']['controls']);
-        }else{
-          //console.log(`state['vr']['controls'] is undefined or empty`);
-        }
-
-
         // csphere
         const vrs = <Record<string,unknown>>(state_vr['csphere']);
         if(vrs && Object.keys(vrs).length > 0){
@@ -199,6 +188,16 @@ class Camera {
         }else{
           //console.log(`state['vr']['csphere'] is undefined or empty`);
         }
+
+
+        // controls
+        const vrc = <Record<string,unknown>>(state_vr['controls']);
+        if(vrc && Object.keys(vrc).length > 0){
+          camera.create_controls(vrc, scene, narrative);
+        }else{
+          //console.log(`state['vr']['controls'] is undefined or empty`);
+        }
+
 
 
         //HACK!!! attach audioListener to lens from displayed scene

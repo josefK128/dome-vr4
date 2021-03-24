@@ -65,9 +65,6 @@ import {actions} from './state/actions.js';
 import {Actor} from './models/stage/actors/actor.interface';  
 import {Panorama} from './models/stage/actors/environment/Panorama.js';  
 import {Action} from './models/actions/action.interface';
-//import {vrcontrols} from './models/camera/controls/vrcontrols';  
-//import {vrkeymap} from './models/camera/keymaps/vrkeymap';  
-//// for actors/cloud/spritecloud.ts
 
 
 
@@ -93,14 +90,12 @@ let narrative:Narrative,
     displayed_scene:string,
 
     
-    // sg - camera components, controls, map, renderTarget, actors
+    // sg - camera components, renderTarget, actors
     sgscene:THREE.Scene,
     sglens:THREE.PerspectiveCamera,      // from state/camera
                    // NOTE:TBD 'csphere' is whole apparatus - lens, lights etc
     sgorbit:OrbitControls,
     sgcsphere:THREE.Mesh,
-    sgcontrols:Record<string,unknown>,
-    sgmap:Record<string,unknown>,
     sgTargetNames:string[],
 
     //_sgpost
@@ -132,13 +127,11 @@ let narrative:Narrative,
     rmplane:THREE.Mesh,
 
 
-    // vr - camera components, controls, map, renderTarget, actors
+    // vr - camera components, renderTarget, actors
     vrscene:THREE.Scene,
     vrlens:THREE.PerspectiveCamera,   // separate camera for rendering vrscene,
     vrorbit:OrbitControls,
     vrcsphere:THREE.Mesh,
-    vrcontrols:Record<string,unknown>,           // vrcontrols
-    vrmap:Record<string,unknown>,            // vrcontrols-keymap - vrkeymap
     vrTargetNames:string[],
 
     //_vrpost?
@@ -251,11 +244,6 @@ class Narrative implements Cast{
 
   foo():string{
     console.log(`narrative.foo()!`);
-//
-//    const gaudio = narrative.findActor('globalaudio');
-//    if(gaudio){
-//      gaudio['startAudio']();
-//    }
     return 'foo';
   }
 
@@ -375,8 +363,6 @@ class Narrative implements Cast{
       nsg['lens'] = sglens;
       nsg['orbit'] = sgorbit;
       nsg['csphere'] = sgcsphere;
-      nsg['controls'] = sgcontrols;
-      nsg['map'] = sgmap;
 
       sgTargetNames = config.topology.sgTargetNames;
     }
@@ -404,8 +390,6 @@ class Narrative implements Cast{
       nvr['lens'] = vrlens;
       nvr['orbit'] = vrorbit;
       nvr['csphere'] = vrcsphere;
-      nvr['controls'] = vrcontrols;
-      nvr['map'] = vrmap;
 
       vrTargetNames = config.topology.vrTargetNames;
     }
@@ -446,28 +430,30 @@ class Narrative implements Cast{
             gsap.ticker.add(timer);
 
 
-            // listen for enable audio event from startAudio button
-            // and on click start audio actors - singleton globalaudio and
+            // listen for enable audio event from startAudio button (if exists)
+            // and upon click start audio actors - singleton globalaudio and
             // zero or more pointaudio actors
-            startAudio.addEventListener('click', function(){
-              // remove startAudio button
-              startAudio.remove();
-
-              // match actor names to /audio/ 
-              // exps 'globalaudio', 'pointaudio1', 'pointaudio2'
-              // match => call startAudio() on audio actor to initialize play
-              for(const name of Object.keys(cast)){
-                //console.log(`testing /audio/ match with name = ${name}`);
-                //console.log(`cast[name] = ${cast[name]}:`);
-                //console.dir(cast[name]);
-                if(/[aA]udio/.test(name)){
-                  console.log(`/[aA]udio/ MATCH with name = ${name}`);
-                  cast[name].startAudio();
-                }else{
-                  //console.log(`/[aA]udio/ NO MATCH with name = ${name}`);
+            if(startAudio){
+              startAudio.addEventListener('click', function(){
+                // remove startAudio button
+                startAudio.remove();
+  
+                // match actor names to /audio/ 
+                // exps 'globalaudio', 'pointaudio1', 'pointaudio2'
+                // match => call startAudio() on audio actor to initialize play
+                for(const name of Object.keys(cast)){
+                  //console.log(`testing /audio/ match with name = ${name}`);
+                  //console.log(`cast[name] = ${cast[name]}:`);
+                  //console.dir(cast[name]);
+                  if(/[aA]udio/.test(name)){
+                    console.log(`/[aA]udio/ MATCH with name = ${name}`);
+                    cast[name].startAudio();
+                  }else{
+                    //console.log(`/[aA]udio/ NO MATCH with name = ${name}`);
+                  }
                 }
-              }
-            });
+              });
+            }//if(startAudio)
 
             // listen for resize events
             window.addEventListener( 'resize', narrative.onWindowResize, false );
@@ -508,8 +494,6 @@ class Narrative implements Cast{
           sgorbit.enableZoom = true;
           //sgorbit.autoRotate = true;
         }
-        sgcontrols = narrative['sg']['controls'];
-        sgmap = narrative['sg']['map'];
   
         // build rendering components, actors
         sghud = narrative.findActor('sghud');
@@ -580,8 +564,6 @@ class Narrative implements Cast{
           vrorbit.enableZoom = true;
           //vrorbit.autoRotate = true;
         }
-        vrcontrols = narrative['vr']['controls'];
-        vrmap = narrative['vr']['map'];
   
         // build rendering components, actors
         vrhud = narrative.findActor('vrhud');
