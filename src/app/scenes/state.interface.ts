@@ -56,7 +56,9 @@ export interface State {
         _controls?:boolean,    // t=>create, f=>delete
         controls?:string,     //url
         _keymap?:boolean,    // t=>create, f=>delete 
-        keymap:string       //url
+        keymap?:string,       //url
+        target?:string,
+        rotationTarget?:string
       },
       csphere?:{
         _csphere:boolean,    // t=>create, f=>delete undef=>modify
@@ -111,7 +113,11 @@ export interface State {
       },
       controls?:{
         _controls?:boolean, // t=>create, f=>delete undef=>modify
-        controls?:string
+        controls?:string,
+        _keymap?:boolean,    // t=>create, f=>delete 
+        keymap?:string,       //url
+        target?:string,
+        rotationTarget?:string
       },
       csphere?:{
         _csphere:boolean,    // t=>create, f=>delete undef=>modify
