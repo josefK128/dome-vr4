@@ -32,10 +32,7 @@ class Vrcontrols implements Controls{
         speed=0.1){
 
     console.log(`\n\n&&&&&&&&&& vrcontrols`);
-    console.log(`domElement = ${domElement}`);
 
-
-    
     domElement.addEventListener('mousedown', (e) => {
       isDragging = true;
     });

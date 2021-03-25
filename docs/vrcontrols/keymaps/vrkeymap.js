@@ -12,6 +12,7 @@ class Vrkeymap {
     // start key-listening and identify controlTarget and optional dolly spped
     // typically controlTarget is vrscene, but can be individual actor for exp.
     start(controlTarget, rotateTarget, speed = 0.01) {
+        rotateTarget = rotateTarget || controlTarget;
 
         console.log(`+++ vrkeymap:  controlTarget = ${controlTarget}:`);
         console.dir(controlTarget);
@@ -26,6 +27,10 @@ class Vrkeymap {
                 // with default up and orientation, and scale,
                 // and if using zoom by fov, set fov=90 (original) 
                 case 32:
+                    //console.log(`key pressed is ${e.key} SPACEBAR webxr=${webxr}`);  
+                    //console.log(`controlTarget.position:`);
+                    //console.dir(controlTarget.position);
+                    // RECALL: webxr=t => camera is at (0,1.6,0) => controlTarget:
                     controlTarget.position.x = 0.0;
                     controlTarget.position.y = 0.0;
                     controlTarget.position.z = 0.0;
@@ -123,6 +128,10 @@ class Vrkeymap {
                 //console.log(`key '${e.keyCode}' not associated with //c3d function`);
             }
         });
+        //    document.addEventListener('keyup', (e) => {
+        //      switch(e.keyCode){
+        //      }
+        //    });
     } //start
 }
 //enforce singleton
