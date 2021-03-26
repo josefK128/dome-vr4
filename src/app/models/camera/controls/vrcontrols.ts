@@ -28,7 +28,7 @@ class Vrcontrols implements Controls{
   // a good speed is 0.1 - larger numbers will increse the rotation per mouse
   // move, and smaller numbers will decrease the rotation amount per move
   start(controlTarget:THREE.Object3D,
-        domElement:HTMLElement,
+        domElement:HTMLCanvasElement,
         speed=0.1){
 
     console.log(`\n\n&&&&&&&&&& vrcontrols`);

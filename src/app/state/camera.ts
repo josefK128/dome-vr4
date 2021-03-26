@@ -8,14 +8,14 @@ import {Cast} from '../cast.interface';
 import {transform3d} from '../services/transform3d.js';
 import {Controls} from '../models/camera/controls/controls.interface';
 import {Keymap} from '../models/camera/keymaps/keymap.interface';
+//import {sgcontrols} from '../models/camera/controls/sgcontrols.js';
+//import {sgkeymap} from '../models/camera/keymaps/sgkeymap.js';
+import {vrcontrols} from '../models/camera/controls/vrcontrols.js';
+import {vrkeymap} from '../models/camera/keymaps/vrkeymap.js';
 
 
 // singleton closure-instance variable
 let camera:Camera,
-    sgcontrols:Controls,
-    sgkeymap:Keymap,
-    vrcontrols:Controls,
-    vrkeymap:Keymap,
     sgcsphere:THREE.Mesh,
     vrcsphere:THREE.Mesh;
 
@@ -69,6 +69,7 @@ class Camera {
   }//create_lens
 
 
+
   // l = state['sg'|'vr']['fog']  - no return
   create_fog(f:Record<string,unknown>, scene:THREE.Scene):void{
     console.log(`camera.create_fog(f,scene) camera component`);
@@ -98,18 +99,48 @@ class Camera {
   }//create_fog
 
 
-  create_csphere(ss:Record<string,unknown>, scene:THREE.Scene, csphere:THREE.Mesh):THREE.Mesh{
+
+  create_csphere(ss:Record<string,unknown>, scene:THREE.Scene, csphere:THREE.Mesh, scenename:string):void{
     console.log('camera.create_csphere(ss,scene,csphere) camera component');
 
-    return csphere;
+    if(scenename === 'sg'){
+      const sphere_g = new THREE.SphereGeometry(2,16,16);
+      const sphere_m = new THREE.MeshBasicMaterial( { color: 0x00ff00, opacity:0.5, transparent:true, side:THREE.DoubleSide, wireframe:true} );
+      sgcsphere = new THREE.Mesh(sphere_g, sphere_m);
+      scene.add(sgcsphere);
+    }
+
+    if(scenename === 'vr'){
+      const sphere_g = new THREE.SphereGeometry(2,16,16);
+      const sphere_m = new THREE.MeshBasicMaterial( { color: 0x00ff00, opacity:0.5, transparent:true, side:THREE.DoubleSide, wireframe:true} );
+      vrcsphere = new THREE.Mesh(sphere_g, sphere_m);
+      scene.add(vrcsphere);
+    }
+ 
   }//create_csphere
 
 
+
   create_controls(cs:Record<string,unknown>, scene:THREE.Scene, narrative:Cast, scenename:string):void{
-    console.log('camera.create_controls(cs,scene,controls) camera component');
-    console.log('scenename = ${scenename}');
+    console.log('camera.create_controls(cs,scene,controls,scenename) ');
+    console.log(`scenename = ${scenename}`);
+    console.log(`vrcontrols = ${vrcontrols}  vrkeymap = ${vrkeymap}`);
 
 
+    if(scenename === 'sg'){
+      console.log(`implememtation of sgcontrols.ts/sgkeymap.ts NOT complete`);
+    }else{
+      if(cs['_controls']){
+        const controls_speed:number = <number>cs['controls_speed'] || 0.1;
+        const canvas:HTMLCanvasElement = <HTMLCanvasElement>narrative['canvas'];
+        vrcontrols.start(scene, canvas, controls_speed);
+      }
+      if(cs['_keymap']){
+        const keymap_speed:number = <number>cs['keymap_speed'] || 0.01;
+        const canvas:HTMLCanvasElement = <HTMLCanvasElement>narrative['canvas'];
+        vrkeymap.start(scene, vrcsphere, keymap_speed);
+      }
+    }
   }//create_controls
 
 
@@ -148,7 +179,7 @@ class Camera {
         // csphere
         const sgs = <Record<string,unknown>>(state_sg['csphere']);
         if(sgs && Object.keys(sgs).length > 0){
-          narrative['sg']['csphere'] = camera.create_csphere(sgs, scene, narrative['sg']['csphere']);
+          camera.create_csphere(sgs, scene, narrative, 'sg');
         }else{
           //console.log(`state['sg']['csphere'] is undefined or empty`);
         }
@@ -192,7 +223,7 @@ class Camera {
         // csphere
         const vrs = <Record<string,unknown>>(state_vr['csphere']);
         if(vrs && Object.keys(vrs).length > 0){
-          narrative['vr']['csphere'] = camera.create_csphere(vrs, scene, narrative['vr']['csphere']);
+          camera.create_csphere(vrs, scene, narrative, 'vr');
         }else{
           //console.log(`state['vr']['csphere'] is undefined or empty`);
         }

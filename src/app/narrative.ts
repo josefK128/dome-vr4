@@ -95,7 +95,6 @@ let narrative:Narrative,
     sglens:THREE.PerspectiveCamera,      // from state/camera
                    // NOTE:TBD 'csphere' is whole apparatus - lens, lights etc
     sgorbit:OrbitControls,
-    sgcsphere:THREE.Mesh,
     sgTargetNames:string[],
 
     //_sgpost
@@ -131,7 +130,6 @@ let narrative:Narrative,
     vrscene:THREE.Scene,
     vrlens:THREE.PerspectiveCamera,   // separate camera for rendering vrscene,
     vrorbit:OrbitControls,
-    vrcsphere:THREE.Mesh,
     vrTargetNames:string[],
 
     //_vrpost?
@@ -361,8 +359,6 @@ class Narrative implements Cast{
 
       nsg['lens'] = sglens;
       nsg['orbit'] = sgorbit;
-      nsg['csphere'] = sgcsphere;
-
       sgTargetNames = config.topology.sgTargetNames;
     }
 
@@ -388,8 +384,6 @@ class Narrative implements Cast{
 
       nvr['lens'] = vrlens;
       nvr['orbit'] = vrorbit;
-      nvr['csphere'] = vrcsphere;
-
       vrTargetNames = config.topology.vrTargetNames;
     }
 

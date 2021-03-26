@@ -5,8 +5,9 @@
 export interface Keymap {
   start(controlTarget:THREE.Object3D,    // object to affect by ARROWkey-actions
                                         // 'displayed_scene' (vrscene/sgscene)
-        webxr:boolean,                 // default false
-        rotateTarget?:THREE.Object3D, // object to pich/yaw via SHIFT-ARROWS
+        rotateTarget?:THREE.Object3D, // object to counter-rotate/translate so
+                                     // it remains stationary - exp vrcsphere
+                                    // which contains modeling lights
         speed?:number);              // default 0.01
 }
 

@@ -53,12 +53,17 @@ export interface State {
         far?:number                 //default:100
       },
       controls?:{
-        controls?:string,         //url
+        _controls?:boolean,   //true => attach sgcontrols (the controls can
+                             //be any implementation of Controls interface but
+                            //MUST be named '../camera/controls/sgcontrols.ts'
+                           //target of control functions is 'sgcsphere' so
+                          //obviously requires creation of 'sgcsphere'
         controls_speed?:number,  //default 0.1
-        keymap?:string,         //url
-        keymap_speed?:number,  //default 0.01
-        target?:string, //trgt of mouse move (if cntrls), keymap (if map)
-        rotationTarget?:string //if defined specific keymap trgt for rot.
+        _keymap?:boolean,   //true => attach sgkeymap (the keymap can
+                           //be any implementation of Keymap interface but
+                          //MUST be named '../camera/keymaps/sgkeymap.ts'
+                         //target is sgcsphere
+        keymap_speed?:number  //default 0.01
       },
       csphere?:{
         _csphere:boolean,    // t=>create, f=>delete undef=>modify
@@ -112,19 +117,30 @@ export interface State {
         far?:number                  //default:100
       },
       controls?:{
-        controls?:string,         //url
+        _controls?:boolean,   //true => attach vrcontrols (the controls can
+                             //be any implementation of Controls interface but
+                            //MUST be named '../camera/controls/vrcontrols.ts'
+                           //target is entire vrscene (rotating/dollying scene
+                          //is equivalent (by relative motion) to rotating
+                         //and/or dollying the viewpoint in vrscene
         controls_speed?:number,  //default 0.1
-        keymap?:string,         //url
-        keymap_speed?:number,  //default 0.01
-        target?:string, //trgt of mouse move (if cntrls), keymap (if map)
-        rotationTarget?:string //if defined specific keymap trgt for rot.
+        _keymap?:boolean,   //true => attach vrkeymap (the keymap can
+                           //be any implementation of Keymap interface but
+                          //MUST be named '../camera/keymaps/vrkeymap.ts'
+                         //vrkeymap acts on vrscene (as above) but if 
+                        //if vrcsphere is defined it will be 
+                       //counter-rotated/translated so as to
+                      //appear 'stationary' relative to the headset position.
+                     //REASON - vrcsphere attached modeling-lights 
+                    //(key,fill,back) remain fixed relative to headset-vpoint
+        keymap_speed?:number  //default 0.01
       },
       csphere?:{
         _csphere:boolean,    // t=>create, f=>delete undef=>modify
-        _visible:boolean,
-        _wireframe:boolean,
-        opacity:number,
-        color:string,
+        _visible?:boolean,
+        _wireframe?:boolean,
+        opacity?:number,
+        color?:string,
         hud?: {
           _post:boolean,
           _hud_rendered:boolean,
