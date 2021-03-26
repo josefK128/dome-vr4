@@ -132,10 +132,6 @@ let narrative:Narrative,
     vrorbit:OrbitControls,
     vrTargetNames:string[],
 
-    //_vrpost?
-    vrhud:THREE.Mesh,
-    vrhud_tDiffuse:Record<string,unknown>,
-
     //bg
     vrskybox:THREE.Mesh,
     vrskybox_materials:THREE.Material[],
@@ -556,14 +552,6 @@ class Narrative implements Cast{
           vrorbit.dampingFactor = 0.25;
           vrorbit.enableZoom = true;
           //vrorbit.autoRotate = true;
-        }
-  
-        // build rendering components, actors
-        vrhud = narrative.findActor('vrhud');
-        if(vrhud){
-          vrhud_tDiffuse = vrhud.material.uniforms.tDiffuse;
-        }else{
-          _vrpost = false;
         }
   
         vrskybox = narrative.findActor('vrskybox');
