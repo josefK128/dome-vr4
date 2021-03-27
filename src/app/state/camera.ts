@@ -221,11 +221,20 @@ class Camera {
   create_controls(cs:Record<string,unknown>, scene:THREE.Scene, narrative:Cast, scenename:string):void{
     console.log('camera.create_controls(cs,scene,controls,scenename) ');
     console.log(`scenename = ${scenename}`);
-    console.log(`vrcontrols = ${vrcontrols}  vrkeymap = ${vrkeymap}`);
 
 
     if(scenename === 'sg'){
       console.log(`implememtation of sgcontrols.ts/sgkeymap.ts NOT complete`);
+      if(cs['_controls']){
+        const controls_speed:number = <number>cs['controls_speed'] || 0.1;
+        const canvas:HTMLCanvasElement = <HTMLCanvasElement>narrative['canvas'];
+        sgcontrols.start(sglens, sgcsphere, controls_speed);
+      }
+      if(cs['_keymap']){
+        const keymap_speed:number = <number>cs['keymap_speed'] || 0.01;
+        const canvas:HTMLCanvasElement = <HTMLCanvasElement>narrative['canvas'];
+        sgkeymap.start(sglens, sgcsphere, keymap_speed);
+      }
     }else{
       if(cs['_controls']){
         const controls_speed:number = <number>cs['controls_speed'] || 0.1;

@@ -51,53 +51,7 @@ export interface State {
         color?:string,                //default:'white'
         near?:number,                //default:.01
         far?:number                 //default:100
-      },
-      controls?:{
-        _controls?:boolean,   //true => attach sgcontrols (the controls can
-                             //be any implementation of Controls interface but
-                            //MUST be named '../camera/controls/sgcontrols.ts'
-                           //target of control functions is 'sgcsphere' so
-                          //obviously requires creation of 'sgcsphere'
-        controls_speed?:number,  //default 0.1
-        _keymap?:boolean,   //true => attach sgkeymap (the keymap can
-                           //be any implementation of Keymap interface but
-                          //MUST be named '../camera/keymaps/sgkeymap.ts'
-                         //target is sgcsphere
-        keymap_speed?:number  //default 0.01
-      },
-      csphere?:{
-        _csphere:boolean,    // t=>create, f=>delete undef=>modify
-        _visible:boolean,
-        _wireframe:boolean,
-        opacity:number,
-        color:string,
-        hud?: {
-          _post:boolean,
-          _hud_rendered:boolean,
-          fsh: string,
-          opacity:number,
-          scaleX:number,
-          scaleY:number
-        },//hud
-        key?: {
-          color:string,
-          intensity:number,
-          distance:number,  // 0 => infinite range of light
-          position:number[]
-        },//key
-        fill?: { 
-          color:string,
-          intensity:number,
-          distance:number,  // 0 => infinite range of light
-          position:number[]
-        },//fill
-        back?: {
-          color:string,
-          intensity:number,
-          distance:number,  // 0 => infinite range of light
-          position:number[]
-        }//back
-      }//csphere
+      }
     },//sg
 
     vr?:{
