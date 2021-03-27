@@ -16,6 +16,8 @@ import {vrkeymap} from '../models/camera/keymaps/vrkeymap.js';
 
 // singleton closure-instance variable
 let camera:Camera,
+    sglens:THREE.PerspectiveCamera,
+    vrlens:THREE.PerspectiveCamera,
     sgcsphere:THREE.Mesh,
     vrcsphere:THREE.Mesh;
 
@@ -36,7 +38,7 @@ class Camera {
 
 
   // l = state['sg'|'vr']['lens']  - return THREE.PerspectiveCamera if created
-  create_lens(l:Record<string,unknown>, scene:THREE.Scene, lens:THREE.PerspectiveCamera):THREE.PerspectiveCamera{
+  create_lens(l:Record<string,unknown>, scene:THREE.Scene, lens:THREE.PerspectiveCamera, scenename:string):THREE.PerspectiveCamera{
     console.log(`camera.create_lens(): creating lens camera component`);
 
     // lens 
@@ -64,6 +66,13 @@ class Camera {
         if(l['transform']){transform3d.apply(l['transform'],lens);}
       }
     }
+
+    if(scenename === 'sg'){
+      sglens = lens;
+    }else{
+      vrlens = lens;
+    }
+
     return(lens);
 
   }//create_lens
@@ -100,23 +109,111 @@ class Camera {
 
 
 
-  create_csphere(ss:Record<string,unknown>, scene:THREE.Scene, csphere:THREE.Mesh, scenename:string):void{
+  create_csphere(ss:Record<string,unknown>, scene:THREE.Scene, scenename:string):void{
     console.log('camera.create_csphere(ss,scene,csphere) camera component');
 
-    if(scenename === 'sg'){
-      const sphere_g = new THREE.SphereGeometry(2,16,16);
-      const sphere_m = new THREE.MeshBasicMaterial( { color: 0x00ff00, opacity:0.5, transparent:true, side:THREE.DoubleSide, wireframe:true} );
-      sgcsphere = new THREE.Mesh(sphere_g, sphere_m);
-      scene.add(sgcsphere);
-    }
+//    if(scenename === 'vr'){
+//      const sphere_g = new THREE.SphereGeometry(2,16,16);
+//      const sphere_m = new THREE.MeshBasicMaterial( { color: 0x00ff00, opacity:0.5, transparent:true, side:THREE.DoubleSide, wireframe:true} );
+//      vrcsphere = new THREE.Mesh(sphere_g, sphere_m);
+//      scene.add(vrcsphere);
+//    }
+
+    let lens_:THREE.Perspectivecamera,
+        key = <Record<string,unknown>>ss['key'] || {},
+        fill = <Record<string,unknown>>ss['fill'] || {},
+        back = <Record<string,unknown>>ss['back'] || {};
 
     if(scenename === 'vr'){
-      const sphere_g = new THREE.SphereGeometry(2,16,16);
-      const sphere_m = new THREE.MeshBasicMaterial( { color: 0x00ff00, opacity:0.5, transparent:true, side:THREE.DoubleSide, wireframe:true} );
-      vrcsphere = new THREE.Mesh(sphere_g, sphere_m);
-      scene.add(vrcsphere);
+      lens_ = vrlens;
+    }else{
+      lens_ = sglens;
     }
- 
+
+    if(ss['key'] === undefined){ss['key'] = {};}
+    if(ss['fill'] === undefined){ss['fill'] = {};}
+    if(ss['back'] === undefined){ss['back'] = {};}
+
+    const opacity:number = <number>ss['opacity'] || 1.0,
+          color:string = <string>ss['color'] || 'green',
+          key_color:string = <string>(key['color']) || 'white',
+          key_intensity:number = <number>key['intensity'] || 1.0,
+          key_distance:number = <number>key['distance'] || 0.0,
+          key_position:number[] = <number[]>key['position'] || lens_.position,
+          fill_color:string = <string>fill['color'],
+          fill_intensity:number = <number>fill['intensity'] || 1.0,
+          fill_distance:number = <number>fill['distance'] || 0.0,
+          fill_position:number[] = <number[]>fill['position'] || lens_.position ,
+          back_color:string = <string>back['color'],
+          back_intensity:number = <number>back['intensity'],
+          back_distance:number = <number>back['distance'],
+          back_position:number[] = <number[]>back['position'] || lens_.position;
+
+    let _visible = false,
+        _wireframe = false,
+        radius:number = <number>ss['radius'];
+
+   
+    if((ss['_visible'] !== undefined) && (ss['_visible'] !== false)){
+      _visible = <boolean>ss['_visible'];
+    }
+    if((ss['_wireframe'] !== undefined) && (ss['_wireframe'] !== false)){
+      _wireframe = <boolean>ss['_wireframe'];
+    }
+    if(radius === undefined){
+      const p:THREE.Vector3 = <THREE.Vector3>lens_['position'];
+      radius = Math.sqrt(p.x*p.x + p.y*p.y + p.z*p.z);
+    }
+    console.log(`radius of csphere is ${radius}`);
+
+    // avoid radius=0
+    if(radius < .1){
+      radius = 10.0;
+    }
+
+    //csphere
+    const csphere_g = new THREE.SphereBufferGeometry(radius),
+          csphere_m = new THREE.MeshBasicMaterial({
+            visible: _visible,
+            color: color,
+            transparent:true,
+            opacity: opacity,
+            wireframe: _wireframe
+          }),
+          csphere = new THREE.Mesh(csphere_g, csphere_m);
+
+    // lights
+    [key, fill, back] = ['key', 'fill', 'map'].map((name) => {
+      const o:Record<string,unknown> = <Record<string,unknown>>ss[name] || {},
+            l = new THREE.PointLight(),
+            pos_a:number[] = <number[]>o['position'] || lens_.position.toArray();
+      
+      l.color = o['color'] || 'white';    // default white
+      l.intensity = o['intensity'] || 1.0; // default 1.0
+      l.distance = o['distance'] || 0.0,   // default is infinite extent
+      l.position.fromArray(pos_a);         // default lens 'headlight'
+      return l;
+    });
+
+    //add to scene
+    csphere.add(key);
+    csphere.add(fill);
+    csphere.add(back);
+    scene.add(csphere);
+    console.log(`csphere = ${csphere}:`);
+    console.dir(csphere);
+
+    //write
+    if(scenename === 'vr'){
+      vrcsphere = csphere;
+      console.log(`camera.create_csphere: vrcsphere = ${vrcsphere}:`);
+      console.dir(vrcsphere);
+    }else{
+      sgcsphere = csphere;
+      console.log(`camera.create_csphere: sgcsphere = ${sgcsphere}:`);
+      console.dir(sgcsphere);
+    }
+
   }//create_csphere
 
 
@@ -163,7 +260,7 @@ class Camera {
         // lens
         const sgl = <Record<string,unknown>>state_sg['lens'];
         if(sgl && Object.keys(sgl).length > 0){
-          narrative['sg']['lens'] = camera.create_lens(sgl, scene, narrative['sg']['lens']);
+          narrative['sg']['lens'] = camera.create_lens(sgl, scene, narrative['sg']['lens'], 'sg');
         }
 
 
@@ -179,7 +276,7 @@ class Camera {
         // csphere
         const sgs = <Record<string,unknown>>(state_sg['csphere']);
         if(sgs && Object.keys(sgs).length > 0){
-          camera.create_csphere(sgs, scene, narrative, 'sg');
+          camera.create_csphere(sgs, scene, 'sg');
         }else{
           //console.log(`state['sg']['csphere'] is undefined or empty`);
         }
@@ -207,7 +304,7 @@ class Camera {
         // lens
         const vrl = <Record<string,unknown>>state_vr['lens'];
         if(vrl){
-          narrative['vr']['lens'] = camera.create_lens(vrl, scene, narrative['vr']['lens']);
+          narrative['vr']['lens'] = camera.create_lens(vrl, scene, narrative['vr']['lens'], 'vr');
         }
 
 
@@ -223,7 +320,7 @@ class Camera {
         // csphere
         const vrs = <Record<string,unknown>>(state_vr['csphere']);
         if(vrs && Object.keys(vrs).length > 0){
-          camera.create_csphere(vrs, scene, narrative, 'vr');
+          camera.create_csphere(vrs, scene, 'vr');
         }else{
           //console.log(`state['vr']['csphere'] is undefined or empty`);
         }

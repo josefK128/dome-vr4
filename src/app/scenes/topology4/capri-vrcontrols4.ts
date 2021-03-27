@@ -138,7 +138,7 @@ const state:State = {
             color: 'pink', //0x00ff00,
             near: 0.1,
             far: 300 //default:100
-          },
+          },          
           controls: {
             _controls:true,
             controls_speed:0.1,  //default 0.1
@@ -146,9 +146,40 @@ const state:State = {
             keymap_speed:0.01  //default 0.01
           },
           csphere: {
-            _csphere:true
-          }
-        }
+            _csphere:true,   // t=>create, f=>delete undef=>modify
+            _visible:true,
+            _wireframe:true,
+            //radius:10,  //radius undefined => use lens radius (if r=0 use 10)
+            opacity:0.5,
+            color:'green',
+//            hud: {           // vr has no vrhud
+//              _post: false,
+//              _hud_rendered:true,
+//              fsh: '../models/camera/hud_fsh/fsh_post.glsl',
+//              opacity: 0.5,
+//              scaleX:1.05,
+//              scaleY:0.995
+//            },//hud
+            key: {
+              color: 'orange', 
+              intensity: 2.5,
+              distance: 0.0,  // 0 => infinite range of light
+              position: [1.0,0.4,0.4]
+            },//key
+            fill: { 
+              color: 'blue', 
+              intensity: 0.8,
+              distance: 0.0,  // 0 => infinite range of light
+              position: [-1.0,-0.2, 0.0]
+            },//fill
+            back: {
+              color: 'grey', 
+              intensity: 2.5,
+              distance: 0.0,  // 0 => infinite range of light
+              position: [-0.8,-0.2,-1.0]
+            }//back
+          }//csphere
+        }//vr
     },
 
     // stage - initialization and management of stats performance meter,
