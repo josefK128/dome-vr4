@@ -110,6 +110,9 @@ class Director {
 
     // invoke method on target, or set a property on target by assignment
     if(a.f){   // invoke method a.f <action.function>
+      //console.log(`\n\n@@@@@@@@@@director.exec a.f = ${a.f}`);
+      //console.log(`@@@@@@@@@@director actionsTargets = ${actionsTargets}:`);
+      //console.dir(actionsTargets);
       try{
         switch(a.a){
           case 'o':             // a.f has type Object arg
