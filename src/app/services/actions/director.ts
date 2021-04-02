@@ -118,9 +118,17 @@ class Director {
           case 'o':             // a.f has type Object arg
             (<(...unknown)=>unknown>target[a.f])(a.o);
             break;
+
+          case 'n':           // a.f has type 'primitive' non-object arg 
+            console.log(`a.f = ${a.f}`);
+            console.log(`a.o['arg'] = ${a.o['arg']}`);
+            (<(...unknown)=>unknown>target[a.f])(a.o['arg']);
+            break;
+
           case 'v':           // a.f has type void arg 
             (<(...unknown)=>unknown>target[a.f])();
             break;
+
           case 'm':         // multiple args in a.f signature exp: a.f(a,b,c)
              (<(...unknown)=>unknown>target[a.f])(...<unknown[]>a.o['arg']);    // a.o[arg] MUST be array of args!
             break;

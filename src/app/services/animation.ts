@@ -57,7 +57,8 @@ const timeline = (anim:Record<string,unknown>):TimelineMax => {
   // iterate through actors on which one or more tweens are defined
   tlp['tweens'] = [];
   for(const a of Object.keys(actors)){
-    console.log(`target = ${a}`);
+    console.log(`\n\n @@@@animation target = ${a}`);
+    console.dir(a);
 
     //tween
     const ntuple:string[] = a.split('~'),

@@ -38,8 +38,9 @@ class Camera {
 
 
   // l = state['sg'|'vr']['lens']  - return THREE.PerspectiveCamera if created
-  create_lens(l:Record<string,unknown>, scene:THREE.Scene, lens:THREE.PerspectiveCamera, scenename:string):THREE.PerspectiveCamera{
+  create_lens(l:Record<string,unknown>, scene:THREE.Scene, narrative:Cast, scenename:string):THREE.PerspectiveCamera{
     console.log(`camera.create_lens(): creating lens camera component`);
+    let lens:THREE.PerspectiveCamera;
 
     // lens 
     // NOTE: l['_lens'] is only true or undefined (create or modify)
@@ -69,8 +70,10 @@ class Camera {
 
     if(scenename === 'sg'){
       sglens = lens;
+      narrative.addActor(scene, 'sglens', sglens);
     }else{
       vrlens = lens;
+      narrative.addActor(scene, 'vrlens', vrlens);
     }
 
     return(lens);
@@ -269,7 +272,7 @@ class Camera {
         // lens
         const sgl = <Record<string,unknown>>state_sg['lens'];
         if(sgl && Object.keys(sgl).length > 0){
-          narrative['sg']['lens'] = camera.create_lens(sgl, scene, narrative['sg']['lens'], 'sg');
+          narrative['sg']['lens'] = camera.create_lens(sgl, scene, narrative, 'sg');
         }
 
 
@@ -313,7 +316,7 @@ class Camera {
         // lens
         const vrl = <Record<string,unknown>>state_vr['lens'];
         if(vrl){
-          narrative['vr']['lens'] = camera.create_lens(vrl, scene, narrative['vr']['lens'], 'vr');
+          narrative['vr']['lens'] = camera.create_lens(vrl, scene, narrative, 'vr');
         }
 
 
