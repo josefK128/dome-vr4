@@ -11,21 +11,46 @@ export const actions:Action[] = [
         ms:1000
        },
 
-//       {t:'vrlens',
-//        f:'fov',
-//        a:'n',
-//        o: {'fov':60.0},
-//        ms:2000
-//       }
 
-//       {t:'vrcsphere',
+       {t:'vrlens',   //set fov-property value - FAILS! (but sets lens.fov?!)
+        a:'n',
+        o: {'fov':120.0},
+        ms:4000
+       },
+       {t:'vrlens',   //updateProjectionMatrix => then fov works!!!! 
+        f:'updateProjectionMatrix',
+        a:'v',
+        ms:5000
+       },
+
+//       {t:'vrcsphere.material',   //set wireframe property - works! 
+//        a:'n',
+//        o: {'wireframe':false},  
+//        ms:7000
+//       },
+
+       {t:'vrcsphere',   //function with multiple args incl ctor - works!
+        f:'translateOnAxis',
+        a:'m',
+        o:{arg: [new THREE.Vector3( 0, 1, 0), 1.0]},  
+        ms:7000
+       },
+
+
+//       {t:'vrcsphere.material',   //set color property - FAILS 
+//        a:'n',
+//        o: {'color':new THREE.Color(255,0,0)},   //0xff0000, 'red'
+//        ms:7000
+//       },
+
+//       {t:'vrcsphere',   //function - works!
 //        f:'rotateZ',
 //        a:'n',
 //        o: {'arg':0.785},
-//        ms:2000
+//        ms:7000
 //       },
 //
-//       {t:'vrcsphere',
+//       {t:'vrcsphere',  //function - works!
 //        f:'translateX',
 //        a:'n',
 //        o: {'arg':0.785},
@@ -41,11 +66,20 @@ export const actions:Action[] = [
           timeline:{
           },
           actors:{
-            'vrcsphere~material':{
+            'vrcsphere~material':{    //works!
               'opacity':0.0,
               duration:5,
               repeat:-1,
               yoyo:true
+            },
+            'vrlens':{             //FAILS!
+              'fov':60.0,
+              duration:5,
+              repeat:-1,
+              yoyo:true
+              //onUpdate:()=>{vrlens.updateProjectionMatrix();}
+              //onUpdate: () => {console.log('update');}   // not run ?!
+              //onUpdate: () => {gsap.getProperty(this.targets()[0]).updateProjectionMatrix();}  // fails or not run ?!
             }
 
           }

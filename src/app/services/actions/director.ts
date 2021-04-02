@@ -141,8 +141,17 @@ class Director {
       }
     }else{     // set property of target by assignment
       try{
+        console.log(`\n\n####director.exec`);
+        console.log(`a.o:`);
+        console.dir(a.o);
+        console.log(`a.o length = ${Object.entries(a.o).length}`);
         for(const [n,v] of Object.entries(a.o)){
           // n is property name, v is property value
+          console.log(`director.exec setting ${n} = ${v}`);
+          console.log(`director.exec typeof n = ${typeof n}:`);
+          console.log(`director.exec typeof v = ${typeof v}:`);
+          console.log(`director.exec typeof target = ${typeof target}:`);
+          console.dir(target);
           target[n] = v;
         }
       }catch(e){

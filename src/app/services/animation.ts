@@ -65,24 +65,24 @@ const timeline = (anim:Record<string,unknown>):TimelineMax => {
           tweenp:Record<string,unknown> = <Record<string,unknown>>actors[a],
           duration:number = a['duration'] || 10.0;
 
-    console.log(`ntuple = ${ntuple}`);
-    console.log(`ntuple[0] = ${ntuple[0]}`);
+    //console.log(`ntuple = ${ntuple}`);
+    //console.log(`ntuple[0] = ${ntuple[0]}`);
 
     const actor:THREE.Object3D = narrative.findActor(ntuple[0]);
     let target:Record<string,unknown> = actor;
 
-    narrative.reportActors(true);
-    console.log(`actor.name = ${actor.name}`);
+    //narrative.reportActors(true);
+    //console.log(`actor.name = ${actor.name}`);
 
     for(let i=1; i<ntuple.length; i++){
-      console.log(`initial target = ${target}`);
+      //console.log(`initial target = ${target}`);
       target = <Record<string,unknown>>target[ntuple[i]];
       console.log(`extended target = ${target}:`);
       console.dir(target);
     }
 
-    console.log(`tweenp = actors[a] = ${actors[a]}:`);
-    console.dir(actors[a]);
+    //console.log(`tweenp = actors[a] w. type = ${typeof actors[a]}:`);
+    //console.dir(actors[a]);
     
 
     // other tweenp properties - nearly identical to timeline-tlp properties
@@ -106,9 +106,9 @@ const timeline = (anim:Record<string,unknown>):TimelineMax => {
     tweenp['onReverseCompleteParams'] = tweenp['onReverseCompleteParams'] || [];
 
     // add tween to tlp.tweens array
-    console.log(`target = ${target}:`);
-    console.dir(target);
-    console.log(`duration = ${duration}`);
+//    console.log(`target = ${target}:`);
+//    console.dir(target);
+//    console.log(`duration = ${duration}`);
     console.log(`tweenp = ${tweenp}:`);
     console.dir(tweenp);
     (<Tweenmax[]>tlp['tweens']).push(TweenMax.to(target, duration, tweenp));
