@@ -17,11 +17,11 @@
                -webkit-font-smoothing: antialiased;
                -moz-osx-font-smoothing: grayscale;
       }
-      #canvas-container{ position: absolute; width: 100vw; height: 100vh;}
-      #startAudio {position:absolute; z-index:10; left:46%; top:97%;
-        padding:0;
-        margin:0
-        border-radius:0em;
+      #canvas-container{ position: relative; width: 100%; height: 100%;}
+      #startAudio {position:absolute; z-index:10; left:40.5%; top:97%;
+        padding:0.3em 1.2em;
+        margin:0 0.3em 0.3em 0;
+        border-radius:2em;
         box-sizing: border-box;
         text-decoration:none;
         font-family:'Roboto',sans-serif;
@@ -31,7 +31,7 @@
         /*background-color:#4eb5f1;*/
         background-color:black;
         text-align:center;
-        /* transition: all 0.2s; */
+        transition: all 0.2s;
       }
       code {
         font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
@@ -45,9 +45,12 @@
   <body>
     <!-- NOTE:canvas is styled exactly as Singularity.css -->
     <div id='canvas-container'>
-    <canvas id='webgl' style='width:100vw; height:100vh; background-color:black; position:absolute; left:0px; top:0px;'/>
+      <canvas id='webgl' style='width:100vw; height:100vh; background-color:black; position:absolute; left:0px; top:0px;'/>
     </div>
+    <!-- <div id='overlay' style='width:100vw; height:100vh; display:none'>-->  
+    <!-- <div id='overlay'> --> 
     <button id='startAudio'>enable audio</button>
+    <!-- </div> -->
 
 
     <script type='module'> 
