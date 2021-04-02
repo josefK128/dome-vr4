@@ -31,24 +31,24 @@ export const actions:Action[] = [
 //        o: {'arg':0.785},
 //        ms:4000
 //       },
-//
-//
-//       {t:'animation',
-//        f:'perform',
-//        ms:10000,
-//        a:'o',
-//        o: {
-//          timeline:{
-//          },
-//          actors:{
-//            'vrcsphere~material':{
-//              'opacity':0.0,
-//              duration:5,
-//              repeat:-1,
-//              yoyo:true
-//            }
-//
-//          }
-//        }//anim
-//       }//animation.perform
+
+
+       {t:'animation',
+        f:'perform',
+        ms:10000,
+        a:'o',
+        o: {
+          timeline:{
+          },
+          actors:{
+            'vrcsphere~material':{
+              'opacity':0.0,
+              duration:5,
+              repeat:-1,
+              yoyo:true
+            }
+
+          }
+        }//anim
+       }//animation.perform
 ];
