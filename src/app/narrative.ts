@@ -238,6 +238,13 @@ class Narrative implements Cast{
 
   foo():string{
     console.log(`narrative.foo()!`);
+    //diagnostics
+//    console.log(`narrative.reportActors(true):`);
+//    console.log(`vrscene.children:`);
+//    for(const c in vrscene.children){
+//      console.log(`vrscene contains child ${vrscene.children[c].name}`);
+//    }
+//    narrative.reportActors(true);
     return 'foo';
   }
 
@@ -1032,7 +1039,14 @@ class Narrative implements Cast{
       actor.name = name;  // possible diagnostic use
       cast[name] = actor;
       console.log(`addActor: et = ${devclock.getElapsedTime()}`);
-      scene.add(actor);
+
+      //prevent sglens and vrlens from becoming children of sgscene/vrscene
+      //NOTE: if exp vrlens is child of vrscene vrcontrols FAIL!
+      //NOTE: vrkeymap still works
+      if(!/lens/.test(name)){
+        scene.add(actor);
+      }
+
       //console.log(`n.addActor: scene.children.l = ${scene.children.length}`);
       //console.log(`n.addActor: cast size = ${Object.keys(cast).length}`);
       //console.log(`n.addActor: cast = ${Object.keys(cast)}`);
