@@ -29,11 +29,15 @@ npm-debug.log*
 # production
 /dist
 
-# TODO
-@TODO
+# shaders-glsl
+@shaders
 
 # archive
 @archive
+
+# todo
+@todo
+
 
 # misc
 .DS_Store
