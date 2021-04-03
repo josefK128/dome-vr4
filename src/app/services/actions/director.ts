@@ -110,14 +110,25 @@ class Director {
 
     // invoke method on target, or set a property on target by assignment
     if(a.f){   // invoke method a.f <action.function>
+      //console.log(`\n\n@@@@@@@@@@director.exec a.f = ${a.f}`);
+      //console.log(`@@@@@@@@@@director actionsTargets = ${actionsTargets}:`);
+      //console.dir(actionsTargets);
       try{
         switch(a.a){
           case 'o':             // a.f has type Object arg
             (<(...unknown)=>unknown>target[a.f])(a.o);
             break;
+
+          case 'n':           // a.f has type 'primitive' non-object arg 
+            console.log(`a.f = ${a.f}`);
+            console.log(`a.o['arg'] = ${a.o['arg']}`);
+            (<(...unknown)=>unknown>target[a.f])(a.o['arg']);
+            break;
+
           case 'v':           // a.f has type void arg 
             (<(...unknown)=>unknown>target[a.f])();
             break;
+
           case 'm':         // multiple args in a.f signature exp: a.f(a,b,c)
              (<(...unknown)=>unknown>target[a.f])(...<unknown[]>a.o['arg']);    // a.o[arg] MUST be array of args!
             break;
@@ -130,8 +141,17 @@ class Director {
       }
     }else{     // set property of target by assignment
       try{
+        console.log(`\n\n####director.exec`);
+        console.log(`a.o:`);
+        console.dir(a.o);
+        console.log(`a.o length = ${Object.entries(a.o).length}`);
         for(const [n,v] of Object.entries(a.o)){
           // n is property name, v is property value
+          console.log(`director.exec setting ${n} = ${v}`);
+          console.log(`director.exec typeof n = ${typeof n}:`);
+          console.log(`director.exec typeof v = ${typeof v}:`);
+          console.log(`director.exec typeof target = ${typeof target}:`);
+          console.dir(target);
           target[n] = v;
         }
       }catch(e){

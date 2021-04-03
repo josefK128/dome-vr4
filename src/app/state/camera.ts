@@ -38,8 +38,9 @@ class Camera {
 
 
   // l = state['sg'|'vr']['lens']  - return THREE.PerspectiveCamera if created
-  create_lens(l:Record<string,unknown>, scene:THREE.Scene, lens:THREE.PerspectiveCamera, scenename:string):THREE.PerspectiveCamera{
+  create_lens(l:Record<string,unknown>, scene:THREE.Scene, narrative:Cast, scenename:string):THREE.PerspectiveCamera{
     console.log(`camera.create_lens(): creating lens camera component`);
+    let lens:THREE.PerspectiveCamera;
 
     // lens 
     // NOTE: l['_lens'] is only true or undefined (create or modify)
@@ -69,8 +70,10 @@ class Camera {
 
     if(scenename === 'sg'){
       sglens = lens;
+      narrative.addActor(scene, 'sglens', sglens);
     }else{
       vrlens = lens;
+      narrative.addActor(scene, 'vrlens', vrlens);
     }
 
     return(lens);
@@ -109,15 +112,8 @@ class Camera {
 
 
 
-  create_csphere(ss:Record<string,unknown>, scene:THREE.Scene, scenename:string):void{
+  create_csphere(ss:Record<string,unknown>, scene:THREE.Scene, narrative:Cast, scenename:string):void{
     console.log('camera.create_csphere(ss,scene,csphere) camera component');
-
-//    if(scenename === 'vr'){
-//      const sphere_g = new THREE.SphereGeometry(2,16,16);
-//      const sphere_m = new THREE.MeshBasicMaterial( { color: 0x00ff00, opacity:0.5, transparent:true, side:THREE.DoubleSide, wireframe:true} );
-//      vrcsphere = new THREE.Mesh(sphere_g, sphere_m);
-//      scene.add(vrcsphere);
-//    }
 
     let lens_:THREE.Perspectivecamera,
         key = <Record<string,unknown>>ss['key'] || {},
@@ -203,6 +199,13 @@ class Camera {
     console.log(`csphere = ${csphere}:`);
     console.dir(csphere);
 
+    //add actors with canonical names
+    narrative.addActor(scene, `${scenename}csphere`, csphere);
+    narrative.addActor(scene, `${scenename}key`, key);
+    narrative.addActor(scene, `${scenename}fill`, fill);
+    narrative.addActor(scene, `${scenename}back`, back);
+
+
     //write
     if(scenename === 'vr'){
       vrcsphere = csphere;
@@ -228,12 +231,12 @@ class Camera {
       if(cs['_controls']){
         const controls_speed:number = <number>cs['controls_speed'] || 0.1;
         const canvas:HTMLCanvasElement = <HTMLCanvasElement>narrative['canvas'];
-        sgcontrols.start(sglens, sgcsphere, controls_speed);
+        //sgcontrols.start(sglens, sgcsphere, controls_speed);
       }
       if(cs['_keymap']){
         const keymap_speed:number = <number>cs['keymap_speed'] || 0.01;
         const canvas:HTMLCanvasElement = <HTMLCanvasElement>narrative['canvas'];
-        sgkeymap.start(sglens, sgcsphere, keymap_speed);
+        //sgkeymap.start(sglens, sgcsphere, keymap_speed);
       }
     }else{
       if(cs['_controls']){
@@ -269,7 +272,7 @@ class Camera {
         // lens
         const sgl = <Record<string,unknown>>state_sg['lens'];
         if(sgl && Object.keys(sgl).length > 0){
-          narrative['sg']['lens'] = camera.create_lens(sgl, scene, narrative['sg']['lens'], 'sg');
+          narrative['sg']['lens'] = camera.create_lens(sgl, scene, narrative, 'sg');
         }
 
 
@@ -285,7 +288,7 @@ class Camera {
         // csphere
         const sgs = <Record<string,unknown>>(state_sg['csphere']);
         if(sgs && Object.keys(sgs).length > 0){
-          camera.create_csphere(sgs, scene, 'sg');
+          camera.create_csphere(sgs, scene, narrative, 'sg');
         }else{
           //console.log(`state['sg']['csphere'] is undefined or empty`);
         }
@@ -313,7 +316,7 @@ class Camera {
         // lens
         const vrl = <Record<string,unknown>>state_vr['lens'];
         if(vrl){
-          narrative['vr']['lens'] = camera.create_lens(vrl, scene, narrative['vr']['lens'], 'vr');
+          narrative['vr']['lens'] = camera.create_lens(vrl, scene, narrative, 'vr');
         }
 
 
@@ -329,7 +332,7 @@ class Camera {
         // csphere
         const vrs = <Record<string,unknown>>(state_vr['csphere']);
         if(vrs && Object.keys(vrs).length > 0){
-          camera.create_csphere(vrs, scene, 'vr');
+          camera.create_csphere(vrs, scene, narrative, 'vr');
         }else{
           //console.log(`state['vr']['csphere'] is undefined or empty`);
         }
