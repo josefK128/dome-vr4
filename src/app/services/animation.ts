@@ -33,7 +33,7 @@ const timeline = (anim:Record<string,unknown>):TimelineMax => {
   tlp.repeat = <number>tlp['repeat'] || 0;
   tlp.repeatDelay = tlp['repeatDelay'] || 0;
   tlp.yoyo = tlp['yoyo'] || true;
-  tlp.ease = tlp['ease'] || Power1.easeInOut;
+  tlp.ease = tlp['ease'] || Power1.InOut;
   tlp.paused = tlp['paused'] || false; // default
   tlp.immediateRender = tlp['immediateRender'] || false; // default
 
@@ -90,7 +90,7 @@ const timeline = (anim:Record<string,unknown>):TimelineMax => {
     tweenp['repeat'] = <number>(tweenp['repeat']) || 0;
     tweenp['repeatDelay'] = <number>(tweenp['repeatDelay']) || 0;
     tweenp['yoyo'] = <boolean>(tweenp['yoyo']) || true;
-    tweenp['ease'] = tweenp['ease'] || Quad.easeInOut;
+    tweenp['ease'] = tweenp['ease'] || Quad.InOut;
 //      tweenp.paused = tweenp['paused'] || true; // default DO NOT USE!!!!
     tweenp['immediateRender'] = <boolean>(tweenp['immediateRender']) || false; // default
     tweenp['delay'] = <number>(tweenp['delay']) || '0';
@@ -146,8 +146,6 @@ class Animation {
 
     // diagnostics
     console.log(`Animation.perform: anim = ${anim}:`);
-    console.log(`Animation.perform: window['TweenMax'] = ${window['TweenMax']}:`);
-    console.log(`Animation.perform: window['Power1'] = ${window['Power1']}:`);
     console.dir(anim);
 
     
