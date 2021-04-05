@@ -104,6 +104,7 @@ let narrative:Narrative,
 
     //spritecloud
     sgcloud:THREE.Group,
+    sgpivot:THREE.Object3D,
 
 
     // rm - lens, renderTarget, actors
@@ -134,6 +135,7 @@ let narrative:Narrative,
 
     //spritecloud
     vrcloud:THREE.Group,
+    vrpivot:THREE.Object3D,
 
 
     // variable actor in narrative.render()
@@ -230,7 +232,7 @@ class Narrative implements Cast{
   }
 
   foo():string{
-    console.log(`narrative.foo()! spritecloud.animate!!`);
+    console.log(`narrative.foo()!`);
     //diagnostics
 //    console.log(`narrative.reportActors(true):`);
 //    console.log(`vrscene.children:`);
@@ -511,6 +513,9 @@ class Narrative implements Cast{
         }
 
         sgcloud = narrative.findActor('sgcloud');
+        if(sgcloud){
+          sgpivot = new THREE.Group();
+        }
 
       }//if(sgscene)
   
@@ -576,6 +581,9 @@ class Narrative implements Cast{
         }
 
         vrcloud = narrative.findActor('vrcloud');
+        if(vrcloud){
+          vrpivot = new THREE.Group();
+        }
 
       }//if(vrscene)
 
@@ -593,7 +601,7 @@ class Narrative implements Cast{
 
     // time-ms, check msgs
     et = 1000.*clock.getElapsedTime();
-    if(frame%10 === 0){      // period is approximately 160ms 
+    if(frame%1000 === 0){      // period is approximately 160ms 
       director.look(et);
     }
     // fps
@@ -601,20 +609,97 @@ class Narrative implements Cast{
       stats.update();
     } 
 
-
     //clouds
     if(sgcloud || vrcloud){
       TWEEN.update();
     }
 
+    //check messages
+    if(frame%10 === 0){      // period is approximately 160ms 
+      director.look(et);
+    }
+
+
     // animate sgscene spritecloud
     if(sgcloud){
-      sgcloud.animate(et);
+          //period = 0.1 + Math.random() * 0.1;  //period = 0.001;
+          const period = 0.01 + 0.01*Math.random();  //period = 0.001;
+          for (let i = 0, l = sgcloud.children.length; i < l; i ++ ) {
+            const sprite = sgcloud.children[ i ],
+                  material = sprite.material;
+            // orig - exceeds screen to much
+            //scale = Math.sin( et + sprite.position.x * 0.01 ) * 0.3 + 1.0;
+            // more constrained
+            // orig
+            //scale = Math.sin( et + sprite.position.x * 0.01 ) * 0.3 + 0.5;
+            //scale = Math.sin( et + sprite.position.z * 0.01 ) * 0.3 + 0.5;
+            const scale = Math.sin( et + sprite.position.z * 0.1 ) * 0.3 + 0.5;
+            let imageWidth = 1;
+            let imageHeight = 1;
+            if(material.map && material.map.image && material.map.image.width){
+              imageWidth = material.map.image.width;
+              imageHeight = material.map.image.height;
+            }
+  
+            material.rotation += period * 0.1;     // ( i / l ); 
+            sprite.scale.set( scale * imageWidth, scale * imageHeight, 1.0 );
+          }
+          // EXPT!!!!! - no spritegroup rotation in X or Y
+          //spritegroup.rotation.x = et * 0.5;
+          //spritegroup.rotation.y = et * 0.75;
+          //spritegroup.rotation.z = et * 1.0;
+          //sgpivot.rotation.x = et * 0.2;
+          //cloud_pivot.rotation.y = et * 0.4;
+          sgpivot.rotation.x = et * 0.2; //0.6;
+          sgpivot.rotation.z = et * 0.3; //0.6;
+
+          //sgcloud.rotation.x = et * 0.2;
+          //sgcloud.rotation.y = et * 0.4;
+          //sgcloud.rotation.z = et * 0.3; //0.6;
     }
    
     // animate vrscene spritecloud
+    //console.log(`_vrcloud = ${_vrcloud}`);
+    //console.log(`vrcloud = ${vrcloud}`);
+    //console.log(`vrcloud.children.l = ${vrcloud.children.length}`);
+    //console.log(`vrpivot.position.x = ${vrpivot.position.x}`);
     if(vrcloud){
-      vrcloud.animate(et);
+        //period = 0.1 + Math.random() * 0.1;  //period = 0.001;
+        const period = 0.01 + 0.01*Math.random();  //period = 0.001;
+        for (let i = 0, l = vrcloud.children.length; i < l; i ++ ) {
+          const sprite = vrcloud.children[ i ],
+                material = sprite.material;
+          // orig - exceeds screen to much
+          //scale = Math.sin( et + sprite.position.x * 0.01 ) * 0.3 + 1.0;
+          // more constrained
+          // orig
+          //scale = Math.sin( et + sprite.position.x * 0.01 ) * 0.3 + 0.5;
+          //scale = Math.sin( et + sprite.position.z * 0.01 ) * 0.3 + 0.5;
+          const scale = Math.sin( et + sprite.position.z * 0.1 ) * 0.3 + 0.5;
+          let imageWidth = 1;
+          let imageHeight = 1;
+          if(material.map && material.map.image && material.map.image.width){
+            imageWidth = material.map.image.width;
+            imageHeight = material.map.image.height;
+          }
+
+          material.rotation += period * 0.1;     // ( i / l ); 
+          sprite.scale.set( scale * imageWidth, scale * imageHeight, 1.0 );
+
+          sprite.rotation.x = et * 0.2;
+          sprite.rotation.z = et * 0.3; //0.6;
+        }
+        // EXPT!!!!! - no spritegroup rotation in X or Y
+        //vrcloud.rotation.x = et * 0.5;
+        //vrcloud.rotation.y = et * 0.75;
+        //vrcloud.rotation.z = et * 1.0;
+
+        //vrcloud.rotation.x = et * 0.2;
+        //vrcloud.rotation.y = et * 0.4;
+        //vrcloud.rotation.z = et * 0.3; //0.6;
+
+        vrpivot.rotation.x = et * 0.2;
+        vrpivot.rotation.z = et * 0.3; //0.6;
     }
 
 

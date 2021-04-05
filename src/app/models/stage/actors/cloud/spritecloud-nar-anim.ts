@@ -111,8 +111,7 @@ export const Spritecloud:ActorFactory = class {
 
   static create(state:Record<string,unknown>={}):Promise<Actor>{
     const textureLoader:THREE.TextureLoader = new THREE.TextureLoader(),
-          transform = <Record<string,number[]>>state['transform'],
-          pivot:THREE.Group = new THREE.Group();
+          transform = <Record<string,number[]>>state['transform'];
 
     let mat:THREE.Material,
         spr:THREE.Object3D,
@@ -214,48 +213,6 @@ export const Spritecloud:ActorFactory = class {
       if(transform){
         transform3d.apply(transform, group);
       }
-
-      //implement animate method - optional method on actor.interface.ts
-      // et is ellapsedTime obtained from clock in narrative render-loop
-      group['animate'] = (et:number):void => {
-        //period = 0.1 + Math.random() * 0.1;  //period = 0.001;
-        const period = 0.01 + 0.01*Math.random();  //period = 0.001;
-        for (let i = 0, l = group.children.length; i < l; i ++ ) {
-          const sprite = group.children[ i ],
-                material = sprite.material;
-          // orig - exceeds screen to much
-          //scale = Math.sin( et + sprite.position.x * 0.01 ) * 0.3 + 1.0;
-          // more constrained
-          // orig
-          //scale = Math.sin( et + sprite.position.x * 0.01 ) * 0.3 + 0.5;
-          //scale = Math.sin( et + sprite.position.z * 0.01 ) * 0.3 + 0.5;
-          const scale = Math.sin( et + sprite.position.z * 0.1 ) * 0.3 + 0.5;
-          let imageWidth = 1;
-          let imageHeight = 1;
-          if(material.map && material.map.image && material.map.image.width){
-            imageWidth = material.map.image.width;
-            imageHeight = material.map.image.height;
-          }
-
-          material.rotation += period * 0.1;     // ( i / l ); 
-          sprite.scale.set( scale * imageWidth, scale * imageHeight, 1.0 );
-
-          sprite.rotation.x = et * 0.2;
-          sprite.rotation.z = et * 0.3; //0.6;
-        }
-
-        // EXPT!!!!! - no spritegroup rotation in X or Y
-        //group.rotation.x = et * 0.5;
-        //group.rotation.y = et * 0.75;
-        //group.rotation.z = et * 1.0;
-
-        //group.rotation.x = et * 0.2;
-        //group.rotation.y = et * 0.4;
-        //group.rotation.z = et * 0.3; //0.6;
-
-        pivot.rotation.x = et * 0.2;
-        pivot.rotation.z = et * 0.3; //0.6;
-      };
 
       resolve(group);
 

@@ -16,5 +16,6 @@ import {Cast} from '../../../cast.interface';
 
 export interface Actor {
   delta(options:Record<string,unknown>, narrative?:Cast):void;
+  animate?(et:number):void;
 }
 

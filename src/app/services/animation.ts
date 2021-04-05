@@ -5,6 +5,9 @@
 import {Cast} from '../cast.interface.js';
 import {Config} from '../scenes/config.interface.js';
 
+// gsap
+import {gsap, TweenMax, TimelineMax, Quad, Power1} from '../../external/gsap/all.js';
+
 
 
 
@@ -111,7 +114,7 @@ const timeline = (anim:Record<string,unknown>):TimelineMax => {
 //    console.log(`duration = ${duration}`);
     console.log(`tweenp = ${tweenp}:`);
     console.dir(tweenp);
-    (<Tweenmax[]>tlp['tweens']).push(TweenMax.to(target, duration, tweenp));
+    (<TweenMax[]>tlp['tweens']).push(TweenMax.to(target, duration, tweenp));
 
   }//actors
 
