@@ -131,7 +131,7 @@ const state:State = {
             fov: 90,
             near: 0.01,
             far: 100000,
-            transform: {'t':[0,1,2]}
+            transform: {'t':[0,1,10]}  //no effect?!
           },
           fog: {
             _fog: true,

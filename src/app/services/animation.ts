@@ -146,6 +146,8 @@ class Animation {
 
     // diagnostics
     console.log(`Animation.perform: anim = ${anim}:`);
+    console.log(`Animation.perform: window['TweenMax'] = ${window['TweenMax']}:`);
+    console.log(`Animation.perform: window['Power1'] = ${window['Power1']}:`);
     console.dir(anim);
 
     

@@ -56,9 +56,17 @@ class Camera {
       //console.log(`camera.create_lens(): created lens = ${lens}:`);
       //console.dir(lens);
 
-      if(l['transform']){transform3d.apply(l['transform'], lens); }
 
-    }else{      //undefined=>modify
+      //transform lens - need to move lens from origin if OrbitControls effects
+      //are to be seen
+      console.log(`l['transform'] = ${l['transform']}`);
+      if(l['transform']){
+        transform3d.apply(l['transform'], lens); 
+        lens.updateWorldMatrix();  
+      }
+
+    }else{      //l['_lens'] undefined => modify lens
+
       //console.log(`\ncamera.create_lens(): modifying lens`);
       if(lens){
         if(l['fov']){lens.fov = l['fov'];}

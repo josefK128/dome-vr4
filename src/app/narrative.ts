@@ -264,6 +264,7 @@ class Narrative implements Cast{
     // audio and actions.
     //NOTE: config is not needed as arg since it is a closure var of narrative
     narrative.initialize();
+    narrative['config'] = config;
 
 
     // initialize actionsTargets
@@ -891,9 +892,9 @@ class Narrative implements Cast{
         //rmplane.rotation.z = 50*Math.sin(et);
         //rmplane.rotation.z += 0.4;
         rmplane.position.x = 0.6*Math.sin(4.0*et);
-        if(frame%100 === 0){
-          console.log(`rmplane.rotatation.z = ${rmplane.rotation.z}`);
-        }
+//        if(frame%100 === 0){
+//          console.log(`rmplane.rotatation.z = ${rmplane.rotation.z}`);
+//        }
         break;
 
 

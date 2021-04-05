@@ -53,9 +53,9 @@ class Vrkeymap {
                 case 37:
                     //console.log(`key pressed is ${e.key} LEFT-ARROW`);  
                     if (e.shiftKey) { // sh => UP Y+
-                        controlTarget.rotation.y += speed;
+                        controlTarget.rotation.y -= speed;
                         if (rotateTarget) {
-                            rotateTarget.rotation.y -= speed;
+                            rotateTarget.rotation.y += speed;
                         }
                     }
                     else {
@@ -71,9 +71,9 @@ class Vrkeymap {
                 case 39:
                     //console.log(`key pressed is ${e.key} RIGHT-ARROW`);  
                     if (e.shiftKey) { // sh => UP Y+
-                        controlTarget.rotation.y -= speed;
+                        controlTarget.rotation.y += speed;
                         if (rotateTarget) {
-                            rotateTarget.rotation.y += speed;
+                            rotateTarget.rotation.y -= speed;
                         }
                     }
                     else {
