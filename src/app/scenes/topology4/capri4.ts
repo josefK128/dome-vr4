@@ -131,8 +131,9 @@ const state:State = {
             fov: 90,
             near: 0.01,
             far: 100000,
-            transform: {'t':[0,0,2.0]}  //does NOT effect vr headset position,
-                            //BUT necessary to see effect of 3D OrbitControls 
+            transform: {'t':[0, 0.01,2.0]} //y=.01 allows blue z-axis to be seen
+                //z=2 does NOT effect vr headset 
+               // position, BUT necessary to see effect of 3D OrbitControls 
           },
           fog: {
             _fog: true,
@@ -163,7 +164,6 @@ const state:State = {
                     url: '../models/stage/actors/objects/axes.js',
                     options: {
                         length: 10000,
-                        // setting axes translation-y at -0.01 allows z-axis to be seen
                         transform: { t: [0,0,0] }
                     }
                 },

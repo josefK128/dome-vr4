@@ -135,7 +135,7 @@ const state:State = {
             fov: 90,
             near: 0.01,
             far: 100000,
-            transform: {'t':[0,1,2]}
+            transform: {'t':[0,0.01,2]}  //y=.01 allows blue z-axis to be seen
           }
           //controls: {
           //  _controls: true,
@@ -195,7 +195,6 @@ const state:State = {
                     url: '../models/stage/actors/objects/axes.js',
                     options: {
                         length: 10000,
-                        // setting axes translation-y at -0.01 allows z-axis to be seen
                         transform: { t: [0.0, 0.0, 0.0] }
                     }
                 },
@@ -206,8 +205,7 @@ const state:State = {
                         color: 'white',
                         opacity: 0.7,
                         map: './app/media/images/glad.png',
-                        //transform: { t: [0.0, 0.15, -0.99], e: [0.0, 0.0, 0.0], s: [0.2, 0.3, 0.2] }
-                        transform: { t: [0, 0, 0], e: [0.0, 0.0, 0.0], s: [0.5, 1, 0.5] }
+                        transform: { t: [0, 0, -2], e: [0.0, 0.0, 0.0], s: [0.5, 1, 0.5] }
                     }
                 },
 

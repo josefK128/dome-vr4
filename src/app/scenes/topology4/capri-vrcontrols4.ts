@@ -131,7 +131,7 @@ const state:State = {
             fov: 90,
             near: 0.01,
             far: 100000,
-            transform: {'t':[0,0,2]}
+            transform: {'t':[0,0.01,2]}  //y=.01 allows blue z-axis to be seen
           },
           fog: {
             _fog: true,
@@ -196,7 +196,6 @@ const state:State = {
                     url: '../models/stage/actors/objects/axes.js',
                     options: {
                         length: 10000,
-                        // setting axes translation-y at -0.01 allows z-axis to be seen
                         transform: { t: [0,0,0] }
                     }
                 },

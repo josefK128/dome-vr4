@@ -14,9 +14,12 @@
 export interface Config {
 
   // topology - rendering topology
+  // NOTE: topologies 2,3 can NOT be used for VR since they produce 
+  // 2D near-plane framebuffers which cannot be rendered in stereo.
+  // Use of topologies 2/3 for VR is not prevented - but should not be chosen!
   topology:{
     // webxr? true => lens.position=[0, 1.6, 0] - avatar 1.6 meters 'tall'
-    _webxr:boolean;   //NOTE:_webxr:true turns off OrbitControls
+    _webxr:boolean;  //NOTE:connection of VR headset turns off OrbitControls!!
     topology:number;                 // {1,...,7}: sg=1;rm=2;vr=4 => rm->vr=6
     displayed_scene:string;         //'sg'|'rm'|'vr'
 
@@ -29,7 +32,7 @@ export interface Config {
     sgTargetNames?:string[]; //actor names to be textured by sgTarget.texture
                             //these can be in vrscene or sgscene
     sgvrSkyboxFaces?:string[];  // if 'vrskybox' is in sgTargetNames then
-                    // specify which of 6 faces to texture - default is all 6
+                    // specify which of 6 faces to texture - default is all 6.
                    // faces are 'px' (positive-x) 'nx', 'py', 'ny', 'pz', 'nz'
 
 

@@ -44,7 +44,9 @@ export interface State {
         fov?:number,
         near?:number,
         far?:number,
-        transform?:Record<string,number[]>
+        transform?:Record<string,number[]>   //normally {'t':[0,.01,2]}
+           //y=.01 to allow blue z-axis to be seen, z=2=>when 3D, OrbitControls
+           //effects can be seen (x=y=z=0 => no visual effect)
       },
       fog?:{           //sgscene.fog = new Fog(color,near,far)-default:f
         _fog?:boolean,                 // t=>create, f=>delete undef=>modify
@@ -62,7 +64,9 @@ export interface State {
         fov?:number,
         near?:number,
         far?:number,
-        transform?:Record<string,number[]>   //moves vrscene rel to vrlens 
+        transform?:Record<string,number[]>   //normally {'t':[0,.01,2]}
+           //y=.01 to allow blue z-axis to be seen, z=2=>when 3D, OrbitControls
+           //effects can be seen (x=y=z=0 => no visual effect)
       },
       fog?:{           //vrscene.fog = new Fog(color,near,far)-default:f
         _fog?:boolean, // t=>create, f=>delete undef=>modify

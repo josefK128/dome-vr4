@@ -962,7 +962,6 @@ class Narrative implements Cast{
     console.log(`resize: width=${width_} height=${height_}`);
     console.log(`resize: ratiow=${ratiow}`);
     console.log(`resize: ratioh=${ratioh}`);
-    console.log(`rmhud = ${rmhud}`);
 
 
     // rmhud

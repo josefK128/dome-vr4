@@ -18,10 +18,13 @@ import {State} from '../state.interface';
 
 const config:Config = {
 
-    // rendering topology
+  // rendering topology
+  // NOTE: topologies 2,3 can NOT be used for VR since they produce 
+  // 2D near-plane framebuffers which cannot be rendered in stereo.
+  // Use of topologies 2/3 for VR is not prevented - but should not be chosen!
     topology:{
       // webxr?
-      _webxr: true,
+      _webxr: false,
       topology: 3,
      
       // displayed_scene = 'sg|rm|vr'
@@ -134,7 +137,8 @@ const state:State = {
             fov: 90,
             near: 0.01,
             far: 100000,
-            transform: {'t':[0,1,2]}
+            // setting y=0.01 allows blue z-axis to be seen
+            transform: {'t':[0,.01,2]}
           },
           fog: {
             _fog: true,
@@ -162,8 +166,7 @@ const state:State = {
                     url: '../models/stage/actors/objects/axes.js',
                     options: {
                         length: 10000,
-                        // setting axes translation-y at -0.01 allows z-axis to be seen
-                        transform: { t: [0.0, -0.01, -0.99] }
+                        transform: { t: [0.0, 0.0, 0.0] }
                     }
                 },
                 'unitcube': {

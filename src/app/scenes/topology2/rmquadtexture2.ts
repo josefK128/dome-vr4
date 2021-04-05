@@ -18,10 +18,13 @@ import {State} from '../state.interface';
 
 const config:Config = {
 
-    // rendering topology
+  // rendering topology
+  // NOTE: topologies 2,3 can NOT be used for VR since they produce 
+  // 2D near-plane framebuffers which cannot be rendered in stereo.
+  // Use of topologies 2/3 for VR is not prevented - but should not be chosen!
     topology:{
       // webxr?
-      _webxr: true,
+      _webxr: false,
       topology: 2,
      
       // displayed_scene = 'sg|rm|vr'
