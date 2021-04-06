@@ -32,7 +32,6 @@
 //            transparent:true,
 //            opacity:1.0,
 //            cloudRadius:1000,
-//            translateZ:1000,
 //            morphtargets:[],                      //options
 //            positions:[], //positions.len = particles*mTargets.len*3
 //            particles:128,  // 128,  // 256    //options
@@ -55,15 +54,14 @@ import {generators} from '../../../../models/stage/actors/cloud/generators/gener
 //eleven options 
 let current = 0,
     N = 4,
-    urls = ["./app/assets/images/cloud/sprite_redlight.png",
-        "./app/assets/images/cloud/moon_256.png" ,
-        "./app/assets/images/cloud/lotus_64.png" ,
-        "./app/assets/images/cloud/sprites/ball.png" ],
+    urls = ["../../../../../../app/media/images/cloud/sprite_redlight.png",
+        "../../../../../../dist/app/media/images/cloud/moon_256.png" ,
+        "../../../../../../dist/app/media/images/cloud/lotus64.png" ,
+        "../../../../../../dist/app/media/images/cloud/sprites/ball.png"],
     transparent = true,
     opacity = 1.0,
     fog = false,
     lights = false,
-    translateZ = 1000,
     cloudRadius = 1000,
     particles = 128,  // 128,  // 256    //options
     duration = 20000,  // 2000           //options
@@ -134,7 +132,6 @@ export const Spritecloud:ActorFactory = class {
     duration = <number>state['duration'] || duration;
     state_positions = <number[]>state['positions'] || [];
     cloudRadius = <number>state['cloudRadius'] || cloudRadius;
-    translateZ = <number>state['translateZ'] || translateZ;
     fog = <boolean>state['fog'] || fog;
     lights = <boolean>state['lights'] || lights;
 
