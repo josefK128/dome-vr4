@@ -35,7 +35,7 @@
 //            morphtargets:[],                      //options
 //            positions:[], //positions.len = particles*mTargets.len*3
 //            particles:128,  // 128,  // 256    //options
-//            duration:2000,  // 2000           //options
+//            duration:20000,  // 2000           //options
 //            transform:{t:[0.0,0.0,-500.0]}
 //          } 
 //        }
@@ -260,4 +260,4 @@ export const Spritecloud:ActorFactory = class {
 
   }//create()
 
-};//Cloud
+};//Spritecloud

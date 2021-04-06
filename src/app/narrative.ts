@@ -230,14 +230,13 @@ class Narrative implements Cast{
   }
 
   foo():string{
-    console.log(`narrative.foo()! spritecloud.animate! no translateZ!`);
+    console.log(`narrative.foo()`);
     //diagnostics
-//    console.log(`narrative.reportActors(true):`);
+    narrative.reportActors(true);
 //    console.log(`vrscene.children:`);
 //    for(const c in vrscene.children){
 //      console.log(`vrscene contains child ${vrscene.children[c].name}`);
 //    }
-//    narrative.reportActors(true);
     return 'foo';
   }
 
