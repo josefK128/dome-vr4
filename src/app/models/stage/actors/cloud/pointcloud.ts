@@ -22,7 +22,7 @@
 //      actors:{
 //        'pointcloud':{ 
 //          factory:'Pointcloud',
-//          url:'./app/models/stage/actors/cloud/pointcloud',
+//          url:'./app/models/stage/actors/cloud/pointcloud.js',
 //          options:{
 //            *color:string,       //default='red'
 //             pointsize:number,  //default=2.0
