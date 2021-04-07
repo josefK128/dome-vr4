@@ -36,6 +36,12 @@
 //            positions:[], //positions.len = particles*mTargets.len*3
 //            particles:128,  // 128,  // 256    //options
 //            duration:20000,  // 2000           //options
+//            group_speed_base:.01,             //defaults...
+//            group_speed_variance:.01,
+//            sprite_rotation_speedX:.2,
+//            sprite_rotation_speedZ:.3,
+//            pivot_rotation_speedX:.2,
+//            pivot_rotation_speedZ:.3,
 //            transform:{t:[0.0,0.0,-500.0]}
 //          } 
 //        }
@@ -65,6 +71,14 @@ let current = 0,
     cloudRadius = 1000,
     particles = 128,  // 128,  // 256    //options
     duration = 20000,  // 2000           //options
+
+    group_speed_base = .01,             //defaults...
+    group_speed_variance = .01,
+    sprite_rotation_speedX = .2,
+    sprite_rotation_speedZ = .3,
+    pivot_rotation_speedX = .2,
+    pivot_rotation_speedZ = .3,
+
     particlesByN = particles/N,
     state_positions:number[] = [],
     positions:number[] = [], //positions.len = particles*mTargets.len*3
@@ -130,6 +144,14 @@ export const Spritecloud:ActorFactory = class {
     transparent = <boolean>state['transparent'] || transparent;
     opacity = <number>state['opacity'] || opacity;
     duration = <number>state['duration'] || duration;
+
+    group_speed_base = <number>state['group_speed_base'] || group_speed_base;
+    group_speed_variance = <number>state['group_speed_variance'] || group_speed_variance;            
+    sprite_rotation_speedX = <number>state['sprite_rotation_speedX'] || sprite_rotation_speedX;
+    sprite_rotation_speedZ = <number>state['sprite_rotation_speedZ'] || sprite_rotation_speedZ;
+    pivot_rotation_speedX = <number>state['pivot_rotation_speedX'] || pivot_rotation_speedX;
+    pivot_rotation_speedZ = <number>state['pivot_rotation_speedZ'] || pivot_rotation_speedZ;
+
     state_positions = <number[]>state['positions'] || [];
     cloudRadius = <number>state['cloudRadius'] || cloudRadius;
     fog = <boolean>state['fog'] || fog;
@@ -216,7 +238,7 @@ export const Spritecloud:ActorFactory = class {
       // et is ellapsedTime obtained from clock in narrative render-loop
       group['animate'] = (et:number):void => {
         //period = 0.1 + Math.random() * 0.1;  //period = 0.001;
-        const period = 0.01 + 0.01*Math.random();  //period = 0.001;
+        const period = group_speed_base + group_speed_variance*Math.random();  //period = 0.001;
         for (let i = 0, l = group.children.length; i < l; i ++ ) {
           const sprite = group.children[ i ],
                 material = sprite.material;
@@ -237,8 +259,8 @@ export const Spritecloud:ActorFactory = class {
           material.rotation += period * 0.1;     // ( i / l ); 
           sprite.scale.set( scale * imageWidth, scale * imageHeight, 1.0 );
 
-          sprite.rotation.x = et * 0.2;
-          sprite.rotation.z = et * 0.3; //0.6;
+          sprite.rotation.x = et * sprite_rotation_speedX;
+          sprite.rotation.z = et * sprite_rotation_speedZ; //0.6;
         }
 
         // EXPT!!!!! - no spritegroup rotation in X or Y
@@ -250,8 +272,8 @@ export const Spritecloud:ActorFactory = class {
         //group.rotation.y = et * 0.4;
         //group.rotation.z = et * 0.3; //0.6;
 
-        pivot.rotation.x = et * 0.2;
-        pivot.rotation.z = et * 0.3; //0.6;
+        pivot.rotation.x = et * pivot_rotation_speedX;
+        pivot.rotation.z = et * pivot_rotation_speedZ; //0.6;
       };
 
       resolve(group);

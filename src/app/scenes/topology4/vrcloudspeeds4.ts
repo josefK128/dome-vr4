@@ -1,4 +1,4 @@
-// topology4/vrcloud4.ts 
+// topology4/vrcloudspeeds4.ts 
 // webGL2, es300 three.js ==0.125.2
  
 
@@ -194,7 +194,15 @@ const state:State = {
                     morphtargets:[],                      //options
                     positions:[], //positions.len = particles*mTargets.len*3
                     particles:128,  // 128,  // 256    //options
-                    duration:2000,  // 2000           //options
+                    duration:16000,  // 2000           //options
+
+                    group_speed_base:.001,             //default=.01
+                    group_speed_variance:.01,        //default=.01
+                    sprite_rotation_speedX:.01,      //default=2.
+                    sprite_rotation_speedZ:.01,     //default=.3
+                    pivot_rotation_speedX:.01,     //default=.2
+                    pivot_rotation_speedZ:.01,    //default=.3
+
                     transform:{t:[0.0,0.0,-1000.0]}
                   }
                 }
