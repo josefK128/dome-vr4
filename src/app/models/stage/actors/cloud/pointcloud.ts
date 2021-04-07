@@ -24,9 +24,11 @@
 //          factory:'Pointcloud',
 //          url:'./app/models/stage/actors/cloud/pointcloud',
 //          options:{
-//            radius:100,   //default=100
-//            rotation_speed:.005,  //default=.005
-//            transform:{t:[0.0,0.0,-200.0]}
+//            *color:string,       //default='red'
+//             pointsize:number,  //default=2.0
+//             radius:number,    //default=100
+//             rotation_speed:number,  //default=.005
+//            *transform:Record<string,unknown> //exp {t:[0.0,0.0,-200.0]}
 //          } 
 //        }
 //      }//actors
@@ -39,17 +41,19 @@ import {fsh} from '../../shaders/webgl1/quad_fsh/fsh_pointcloud2.glsl.js';
 import {uniforms} from '../../shaders/webgl1/quad_fsh/fsh_pointcloud2.glsl.js';
 
 
+
 // closure vars and default values
-//three options 
+let pcloud:THREE.Points; 
+
 
 export const Pointcloud:ActorFactory = class {
 
   static create(options:Record<string,unknown>={}):Promise<Actor>{
-    console.log(`\n\n$$$ pointcloud: o['radius'] = ${options['radius']}`);
+    //console.log(`\n\n$$$ pointcloud: o['radius'] = ${options['radius']}`);
 
-    const radius = options['radius'] || 100,
+    const pointsize = <number>options['pointsize'] || 2.0,
+          radius = <number>options['radius'] || 100,
           rotation_speed = options['rotation_speed'] || .005,
-          transform = options['transform'],
           pcloud_g = new THREE.SphereBufferGeometry(radius,160,80),
           pcloud_m = new THREE.ShaderMaterial({
             uniforms: uniforms,
@@ -57,28 +61,54 @@ export const Pointcloud:ActorFactory = class {
             fragmentShader: fsh,
             transparent: true
           }),
-          pcloud = new THREE.Points(pcloud_g, pcloud_m),
           nvertices:number = pcloud_g.attributes.position.count,
-          alphas = new Float32Array(nvertices * 1);
+          alphas = new Float32Array(nvertices * 1),
+          psizes = new Float32Array(nvertices * 1);
+
+    let color = <string>options['color'] || 'red',
+        transform = options['transform'];
+
+
+    //create pointcloud
+    pcloud = new THREE.Points(pcloud_g, pcloud_m);
 
     //initialize alphas - add attribute 'alpha' to pcloud_g
     for(let i=0; i<nvertices; i++){
       alphas[i] = Math.random();
+      psizes[i] = pointsize;  //pointsize*Math.random();
     }
-    //setAtrribute NOT addAttribute
+    //setAtrribute NOT addAttribute - set alpha
     pcloud_g.setAttribute('alpha', new THREE.BufferAttribute(alphas,1));
+
+    //set pointsize
+    pcloud_g.setAttribute('pointsize', new THREE.BufferAttribute(psizes,1));
 
 
     //diagnostics
-//    console.log(`$$$ pointcloud: radius = ${radius}`);
-//    console.log(`$$$ pcloud_g['attributes'] = ${pcloud_g['attributes']}`);
-//    console.dir(pcloud_g['attributes']);
-//    console.log(`$$$ alphas[27] = ${alphas[27]}`);
-//    console.log(`$$$ pointcloud: pcloud = ${pcloud}:`);
-//    console.dir(pcloud);
+    //console.log(`$$$ pointcloud: pcloud_m['uniforms']:`);
+    //console.dir(uniforms);
+    //set color
+    (<Record<string,unknown>>uniforms['uColor'])['value'] = new THREE.Color(color);
+    (<Record<string,unknown>>uniforms['uColor'])['needsUpdate'] = true;
+
 
 
     return new Promise((resolve, reject) => {
+
+      pcloud['delta'] = (options:Record<string,unknown>):void => {
+        color = <string>options['color'];
+        transform = options['transform'];
+
+        //set color
+        if(color){
+          (<Record<string,unknown>>uniforms['uColor'])['value'] = new THREE.Color(color);
+          (<Record<string,unknown>>uniforms['uColor'])['needsUpdate'] = true;
+        }
+        if(transform){
+          transform3d.apply(transform, pcloud);
+        }
+      };
+
 
       pcloud['animate'] = (et:number):void => {
         const alphas = pcloud_g['attributes']['alpha'],
@@ -91,12 +121,11 @@ export const Pointcloud:ActorFactory = class {
             alphas.array[i] = Math.random(); //1.0;
           }
         }
-
         alphas.needsUpdate = true; // important!
         pcloud.rotation.x += rotation_speed;
         pcloud.rotation.y += rotation_speed;
-        //pcloud.rotation.z += rotation_speed;
       };
+
 
       //transform
       if(transform){

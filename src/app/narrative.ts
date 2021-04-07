@@ -230,7 +230,7 @@ class Narrative implements Cast{
   }
 
   foo():string{
-    console.log(`narrative.foo()`);
+    console.log(`narrative.foo() with revised render`);
     //diagnostics
     narrative.reportActors(true);
 //    console.log(`vrscene.children:`);
@@ -601,21 +601,16 @@ class Narrative implements Cast{
     } 
 
 
-    //clouds
+    //clouds - use TWEEN
     if(sgcloud || vrcloud){
       TWEEN.update();
     }
 
-    // animate sgscene spritecloud
-    if(sgcloud){
-      sgcloud.animate(et);
+    // animate actors with special sub-renders - exps sgcloud/vrcloud
+    for(const [name,actor] of Object.entries(cast)){
+      if(actor['animate']){actor.animate(et);}
     }
    
-    // animate vrscene spritecloud
-    if(vrcloud){
-      vrcloud.animate(et);
-    }
-
 
     // render config-defined topology using defined rendering functions
     switch(topology){

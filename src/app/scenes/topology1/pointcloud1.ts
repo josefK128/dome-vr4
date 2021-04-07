@@ -133,12 +133,12 @@ const state:State = {
             far: 100000,
             transform: {'t':[0,.01,2]}  //y=.01 allows blue z-axis to be seen
           },
-          fog: {
-            _fog: true,
-            color: 'white', //0x00ff00,
-            near: 0.1,
-            far: 1000 //default:100
-          }
+//          fog: {
+//            _fog: true,
+//            color: 'white', //0x00ff00,
+//            near: 0.1,
+//            far: 1000 //default:100
+//          }
           //controls: {
           //  _controls: true,
           //  controls: 'vr'
@@ -175,13 +175,16 @@ const state:State = {
                         transform: { t: [0, 0, -2], e: [0.0, 0.0, 0.0], s: [0.5, 1, 0.5] }
                     }
                 },
-                'sgcloud':{   //default center is origin
+                'sgpointcloud':{   //default center is origin
                     factory:'Pointcloud',
                     url:'../models/stage/actors/cloud/pointcloud.js',
                     options:{
-                      radius:100,   //default=100
-                      rotation_speed:.001  //default=.005
-                      //transform:{t:[0.0,0.0,-200.0]}
+                      color:'pink',    //default=red
+                      pointsize:12.0,  //default=2.0
+                      radius:400,     //default=100
+                      rotation_speed:.0005  //default=.005
+                      //transform:{t:[0.0,0.0,-200.0]}  //default undefined
+                      //transform:{s:[1.0,0.3,1.0]}  //default undefined
                     }
                 }
             } //actors
