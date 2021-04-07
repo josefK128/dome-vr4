@@ -69,8 +69,14 @@ export const Pointcloud:ActorFactory = class {
         transform = options['transform'];
 
 
+    //blend
+    pcloud_m.blendSrc = THREE.SrcAlphaFactor; // default
+    pcloud_m.blendDst = THREE.OneMinusSrcAlphaFactor; //default
+
+
     //create pointcloud
     pcloud = new THREE.Points(pcloud_g, pcloud_m);
+
 
     //initialize alphas - add attribute 'alpha' to pcloud_g
     for(let i=0; i<nvertices; i++){
