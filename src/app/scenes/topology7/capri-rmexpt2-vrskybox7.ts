@@ -1,4 +1,4 @@
-// topology2/capri-rmquad-vrskybox7.ts
+// topology2/capri-rmcantor-vrskybox7.ts
 // webGL2, es300 three.js ==0.125.2
  
 
@@ -53,7 +53,7 @@ const config:Config = {
       //order-independent: front,back,left,right,top,ground
       // raymarch - via fragment shader in rmquad ShaderMaterial
       // NOTE! obviously requires rm:t and a vr-actor name in rmTargetNames
-      rmvrSkyboxFaces: ['pz','nz','px','nx'],
+      rmvrSkyboxFaces: ['py', 'ny', 'pz','nz','px','nx'],
     
 
       // render vrscene - which implies displayed_scene = 'vr'
@@ -175,24 +175,24 @@ const state:State = {
         sgscene:{
             _actors: true,
             actors: {
-                'axes': {
-                    factory: 'Axes',
-                    url: '../models/stage/actors/objects/axes.js',
-                    options: {
-                        length: 10000,
-                        transform: { t: [0.0, 0.0, 0.0] }
-                    }
-                },
-                'unitcube': {
-                    factory: 'Unitcube',
-                    url: '../models/stage/actors/objects/unitcube.js',
-                    options: { wireframe: false,
-                        color: 'white',
-                        opacity: 0.7,
-                        map: './app/media/images/glad.png',
-                        transform: { t: [0, 0, -2], e: [0.0, 0.0, 0.0], s: [0.5, 1, 0.5] }
-                    }
-                },
+//                'axes': {
+//                    factory: 'Axes',
+//                    url: '../models/stage/actors/objects/axes.js',
+//                    options: {
+//                        length: 10000,
+//                        transform: { t: [0.0, 0.0, 0.0] }
+//                    }
+//                },
+//                'unitcube': {
+//                    factory: 'Unitcube',
+//                    url: '../models/stage/actors/objects/unitcube.js',
+//                    options: { wireframe: false,
+//                        color: 'white',
+//                        opacity: 0.7,
+//                        map: './app/media/images/glad.png',
+//                        transform: { t: [0, 0, -2], e: [0.0, 0.0, 0.0], s: [0.5, 1, 0.5] }
+//                    }
+//                },
                 'panorama':{
                     factory:'Panorama',
                     url:'../models/stage/actors/environment/panorama.js',
@@ -220,24 +220,26 @@ const state:State = {
 //                      vsh:'../../../stage/shaders/webgl2/vertex/vsh_default.glsl.js',
 //                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_color.glsl.js',
                       vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
-                      fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_default.glsl.js',
+                      //fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_rm_mengersponge.glsl.js',
+                      //fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_rm_expt1.glsl.js',
+                      fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_rm_expt2.glsl.js',
                       texture:'./app/media/images/moon_tr.png'
                     }
-                },
-
-                'rmhud': {
-                    factory: 'Rmquad',
-                    url: '../models/stage/actors/raymarch/rmquad.js',
-                    options: {
-                        opacity:0.5,
-//                      vsh:'../../../stage/shaders/webgl2/vertex/vsh_default.glsl.js',
-//                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_color.glsl.js',
-                      vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
-                      fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_tDiffuse.glsl.js',
-                      //texture:'./app/media/images/glad.png',
-                      transform:{t:[0.0,0.0,0.001]}
-                    }
                 }
+
+//                'rmhud': {
+//                    factory: 'Rmquad',
+//                    url: '../models/stage/actors/raymarch/rmquad.js',
+//                    options: {
+//                        opacity:0.5,
+////                      vsh:'../../../stage/shaders/webgl2/vertex/vsh_default.glsl.js',
+////                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_color.glsl.js',
+//                      vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
+//                      fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_tDiffuse.glsl.js',
+//                      //texture:'./app/media/images/glad.png',
+//                      transform:{t:[0.0,0.0,0.001]}
+//                    }
+//                }
 
             }//actors
 
@@ -254,45 +256,45 @@ const state:State = {
                         transform: { t: [0.0, 0.0, 0.0] }
                     }
                 },
-                'unitcube': {
-                    factory: 'Unitcube',
-                    url: '../models/stage/actors/objects/unitcube.js',
-                    options: { wireframe: false,
-                        color: 'white',
-                        opacity: 0.7,
-                        map: './app/media/images/glad.png',
-                        transform: { t: [0, 0, -2], e: [0.0, 0.0, 0.0], s: [0.5, 1, 0.5] }
-                    }
-                },
-
-                'ground':{ 
-                  factory:'GridXZ',
-                  url:'../models/stage/actors/environment/gridXZ.js',
-                  options:{
-                        size:1000,
-                        divisions:100,
-                        colorGrid:'red', 
-                        colorCenterLine:'green', 
-                        opacity:0.9, 
-                        transform:{t:[0.0,-2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
-                  } 
-                },
-
-                'unitsphere':{ 
-                  factory:'Unitsphere',
-                  url:'../models/stage/actors/objects/unitsphere.js',
-                  options:{
-                        wireframe:false,
-                        material:'phong',  //default basic
-                        radius:1.0,
-                        widthSegments: 10,    // default = 32
-                        heightSegments: 10,  // default = 32
-                        color:'green', 
-                        opacity:0.4, 
-                        map:'./app/media/images/glad.png',
-                        transform:{t:[0.0,2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
-                  } 
-                },
+//                'unitcube': {
+//                    factory: 'Unitcube',
+//                    url: '../models/stage/actors/objects/unitcube.js',
+//                    options: { wireframe: false,
+//                        color: 'white',
+//                        opacity: 0.7,
+//                        map: './app/media/images/glad.png',
+//                        transform: { t: [0, 0, -2], e: [0.0, 0.0, 0.0], s: [0.5, 1, 0.5] }
+//                    }
+//                },
+//
+//                'ground':{ 
+//                  factory:'GridXZ',
+//                  url:'../models/stage/actors/environment/gridXZ.js',
+//                  options:{
+//                        size:1000,
+//                        divisions:100,
+//                        colorGrid:'red', 
+//                        colorCenterLine:'green', 
+//                        opacity:0.9, 
+//                        transform:{t:[0.0,-2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
+//                  } 
+//                },
+//
+//                'unitsphere':{ 
+//                  factory:'Unitsphere',
+//                  url:'../models/stage/actors/objects/unitsphere.js',
+//                  options:{
+//                        wireframe:false,
+//                        material:'phong',  //default basic
+//                        radius:1.0,
+//                        widthSegments: 10,    // default = 32
+//                        heightSegments: 10,  // default = 32
+//                        color:'green', 
+//                        opacity:0.4, 
+//                        map:'./app/media/images/glad.png',
+//                        transform:{t:[0.0,2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
+//                  } 
+//                },
 
                 'vrskybox':{ 
                   factory:'Skybox',

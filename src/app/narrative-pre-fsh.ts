@@ -606,22 +606,6 @@ class Narrative implements Cast{
       TWEEN.update();
     }
 
-    //rmquad, rmhud - animate
-    if(rmquad){
-      if(rmquad.material && rmquad.material.uniforms && rmquad.material.uniforms.uTime){
-        rmquad.material.uniforms.uTime.value = et/1000.;
-        rmquad.material.uniforms.uTime.needsUpdate = true;
-      }
-    }
-    if(rmhud){
-      if(rmquad.material && rmhud.material.uniforms && rmquad.material.uniforms.uTime){
-        rmhud.material.uniforms.uTime.value = et;
-        rmhud.material.uniforms.uTime.needsUpdate = true;
-      }
-    }
-
-
-
     // animate actors with special sub-renders - exps sgcloud/vrcloud
     for(const [name,actor] of Object.entries(cast)){
       if(actor['animate']){actor.animate(et);}

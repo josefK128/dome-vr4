@@ -29,6 +29,7 @@
 //             *color:'black',
 //             *opacity: 1.0,      // default 1.0
 //             *texture:'pathTo/image.png',
+//              rotate:boolean,   //default=t
 //             *transform:{t:[0.0,2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
 //          }
 //        }
@@ -50,6 +51,7 @@ export const Skydome:ActorFactory = class {
           color:string = <string>options['color'] || 'black',
           opacity:number = <number>options['opacity'] || 1.0,
           url = <string[]>options['texture'] || '',
+          rotate = <boolean>options['rotate'] || true,
           transform = <Record<string,number[]>>(options['transform'] || {}),
           textureLoader = new THREE.TextureLoader(); 
 
@@ -98,6 +100,13 @@ export const Skydome:ActorFactory = class {
             transform3d.apply(transform, dome);
           }
   
+
+          //rotate dome
+          dome['animate'] = (et:number):void => {
+            if(rotate){
+              dome.rotation.y = et * 0.00001;
+            }
+          }
 
             
           // delta() for property modification required by Actor interface

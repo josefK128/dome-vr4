@@ -66,9 +66,8 @@ export const Pointcloudlines:ActorFactory = class {
           showLines = options['showLines'] || true,     // no effect ?!
           maxConnections = options['maxConnections'] || 20,  //1,  
           minDistance = options['minDistance'] || 250, //90,  //150,    
-          limitConnections = options['limitConnections'] || true;  //false,
-  
-      let r = 800,
+          limitConnections = options['limitConnections'] || true,  //false,  
+          r = 800,
           rHalf = r / 2,
           group = new THREE.Group(),
           helper = new THREE.BoxHelper( new THREE.Mesh( new THREE.BoxGeometry( r, r, r ) ) );
@@ -171,10 +170,10 @@ export const Pointcloudlines:ActorFactory = class {
               numConnected = 0;
     
        
-          for (let i = 0; i < particleCount; i++ ){
+          for (let i = 0; i < <number>particleCount; i++ ){
             particlesData[ i ].numConnections = 0;
           }     
-          for (let i = 0; i < particleCount; i++ ) {
+          for (let i = 0; i < <number>particleCount; i++ ) {
             // get the particle
             const particleData = particlesData[i];
             particlePositions[ i * 3     ] += particleData.velocity.x;
@@ -190,15 +189,15 @@ export const Pointcloudlines:ActorFactory = class {
             if ( particlePositions[ i * 3 + 2 ] < -rHalf || particlePositions[ i * 3 + 2 ] > rHalf ){
               particleData.velocity.z = -particleData.velocity.z;
             }     
-            if ( effectController['limitConnections'] && particleData.numConnections >= effectController['maxConnections'] ){
+            if ( effectController['limitConnections'] && particleData.numConnections >= <number>effectController['maxConnections'] ){
               continue;
             }
   
             // Check collision
-            for (let j = i + 1; j < particleCount; j++ ) {
+            for (let j = i + 1; j < <number>particleCount; j++ ) {
        
               const particleDataB = particlesData[ j ];
-              if ( effectController['limitConnections'] && particleDataB.numConnections >= effectController['maxConnections'] ){
+              if ( effectController['limitConnections'] && particleDataB.numConnections >= <number>effectController['maxConnections'] ){
                 continue;
               }
               const dx = particlePositions[ i * 3     ] - particlePositions[ j * 3     ];
@@ -206,7 +205,7 @@ export const Pointcloudlines:ActorFactory = class {
               const dz = particlePositions[ i * 3 + 2 ] - particlePositions[ j * 3 + 2 ];
               const dist = Math.sqrt( dx * dx + dy * dy + dz * dz );
        
-              if ( dist < effectController['minDistance'] ) {
+              if ( dist < <number>effectController['minDistance'] ) {
        
                 particleData.numConnections++;
                 particleDataB.numConnections++;
