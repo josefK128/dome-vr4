@@ -9,7 +9,7 @@
 	</head>
 	<body>
         <script type='module'>
-            import * as THREE from '../three.module.js';
+            import * as THREE from './three.module.js';
 
                 
             //basics
@@ -43,13 +43,14 @@
 
             //skybox
             const loader = new THREE.CubeTextureLoader();
-            const texture = loader.load([
-              './skyboxsun25deg/px.jpg',
-              './skyboxsun25deg/nx.jpg',
-              './skyboxsun25deg/py.jpg',
-              './skyboxsun25deg/ny.jpg',
-              './skyboxsun25deg/pz.jpg',
-              './skyboxsun25deg/nz.jpg'
+            const texture =
+            loader.setPath('../dist/app/media/images/skybox/skyboxsun25deg/').load([
+              'px.jpg',
+              'nx.jpg',
+              'py.jpg',
+              'ny.jpg',
+              'pz.jpg',
+              'nz.jpg'
             ]);
             scene.background = texture;
            

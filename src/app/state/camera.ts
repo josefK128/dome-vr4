@@ -1,9 +1,6 @@
 // camera.ts 
 
-// NOTE! - class OrbitControls has syntax problems, and in any case should
-// be replaced by a VR-capable 'vrcontrols' built from OrbitControls
-//var controls = new THREE.OrbitControls( camera );
-//import {OrbitControls} from '../models/camera/controls/OrbitControls';
+
 import {Cast} from '../cast.interface';
 import {transform3d} from '../services/transform3d.js';
 import {Controls} from '../models/camera/controls/controls.interface';

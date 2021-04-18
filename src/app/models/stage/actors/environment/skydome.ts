@@ -106,7 +106,7 @@ export const Skydome:ActorFactory = class {
             if(rotate){
               dome.rotation.y = et * 0.00001;
             }
-          }
+          };
 
             
           // delta() for property modification required by Actor interface

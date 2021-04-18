@@ -59,6 +59,8 @@ export const Rmquad:ActorFactory = class {
           vshader:string,
           fshader:string,
           uniforms:string,
+          //aspect:number = window.innerWidth/window.innerHeight, //aspect ratio
+          //aspectp:number = window.innerWidth/window.innerHeight, //prev aspect 
           plane:THREE.Mesh;
           
       const loader:THREE.TextureLoader = new THREE.TextureLoader();
@@ -76,7 +78,7 @@ export const Rmquad:ActorFactory = class {
         fshader = a[1].fsh;
         uniforms = a[1].uniforms;
 
-        plane_g = new THREE.PlaneBufferGeometry(2,2,1,1);
+        plane_g = new THREE.PlaneBufferGeometry(2,2);
         plane_m = new THREE.ShaderMaterial({
                 opacity:opacity,
                 vertexShader: vshader,
@@ -105,6 +107,25 @@ export const Rmquad:ActorFactory = class {
 //          console.log(`rmquad.position.y = ${plane.position.y}`);
 //          console.log(`rmquad.position.z = ${plane.position.z}`);
         } 
+
+
+        plane['animate'] = function(et:number){
+          if(plane_m.uniforms && plane_m.uniforms['uTime']){
+            plane_m.uniforms.uTime.value = et/1000.;
+            plane_m.uniforms.uTime.needsUpdate = true;
+          }
+//          aspect = window.innerWidth/window.innerHeight;
+//          if(aspect !== aspectp){
+//            if(plane_m.uniforms && plane_m.uniforms['uAspect']){
+//              //console.log('aspect');
+//              plane_m.uniforms.uAspect.value = aspect;
+//              plane_m.uniforms.uAspect.needsUpdate = true;
+//            }
+//          }
+//          aspectp = aspect;
+          //plane_m.uniforms.uResolution.value = new THREE.Vector2(window.innerWidth, window.innerHeight);
+          //plane_m.uniforms.uResolution.needsUpdate = true;
+        };
 
 
         // ACTOR.INTERFACE delta method for modifying properties

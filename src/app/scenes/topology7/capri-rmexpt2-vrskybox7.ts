@@ -136,12 +136,12 @@ const state:State = {
             far: 100000,
             transform: {'t':[0,0.01,2]}  //y=.01 allows blue z-axis to be seen
           },
-          fog: {
-            _fog: true,
-            color: 'white', //0x00ff00,
-            near: 0.1,
-            far: 1000 //default:100
-          }
+//          fog: {
+//            _fog: true,
+//            color: 'white', //0x00ff00,
+//            near: 0.1,
+//            far: 1000 //default:100
+//          }
           //controls: {
           //  _controls: true,
           //  controls: 'vr'
@@ -267,19 +267,19 @@ const state:State = {
 //                    }
 //                },
 //
-//                'ground':{ 
-//                  factory:'GridXZ',
-//                  url:'../models/stage/actors/environment/gridXZ.js',
-//                  options:{
-//                        size:1000,
-//                        divisions:100,
-//                        colorGrid:'red', 
-//                        colorCenterLine:'green', 
-//                        opacity:0.9, 
-//                        transform:{t:[0.0,-2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
-//                  } 
-//                },
-//
+                'ground':{ 
+                  factory:'GridXZ',
+                  url:'../models/stage/actors/environment/gridXZ.js',
+                  options:{
+                        size:1000,
+                        divisions:100,
+                        colorGrid:'red', 
+                        colorCenterLine:'green', 
+                        opacity:0.9, 
+                        transform:{t:[0.0,-2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
+                  } 
+                },
+
 //                'unitsphere':{ 
 //                  factory:'Unitsphere',
 //                  url:'../models/stage/actors/objects/unitsphere.js',

@@ -133,8 +133,8 @@ const state:State = {
             _lens: true,
             fov: 90,
             near: 0.01,
-            far: 100000,
-            transform: {'t':[0,0.01,2]}  //y=.01 allows blue z-axis to be seen
+            far: 10000,
+            transform: {'t':[0,0.01,1]}  //y=.01 allows blue z-axis to be seen
           },
           fog: {
             _fog: true,
@@ -157,7 +157,7 @@ const state:State = {
             fov: 90,
             near: 0.01,
             far: 100000,
-            transform: {'t':[0,0.01,2]} //y=.01 allows blue z-axis to be seen
+            transform: {'t':[0,0.01,1]} //y=.01 allows blue z-axis to be seen
           },
           //controls: {
           //  _controls: true,
@@ -216,7 +216,7 @@ const state:State = {
                     factory: 'Rmquad',
                     url: '../models/stage/actors/raymarch/rmquad.js',
                     options: {
-                        opacity:0.5,
+                       opacity:0.5,
 //                      vsh:'../../../stage/shaders/webgl2/vertex/vsh_default.glsl.js',
 //                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_color.glsl.js',
                       vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
@@ -234,7 +234,7 @@ const state:State = {
 //                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_color.glsl.js',
                       vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
                       fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_tDiffuse.glsl.js',
-                      //texture:'./app/media/images/glad.png',
+                      texture:'./app/media/images/glad.png',
                       transform:{t:[0.0,0.0,0.001]}
                     }
                 }

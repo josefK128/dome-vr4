@@ -36,7 +36,7 @@ const config:Config = {
       _sgpost: false,
   
       // rmstage or vrstage actors 
-      sgTargetNames: ['rmquad', 'rmhud'],
+      sgTargetNames: [], //['rmquad', 'rmhud'],
   
   
       // render rmscene to display, or to rmTarget offscreen for texturing 
@@ -53,7 +53,7 @@ const config:Config = {
       //order-independent: front,back,left,right,top,ground
       // raymarch - via fragment shader in rmquad ShaderMaterial
       // NOTE! obviously requires rm:t and a vr-actor name in rmTargetNames
-      rmvrSkyboxFaces: ['px','nx','py','ny', 'pz', 'nz'],
+      rmvrSkyboxFaces: [],
     
 
       // render vrscene - which implies displayed_scene = 'vr'
@@ -135,13 +135,13 @@ const state:State = {
             near: 0.01,
             far: 100000,
             transform: {'t':[0,0.01,2]}  //y=.01 allows blue z-axis to be seen
-          },
-          fog: {
-            _fog: true,
-            color: 'white', //0x00ff00,
-            near: 0.1,
-            far: 1000 //default:100
           }
+//          fog: {
+//            _fog: true,
+//            color: 'white', //0x00ff00,
+//            near: 0.1,
+//            far: 1000 //default:100
+//          }
           //controls: {
           //  _controls: true,
           //  controls: 'vr'
@@ -219,7 +219,7 @@ const state:State = {
                       opacity:1.0,
                       vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
                       fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_rm_mengersponge-nav.glsl.js',
-                      texture:'./app/media/images/cloud/moon_256.png'
+                      //texture:'./app/media/images/cloud/moon_256.png'
                     }
                 }
 
@@ -263,18 +263,18 @@ const state:State = {
 //                    }
 //                },
 //
-//                'ground':{ 
-//                  factory:'GridXZ',
-//                  url:'../models/stage/actors/environment/gridXZ.js',
-//                  options:{
-//                        size:1000,
-//                        divisions:100,
-//                        colorGrid:'red', 
-//                        colorCenterLine:'green', 
-//                        opacity:0.9, 
-//                        transform:{t:[0.0,-2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
-//                  } 
-//                },
+                'ground':{ 
+                  factory:'GridXZ',
+                  url:'../models/stage/actors/environment/gridXZ.js',
+                  options:{
+                        size:1000,
+                        divisions:100,
+                        colorGrid:'red', 
+                        colorCenterLine:'green', 
+                        opacity:0.9, 
+                        transform:{t:[0.0,-2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
+                  } 
+                },
 //
 //                'unitsphere':{ 
 //                  factory:'Unitsphere',
@@ -296,17 +296,12 @@ const state:State = {
                   factory:'Skybox',
                   url:'../models/stage/actors/environment/skybox.js',
                   options:{
-                     size:1000,       // default=10000
+                     size:10000,       // default=10000
                      color:'white',
                      opacity: 1.0,    // default 1.0
-                     textures:[
-                       './app/media/images/skybox/sky/sky_posX.jpg',
-                       './app/media/images/skybox/sky/sky_negX.jpg',
-                       './app/media/images/skybox/sky/sky_posY.jpg',
-                       './app/media/images/skybox/sky/sky_negY.jpg',
-                       './app/media/images/skybox/sky/sky_posZ.jpg',
-                       './app/media/images/skybox/sky/sky_negZ.jpg'
-                     ]
+                     textures:[]  //undefined or [] or less than 6 urls =>
+                                 //texture vrskybox with rmTarget.texture
+                        //also overridden if vrskybox is in rmTargetNames array
                   }
                 }
 

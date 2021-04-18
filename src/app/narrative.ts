@@ -232,7 +232,12 @@ class Narrative implements Cast{
   foo():string{
     console.log(`narrative.foo() with revised render`);
     //diagnostics
-    narrative.reportActors(true);
+    for(const [name,actor] of Object.entries(cast)){
+      console.log(`actor w name = ${name} is ${actor}:`);
+      console.dir(actor);
+      console.log(`actor['animate'] = ${actor['animate']}`);
+    }
+    //narrative.reportActors(true);
 //    console.log(`vrscene.children:`);
 //    for(const c in vrscene.children){
 //      console.log(`vrscene contains child ${vrscene.children[c].name}`);
@@ -368,6 +373,7 @@ class Narrative implements Cast{
       const aspect = window.innerWidth/window.innerHeight;
       rmlens = new THREE.PerspectiveCamera(90, aspect,.01,1000);
       rmlens.position.z = 1.0;
+      rmlens.lookAt(new THREE.Vector3(0,0,0));
       nrm['lens'] = rmlens;
       rmTargetNames = config.topology.rmTargetNames;
     }
@@ -606,25 +612,10 @@ class Narrative implements Cast{
       TWEEN.update();
     }
 
-    //rmquad, rmhud - animate
-    if(rmquad){
-      if(rmquad.material && rmquad.material.uniforms && rmquad.material.uniforms.uTime){
-        rmquad.material.uniforms.uTime.value = et/1000.;
-        rmquad.material.uniforms.uTime.needsUpdate = true;
-      }
-    }
-    if(rmhud){
-      if(rmquad.material && rmhud.material.uniforms && rmquad.material.uniforms.uTime){
-        rmhud.material.uniforms.uTime.value = et;
-        rmhud.material.uniforms.uTime.needsUpdate = true;
-      }
-    }
-
-
 
     // animate actors with special sub-renders - exps sgcloud/vrcloud
     for(const [name,actor] of Object.entries(cast)){
-      if(actor['animate']){actor.animate(et);}
+      if(actor['animate']){actor['animate'](et);}
     }
    
 
@@ -649,38 +640,51 @@ class Narrative implements Cast{
 
         for(const actorname of rmTargetNames){
           if(actorname === 'vrskybox'){
-            let faces:string[] = <string[]>config.topology.rmvrSkyboxFaces;
-            if(faces === undefined){
-              faces = ['px','nx','py','ny','pz','nz'];  //default
-            }
-            for(const face of faces){
-              switch(face){
-                case 'px':
-                  vrskybox_materials[0].map = rmTarget.texture;
-                  break;
-                case 'nx':
-                  vrskybox_materials[1].map = rmTarget.texture;
-                  break;
-                case 'py':
-                  vrskybox_materials[2].map = rmTarget.texture;
-                  break;
-                case 'ny':
-                  vrskybox_materials[3].map = rmTarget.texture;
-                  break;
-                case 'pz':
-                  vrskybox_materials[4].map = rmTarget.texture;
-                  break;
-                case 'nz':
-                  vrskybox_materials[5].map = rmTarget.texture;
-                  break;
-                default:
-                  console.log(`unrecognized face code ${face}`);
-              }//switch
-            }//face
+            const faces:string[] = <string[]>config.topology.rmvrSkyboxFaces;
+            //console.log(`faces = ${faces} faces.length = ${faces.length}`)
+            if(faces && faces.length > 0){
+              for(const face of faces){
+                switch(face){
+                  case 'px':
+                    vrskybox_materials[0].map = rmTarget.texture;
+                    vrskybox_materials[0].needsUpdate = true;
+                    break;
+                  case 'nx':
+                    vrskybox_materials[1].map = rmTarget.texture;
+                    vrskybox_materials[1].needsUpdate = true;
+                    break;
+                  case 'py':
+                    vrskybox_materials[2].map = rmTarget.texture;
+                    vrskybox_materials[2].needsUpdate = true;
+                    break;
+                  case 'ny':
+                    vrskybox_materials[3].map = rmTarget.texture;
+                    vrskybox_materials[3].needsUpdate = true;
+                    break;
+                  case 'pz':
+                    vrskybox_materials[4].map = rmTarget.texture;
+                    vrskybox_materials[4].needsUpdate = true;
+                    break;
+                  case 'nz':
+                    vrskybox_materials[5].map = rmTarget.texture;
+                    vrskybox_materials[5].needsUpdate = true;
+                    break;
+                  default:
+                    console.log(`unrecognized face code ${face}`);
+                }//switch
+              }//face
 
-          }else{
+            }else{  //faces undef or [] => texture vrskybox with rmTarget.tex
+              if(actor = narrative.findActor('vrskybox')){   // if defined
+                actor.material.map = rmTarget.texture;
+                actor.material.needsUpdate = true;
+              }
+            }
+
+          }else{ //texture non-vrskybox actor with rmTarget.texture
             if(actor = narrative.findActor(actorname)){  // if defined
                 actor.material.map = rmTarget.texture;
+                actor.material.needsUpdate = true;
             }
           }
         }
@@ -694,38 +698,51 @@ class Narrative implements Cast{
         renderer.render(rmscene, rmlens);
         for(const actorname of rmTargetNames){
           if(actorname === 'vrskybox'){
-            let faces:string[] = <string[]>config.topology.rmvrSkyboxFaces;
-            if(faces === undefined){
-              faces = ['px','nx','py','ny','pz','nz'];
-            }
-            for(const face of faces){
-              switch(face){
-                case 'px':
-                  vrskybox_materials[0].map = rmTarget.texture;
-                  break;
-                case 'nx':
-                  vrskybox_materials[1].map = rmTarget.texture;
-                  break;
-                case 'py':
-                  vrskybox_materials[2].map = rmTarget.texture;
-                  break;
-                case 'ny':
-                  vrskybox_materials[3].map = rmTarget.texture;
-                  break;
-                case 'pz':
-                  vrskybox_materials[4].map = rmTarget.texture;
-                  break;
-                case 'nz':
-                  vrskybox_materials[5].map = rmTarget.texture;
-                  break;
-                default:
-                  console.log(`unrecognized face code ${face}`);
-              }//switch
-            }//face
+            const faces:string[] = <string[]>config.topology.rmvrSkyboxFaces;
+            //console.log(`faces = ${faces} faces.length = ${faces.length}`)
+            if(faces && faces.length > 0){
+              for(const face of faces){
+                switch(face){
+                  case 'px':
+                    vrskybox_materials[0].map = rmTarget.texture;
+                    vrskybox_materials[0].needsUpdate = true;
+                    break;
+                  case 'nx':
+                    vrskybox_materials[1].map = rmTarget.texture;
+                    vrskybox_materials[1].needsUpdate = true;
+                    break;
+                  case 'py':
+                    vrskybox_materials[2].map = rmTarget.texture;
+                    vrskybox_materials[2].needsUpdate = true;
+                    break;
+                  case 'ny':
+                    vrskybox_materials[3].map = rmTarget.texture;
+                    vrskybox_materials[3].needsUpdate = true;
+                    break;
+                  case 'pz':
+                    vrskybox_materials[4].map = rmTarget.texture;
+                    vrskybox_materials[4].needsUpdate = true;
+                    break;
+                  case 'nz':
+                    vrskybox_materials[5].map = rmTarget.texture;
+                    vrskybox_materials[5].needsUpdate = true;
+                    break;
+                  default:
+                    console.log(`unrecognized face code ${face}`);
+                }//switch
+              }//face
 
-          }else{
+            }else{  //faces undef or [] => texture vrskybox with rmTarget.tex
+              if(actor = narrative.findActor('vrskybox')){   // if defined
+                actor.material.map = rmTarget.texture;
+                actor.material.needsUpdate = true;
+              }
+            }
+
+          }else{ //texture non-vrskybox actor with rmTarget.texture
             if(actor = narrative.findActor(actorname)){  // if defined
-              actor.material.map = rmTarget.texture;
+                actor.material.map = rmTarget.texture;
+                actor.material.needsUpdate = true;
             }
           }
         }
@@ -827,13 +844,17 @@ class Narrative implements Cast{
         if(frame%120 < 60){
           rmquad_tDiffuse['value'] = glad;
           rmquad_tDiffuse['needsUpdate'] = true;
-          rmhud_tDiffuse['value'] = moon;
-          rmhud_tDiffuse['needsUpdate'] = true;
+          if(_rmpost){
+            rmhud_tDiffuse['value'] = moon;
+            rmhud_tDiffuse['needsUpdate'] = true;
+          }
         }else{
           rmquad_tDiffuse['value'] = moon;
           rmquad_tDiffuse['needsUpdate'] = true;
-          rmhud_tDiffuse['value'] = glad;
-          rmhud_tDiffuse['needsUpdate'] = true;
+          if(_rmpost){
+            rmhud_tDiffuse['value'] = glad;
+            rmhud_tDiffuse['needsUpdate'] = true;
+          }
         }
         renderer.setRenderTarget(null);
         renderer.render(rmscene, rmlens);
@@ -846,7 +867,7 @@ class Narrative implements Cast{
         //TEMP test !!!
         //rmplane.rotation.z = 50*Math.sin(et);
         //rmplane.rotation.z += 0.4;
-        rmplane.position.x = 0.6*Math.sin(4.0*et);
+        //rmplane.position.x = 0.6*Math.sin(4.0*et);
 //        if(frame%100 === 0){
 //          console.log(`rmplane.rotatation.z = ${rmplane.rotation.z}`);
 //        }
@@ -884,11 +905,16 @@ class Narrative implements Cast{
     console.log(`resize: ratioh=${ratioh}`);
 
 
-    // rmhud
-    if(rmhud){
-      const t = {s:[ratiow, ratioh, 1.0]};
-      transform3d.apply(t, rmhud);
-    }
+    //rmquad
+//    if(rmquad){
+//      const t = {s:[ratiow, ratioh, 1.0]};
+//      transform3d.apply(t, rmquad);
+//    }
+//    // rmhud
+//    if(rmhud){
+//      const t = {s:[ratiow, ratioh, 1.0]};
+//      transform3d.apply(t, rmhud);
+//    }
 
     canvas.width = width_;
     canvas.height = height_;

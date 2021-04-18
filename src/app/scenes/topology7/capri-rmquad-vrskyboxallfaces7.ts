@@ -1,4 +1,4 @@
-// topology6/rmquad-vrskybox6.ts
+// topology2/capri-rmquad-vrskyboxallfaces7.ts
 // webGL2, es300 three.js ==0.125.2
  
 
@@ -22,7 +22,7 @@ const config:Config = {
     topology:{
       // webxr?
       _webxr: true,
-      topology: 6,
+      topology: 7,
      
       // displayed_scene = 'sg|rm|vr'
       displayed_scene: 'vr', 
@@ -30,13 +30,13 @@ const config:Config = {
 
       // render sgscene either to display, or to sgTarget offscreen for 
       // bg texturing in rmscene or texturing in vrscene
-      _sg: false,
+      _sg: true,
       
       //use frame n-1 sgTarget.tex ('sg') 
       _sgpost: false,
   
       // rmstage or vrstage actors 
-      sgTargetNames: [],
+      sgTargetNames: ['rmquad', 'rmhud'],
   
   
       // render rmscene to display, or to rmTarget offscreen for texturing 
@@ -53,7 +53,7 @@ const config:Config = {
       //order-independent: front,back,left,right,top,ground
       // raymarch - via fragment shader in rmquad ShaderMaterial
       // NOTE! obviously requires rm:t and a vr-actor name in rmTargetNames
-      rmvrSkyboxFaces: ['px','nx','nz'],
+      rmvrSkyboxFaces: [],
     
 
       // render vrscene - which implies displayed_scene = 'vr'
@@ -128,6 +128,28 @@ const state:State = {
     // since sgscene,vrscene are translated by 1.6 in y, in all
     // cases the scene and camera coincide at camera coords (0,0,0)
     camera: {
+        sg:{
+          lens: {
+            _lens: true,
+            fov: 90,
+            near: 0.01,
+            far: 10000,
+            transform: {'t':[0,0.01,1]}  //y=.01 allows blue z-axis to be seen
+          },
+          fog: {
+            _fog: true,
+            color: 'white', //0x00ff00,
+            near: 0.1,
+            far: 1000 //default:100
+          }
+          //controls: {
+          //  _controls: true,
+          //  controls: 'vr'
+          //},
+          //csphere: {
+          //}
+        },
+
         vr:{
           lens: {
             _lens: true,
@@ -135,8 +157,8 @@ const state:State = {
             fov: 90,
             near: 0.01,
             far: 100000,
-            transform: {'t':[0,0.01,2]}  //y=.01 allows blue z-axis to be seen
-          }
+            transform: {'t':[0,0.01,1]} //y=.01 allows blue z-axis to be seen
+          },
           //controls: {
           //  _controls: true,
           //  controls: 'vr'
@@ -150,6 +172,39 @@ const state:State = {
     // stage - initialization and management of stats performance meter,
     // and actors in one of two possible scenes, sgscene and/or vrscene
     stage: {
+        sgscene:{
+            _actors: true,
+            actors: {
+                'axes': {
+                    factory: 'Axes',
+                    url: '../models/stage/actors/objects/axes.js',
+                    options: {
+                        length: 10000,
+                        transform: { t: [0.0, 0.0, 0.0] }
+                    }
+                },
+                'unitcube': {
+                    factory: 'Unitcube',
+                    url: '../models/stage/actors/objects/unitcube.js',
+                    options: { wireframe: false,
+                        color: 'white',
+                        opacity: 0.7,
+                        map: './app/media/images/glad.png',
+                        transform: { t: [0, 0, -2], e: [0.0, 0.0, 0.0], s: [0.5, 1, 0.5] }
+                    }
+                },
+                'panorama':{
+                    factory:'Panorama',
+                    url:'../models/stage/actors/environment/panorama.js',
+                    options:{
+                      texture_url:'./app/media/images/cube/sun_temple_stripe_stereo.jpg',
+                      ntextures:12
+                    }
+                }
+            } //actors
+        }, //sgscene
+
+
         // each scene the has two properties:
         // _actors:true=>create actors; false=>remove actors, undefined=>modify 
         // actors:Record<string,Actor>[] => iterate through actors by 'name'
@@ -161,7 +216,7 @@ const state:State = {
                     factory: 'Rmquad',
                     url: '../models/stage/actors/raymarch/rmquad.js',
                     options: {
-                        opacity:0.5,
+                       opacity:0.5,
 //                      vsh:'../../../stage/shaders/webgl2/vertex/vsh_default.glsl.js',
 //                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_color.glsl.js',
                       vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
@@ -179,6 +234,7 @@ const state:State = {
 //                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_color.glsl.js',
                       vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
                       fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_tDiffuse.glsl.js',
+                      texture:'./app/media/images/glad.png',
                       transform:{t:[0.0,0.0,0.001]}
                     }
                 }
@@ -246,12 +302,6 @@ const state:State = {
                      color:'white',
                      opacity: 1.0,    // default 1.0
                      textures:[
-                       './app/media/images/skybox/sky/sky_posX.jpg',
-                       './app/media/images/skybox/sky/sky_negX.jpg',
-                       './app/media/images/skybox/sky/sky_posY.jpg',
-                       './app/media/images/skybox/sky/sky_negY.jpg',
-                       './app/media/images/skybox/sky/sky_posZ.jpg',
-                       './app/media/images/skybox/sky/sky_negZ.jpg'
                      ]
                   }
                 }
