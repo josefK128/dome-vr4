@@ -64,7 +64,7 @@ export const Skybox:ActorFactory = class {
 
 
           //function to create single textured-material given url
-          create_material = (url_:string):Promise<THREE.Material> => {
+          create_material = (url_:string|null):Promise<THREE.Material> => {
             const loader = new THREE.TextureLoader();
             let material:THREE.MeshBasicMaterial;
 
@@ -92,7 +92,7 @@ export const Skybox:ActorFactory = class {
   
                   });//load
 
-                }else{   // url undefined
+                }else{   // url null
                   material = new THREE.MeshBasicMaterial({
                     color:color,
                     opacity:opacity, 
@@ -112,7 +112,6 @@ export const Skybox:ActorFactory = class {
 
 
           //function to create materials[]
-          //if urls_ string[] is not full, create array of undefined
           create_materials = (urls_):Promise<THREE.Material[]> => {
             try{
               return Promise.all([

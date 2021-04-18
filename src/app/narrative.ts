@@ -622,6 +622,7 @@ class Narrative implements Cast{
     // render config-defined topology using defined rendering functions
     switch(topology){
       case 7:     // sg-rm-vr
+        renderer.xr.enabled = false;  //7f
         renderer.setRenderTarget(sgTarget);
         renderer.render(sgscene, sglens);
 
@@ -688,12 +689,14 @@ class Narrative implements Cast{
             }
           }
         }
+        renderer.xr.enabled = true;   // 7t
         renderer.setRenderTarget(null);
         renderer.render(vrscene, vrlens);
         break;
 
 
       case 6:     // rm-vr
+        renderer.xr.enabled = false;  //6f
         renderer.setRenderTarget(rmTarget);
         renderer.render(rmscene, rmlens);
         for(const actorname of rmTargetNames){
@@ -746,45 +749,46 @@ class Narrative implements Cast{
             }
           }
         }
+        renderer.xr.enabled = true;   // 6t
         renderer.setRenderTarget(null);
         renderer.render(vrscene, vrlens);
         break;
 
 
       case 5:     // sg-vr
+        renderer.xr.enabled = false;  //5f
         renderer.setRenderTarget(sgTarget);
         renderer.render(sgscene, sglens);
 
         for(const actorname of sgTargetNames){
           if(actorname === 'vrskybox'){
-            let faces:string[] = <string[]>config.topology.sgvrSkyboxFaces;
-            if(faces === undefined){
-              faces = ['px','nx','py','ny','pz','nz'];
+            const faces:string[] = <string[]>config.topology.sgvrSkyboxFaces;
+            if(faces && faces.length > 0){
+              for(const face of faces){
+                switch(face){
+                  case 'px':
+                    vrskybox_materials[0].map = sgTarget.texture;
+                    break;
+                  case 'nx':
+                    vrskybox_materials[1].map = sgTarget.texture;
+                    break;
+                  case 'py':
+                    vrskybox_materials[2].map = sgTarget.texture;
+                    break;
+                  case 'ny':
+                    vrskybox_materials[3].map = sgTarget.texture;
+                    break;
+                  case 'pz':
+                    vrskybox_materials[4].map = sgTarget.texture;
+                    break;
+                  case 'nz':
+                    vrskybox_materials[5].map = sgTarget.texture;
+                    break;
+                  default:
+                    console.log(`unrecognized face code ${face}`);
+                }//switch              
+              }//face
             }
-            for(const face of faces){
-              switch(face){
-                case 'px':
-                  vrskybox_materials[0].map = sgTarget.texture;
-                  break;
-                case 'nx':
-                  vrskybox_materials[1].map = sgTarget.texture;
-                  break;
-                case 'py':
-                  vrskybox_materials[2].map = sgTarget.texture;
-                  break;
-                case 'ny':
-                  vrskybox_materials[3].map = sgTarget.texture;
-                  break;
-                case 'pz':
-                  vrskybox_materials[4].map = sgTarget.texture;
-                  break;
-                case 'nz':
-                  vrskybox_materials[5].map = sgTarget.texture;
-                  break;
-                default:
-                  console.log(`unrecognized face code ${face}`);
-              }//switch              
-            }//face
 
           }else{
             if(actor = narrative.findActor(actorname)){  // if defined
@@ -792,6 +796,7 @@ class Narrative implements Cast{
             }
           }
         }
+        renderer.xr.enabled = true;   // 5t
         renderer.setRenderTarget(null);
         renderer.render(vrscene, vrlens);
         break;
@@ -803,6 +808,7 @@ class Narrative implements Cast{
 
 
       case 3:     // sg-rm
+        renderer.xr.enabled = false;  //3f always - rm is mono
         if(_rmpost){  // FAILS
           //rmhud_tDiffuse['value'] = rmTarget.texture;
           //rmhud_tDiffuse['needsUpdate'] = true;
@@ -836,6 +842,7 @@ class Narrative implements Cast{
 
 
       case 2:     // rm:  k shader-layers (in this case k=2)
+        renderer.xr.enabled = false;  //3f always - rm is mono
         //_rmpost=false;
         if(_rmpost){  //cannot read from and write to the same texture
           rmhud.material.uniforms.tDiffusePost['value'] = rmTarget.texture;
