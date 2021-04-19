@@ -49,12 +49,12 @@ const config:Config = {
 
       rmTargetNames: ['vrskybox'],
       //skyfaces:string[];  //used if actor 'skyfaces' exists and is rmTgtName
-      //value is some subset of ['f','b','l','r','t','g']
+      //value is some subset of ['px','nx','py','ny','pz','nz']
       //order-independent: front,back,left,right,top,ground
       // raymarch - via fragment shader in rmquad ShaderMaterial
       // NOTE! obviously requires rm:t and a vr-actor name in rmTargetNames
-      rmvrSkyboxFaces: [],
-    
+      rmvrSkyboxFaces:['px','nx','py','ny','pz','nz'],
+  
 
       // render vrscene - which implies displayed_scene = 'vr'
       _vr:true,
@@ -263,18 +263,18 @@ const state:State = {
 //                    }
 //                },
 //
-                'ground':{ 
-                  factory:'GridXZ',
-                  url:'../models/stage/actors/environment/gridXZ.js',
-                  options:{
-                        size:1000,
-                        divisions:100,
-                        colorGrid:'red', 
-                        colorCenterLine:'green', 
-                        opacity:0.9, 
-                        transform:{t:[0.0,-2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
-                  } 
-                },
+//                'ground':{ 
+//                  factory:'GridXZ',
+//                  url:'../models/stage/actors/environment/gridXZ.js',
+//                  options:{
+//                        size:1000,
+//                        divisions:100,
+//                        colorGrid:'red', 
+//                        colorCenterLine:'green', 
+//                        opacity:0.9, 
+//                        transform:{t:[0.0,-2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
+//                  } 
+//                },
 //
 //                'unitsphere':{ 
 //                  factory:'Unitsphere',
@@ -299,9 +299,12 @@ const state:State = {
                      size:10000,       // default=10000
                      color:'white',
                      opacity: 1.0,    // default 1.0
-                     textures:[]  //undefined or [] or less than 6 urls =>
-                                 //texture vrskybox with rmTarget.texture
-                        //also overridden if vrskybox is in rmTargetNames array
+                     textures:[null,null,null,null,null,null]  
+                               // url | null for each of 6
+                              //texture vrskybox with image-texture from url
+                             //null => use given color and not an image-texture
+                            //overridden if vrskybox is in rmTargetNames array
+                       //for all faces named in rmvrskyboxfaces/sgvrskyboxfaces
                   }
                 }
 

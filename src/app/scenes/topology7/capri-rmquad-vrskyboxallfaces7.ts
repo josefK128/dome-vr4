@@ -49,11 +49,11 @@ const config:Config = {
 
       rmTargetNames: ['vrskybox'],
       //skyfaces:string[];  //used if actor 'skyfaces' exists and is rmTgtName
-      //value is some subset of ['f','b','l','r','t','g']
+      //value is some subset of ['px','nx','py','ny','pz','nz']
       //order-independent: front,back,left,right,top,ground
       // raymarch - via fragment shader in rmquad ShaderMaterial
       // NOTE! obviously requires rm:t and a vr-actor name in rmTargetNames
-      rmvrSkyboxFaces: [],
+      rmvrSkyboxFaces: ['px','nx','py','ny','pz','nz'],
     
 
       // render vrscene - which implies displayed_scene = 'vr'
@@ -301,8 +301,7 @@ const state:State = {
                      size:1000,       // default=10000
                      color:'white',
                      opacity: 1.0,    // default 1.0
-                     textures:[
-                     ]
+                     textures:[null,null,null,null,null,null]
                   }
                 }
 

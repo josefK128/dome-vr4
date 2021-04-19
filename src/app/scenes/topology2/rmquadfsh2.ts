@@ -24,7 +24,7 @@ const config:Config = {
   // Use of topologies 2/3 for VR is not prevented - but should not be chosen!
     topology:{
       // webxr?
-      _webxr: true,
+      _webxr: false,
       topology: 2,
      
       // displayed_scene = 'sg|rm|vr'

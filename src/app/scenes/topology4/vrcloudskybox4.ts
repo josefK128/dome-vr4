@@ -37,6 +37,8 @@ const config:Config = {
   
       // rmstage or vrstage actors 
       sgTargetNames: [],
+      //sgvrSkyboxFaces:string[];  
+      //value is some subset of ['px','nx','py','ny','pz','nz']
   
   
       // render rmscene to display, or to rmTarget offscreen for texturing 
@@ -45,8 +47,9 @@ const config:Config = {
       _rm: false,
       _rmpost: false,
       rmTargetNames: [],
-      //skyfaces:string[];  //used if actor 'skyfaces' exists and is rmTgtName
-      //value is some subset of ['f','b','l','r','t','g']
+      //rmvrSkyboxFaces:string[];  
+      //used if actor 'skyfaces' exists and is rmTgtName
+      //value is some subset of ['px','nx','py','ny','pz','nz']
       //order-independent: front,back,left,right,top,ground
       // raymarch - via fragment shader in rmquad ShaderMaterial
       // NOTE! obviously requires rm:t and a vr-actor name in rmTargetNames
@@ -213,6 +216,11 @@ const state:State = {
                        './app/media/images/skybox/sky/sky_negY.jpg',
                        './app/media/images/skybox/sky/sky_posZ.jpg',
                        './app/media/images/skybox/sky/sky_negZ.jpg'
+                               // url | null for each of 6
+                              //texture vrskybox with image-texture from url
+                             //null => use given color and not an image-texture
+                            //overridden if vrskybox is in rmTargetNames array
+                       //for all faces named in rmvrskyboxfaces/sgvrskyboxfaces
                      ]
                   }
                 }
