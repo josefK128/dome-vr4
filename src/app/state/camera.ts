@@ -36,7 +36,7 @@ class Camera {
 
   // l = state['sg'|'vr']['lens']  - return THREE.PerspectiveCamera if created
   create_lens(l:Record<string,unknown>, scene:THREE.Scene, narrative:Cast, scenename:string):THREE.PerspectiveCamera{
-    console.log(`camera.create_lens(): creating lens camera component`);
+    //console.log(`camera.create_lens(): creating lens camera component`);
     let lens:THREE.PerspectiveCamera;
 
     // lens 
@@ -56,7 +56,7 @@ class Camera {
 
       //transform lens - need to move lens from origin if OrbitControls effects
       //are to be seen
-      console.log(`l['transform'] = ${l['transform']}`);
+      //console.log(`l['transform'] = ${l['transform']}`);
       if(l['transform']){
         transform3d.apply(l['transform'], lens); 
         lens.updateWorldMatrix();  
@@ -263,7 +263,7 @@ class Camera {
   // create objects specified in arg camera-state === state['camera']
   // returns new Promise<Record<string,unknown>>((resolve, reject) => {});
   delta(state:Record<string,unknown>, narrative:Cast):Promise<number>{
-    console.log(`@@ camera.delta(state, scenes) state:`);
+    //console.log(`@@ camera.delta(state, scenes) state:`);
     //console.dir(state);
 
     return new Promise((resolve, reject) => {
@@ -272,7 +272,7 @@ class Camera {
       const state_sg = <Record<string,unknown>>state['sg'];
       if(state_sg && Object.keys(state_sg).length > 0){
         const scene = narrative['sg']['scene'];
-        console.log(`camera.delta: creating camera components for sg`);
+        //console.log(`camera.delta: creating camera components for sg`);
 
         // lens
         const sgl = <Record<string,unknown>>state_sg['lens'];
@@ -316,7 +316,7 @@ class Camera {
       const state_vr = <Record<string,unknown>>state['vr'];
       if(state_vr && Object.keys(state_vr).length > 0){
         const scene = narrative['vr']['scene'];
-        console.log(`camera.delta: creating camera components for vr`);
+        //console.log(`camera.delta: creating camera components for vr`);
 
         // lens
         const vrl = <Record<string,unknown>>state_vr['lens'];
@@ -358,7 +358,7 @@ class Camera {
         //console.log(`\n\n ### camera: dslens = ${dslens}`);
         //console.dir(dslens);
         //console.log(`before dslens.children.length = ${dslens.children.length}`);
-        console.log(`attaching audioListener to ${narrative['displayed_scene']}lens`);
+        //console.log(`attaching audioListener to ${narrative['displayed_scene']}lens`);
         dslens.add(narrative['audioListener']);
         //console.log(`after dslens.children.length = ${dslens.children.length}`);
         //console.log(`dslens.children[0]:`);
@@ -370,7 +370,7 @@ class Camera {
         //console.log(`state['vr'] is undefined or empty`);
         //HACK!!! attach audioListener to lens from displayed scene
         const dslens:THREE.PerspectiveCamera = <THREE.PerspectiveCamera>narrative[narrative['displayed_scene']]['lens'];
-        console.log(`attaching audioListener to ${narrative['displayed_scene']}lens`);
+        //console.log(`attaching audioListener to ${narrative['displayed_scene']}lens`);
         dslens.add(narrative['audioListener']);
         resolve(narrative['devclock'].getElapsedTime());
 

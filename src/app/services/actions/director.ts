@@ -30,7 +30,7 @@ class Director {
   // narrative reference is needed to fetch actors if action-target (a.t)
   // is not in actionsTargets name-keys
   initialize(config:Config):void{
-    console.log(`services/actions/director initializing`);
+    //console.log(`services/actions/director initializing`);
     actionsTargets = config['actionsTargets'] || {};
     narrative = config['actionsTargets']['narrative'];
   }

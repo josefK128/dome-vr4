@@ -48,7 +48,7 @@ class Transform3d {
 
 
   initialize(config:Config):void{
-    console.log(`services/transform3d initializing`);
+    //console.log(`services/transform3d initializing`);
   }
 
 

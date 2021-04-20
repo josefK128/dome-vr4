@@ -50,7 +50,7 @@ class Actions {
 
         //diagnostics
         //console.log(`actions: _actions=${_actions}:`);
-        console.log(`actions: sequence_url=${sequence_url} _actions=${_actions}:`);
+        console.log(`actions sequence_url=${sequence_url}`);
 
         if(_actions === false){   // _actions:f => load []
           queue.load([]);

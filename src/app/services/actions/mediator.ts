@@ -30,7 +30,7 @@ export class Mediator {
   }
 
   initialize(_config:Config):void{
-    console.log(`services/actions/mediator initializing`);
+    //console.log(`services/actions/mediator initializing`);
     config = _config;
     if(config.server.server_connect){
       console.log(`*** mediator: connecting to server`);

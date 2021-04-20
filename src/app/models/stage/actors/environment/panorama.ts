@@ -69,8 +69,8 @@ export const Panorama:ActorFactory = class {
 
   static create(options:Record<string,unknown>={}):Promise<Actor>{
 
-    console.log(`@Panorama.create(options:)`);
-    console.dir(options);
+    //console.log(`@Panorama.create(options:)`);
+    //console.dir(options);
 
     return new Promise((resolve, reject) => {
 

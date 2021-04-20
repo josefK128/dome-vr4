@@ -137,7 +137,7 @@ class Animation {
   // narrative reference is needed to fetch actors if action-target (a.t)
   // is not in actionsTargets name-keys
   initialize(config:Config):void{
-    console.log(`services/animation initializing`);
+    //console.log(`services/animation initializing`);
     actionsTargets = config['actionsTargets'] || {};
     narrative = config['actionsTargets']['narrative'];
   }

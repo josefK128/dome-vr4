@@ -42,7 +42,7 @@ class Stage {
           resolve(narrative['devclock'].getElapsedTime());
         });
       }
-      console.log(`@@ stage.scene: ${scene_name} state is defined:`);
+      //console.log(`@@ stage.scene: ${scene_name} state is defined:`);
       //console.dir(state);
 
       const scene = narrative[scene_name]['scene'],
@@ -76,7 +76,7 @@ class Stage {
           switch(_actors){
             case true:     // _actor=t => create actor
               if(url){
-                console.log(`creating actor ${url}`);
+                //console.log(`creating actor ${url}`);
 
                 try{
                   m = await import(url);
@@ -97,7 +97,7 @@ class Stage {
                     // Panorama is *special case*
                     //if(factory === 'Panorama')
                     if(actor['layers'] && actor['layers'].length > 0){
-                      console.log(`\nstage.sc ${scene_name} - adding ${name}.layers to scene`);
+                      //console.log(`\nstage.sc ${scene_name} - adding ${name}.layers to scene`);
                       let i=0;
                       for(const layer of actor['layers']){
                         narrative.addActor(scene, `${name}.layer${i}`, actor['layers'][i]);
@@ -158,7 +158,7 @@ class Stage {
 
   // process state = state[stage']
   async delta(state:Record<string,unknown>, narrative:Cast):Promise<number>{
-    console.log(`\n@@ stage.delta(state,narrative) state:`);
+    //console.log(`\n@@ stage.delta(state,narrative) state:`);
     //console.dir(state);
 
     return new Promise((resolve, reject) => {

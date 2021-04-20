@@ -23,7 +23,7 @@ class Queue {
   }
 
   initialize(config:Config):void{
-    console.log(`services/actions/queue initializing config=${config}`);
+    //console.log(`services/actions/queue initializing config=${config}`);
   }
 
   load(actions:Action[] = []):void{

@@ -247,7 +247,7 @@ class Narrative implements Cast{
   // set up rendering framework and initialize services and state 
   //bootstrap(_config:Config, state:State){
   bootstrap(_config:Config, state:State):void{
-    console.log(`\n@@@ narrative.bootstrap:`);
+    //console.log(`\n@@@ narrative.bootstrap:`);
     devclock.start();
 
     // initialize config
@@ -273,7 +273,7 @@ class Narrative implements Cast{
     // initialize services
     director.initialize(config);
     animation.initialize(config);
-    //mediator.initialize(config);
+    mediator.initialize(config);
     queue.initialize(config);
     transform3d.initialize(config);
 
@@ -285,7 +285,7 @@ class Narrative implements Cast{
 
       // webXR VRButton
       document.body.append(VRButton.createButton(renderer));
-      console.log(`_webxr = ${config.topology._webxr} so rendering in webXR`);
+      //console.log(`_webxr=${config.topology._webxr} => rendering in webXR`);
     }else{
       console.log(`_webxr = ${config.topology._webxr} so rendering in webGL`);
     }
@@ -315,8 +315,7 @@ class Narrative implements Cast{
   // to narrative instance object for use in state modules camera, stage
   // audio and actions.
   initialize():void{
-    console.log(`@@@ narrative.initialize():`);
-
+    //console.log(`@@@ narrative.initialize():`);
 
     // canvas DOM-singularity, and webgl2-context
     canvas = <HTMLCanvasElement>document.getElementById(config.renderer.canvas_id);
@@ -341,7 +340,7 @@ class Narrative implements Cast{
     narrative['audioListener'] = audioListener;
     displayed_scene = config.topology.displayed_scene;
     narrative['displayed_scene'] = displayed_scene; //'sg'|'rm'|'vr'
-    console.log(`n['displayed_scene'] = ${narrative['displayed_scene']}`);
+    //console.log(`n['displayed_scene'] = ${narrative['displayed_scene']}`);
 
     // create WebGLRenderer for all scenes
     renderer = create_renderer();
@@ -392,7 +391,7 @@ class Narrative implements Cast{
   // for actions (usually from server)
   // change state of framework states
   changeState(state:State):void{
-    console.log(`\n@@@ narrative.changeState:`);
+    //console.log(`\n@@@ narrative.changeState:`);
 
     (async () => {
       // camera creates camera components, controls and maps, and fog
@@ -468,7 +467,7 @@ class Narrative implements Cast{
 
   // prepare actors and components for render()
   prerender(state:State):Promise<number> {
-    console.log(`\n@@@ narrative.prerender()`);
+    //console.log(`\n@@@ narrative.prerender()`);
 
     return new Promise((resolve, reject) => {
 
@@ -476,7 +475,7 @@ class Narrative implements Cast{
         //console.log(`prerender(): sgscene is defined!`);
         sglens = narrative['sg']['lens'];
         if(state['camera']['sg']['lens'] && state['camera']['sg']['lens']['_orbit']){
-          console.log(`\n*** enabling orbit controls for sglens:`);
+          console.log(`*** enabling orbit controls for sglens:`);
           sgorbit = new OrbitControls(sglens, renderer.domElement);
           sgorbit.update();
           sgorbit.enableDamping = true;
@@ -495,9 +494,9 @@ class Narrative implements Cast{
   
         sgskybox = narrative.findActor('sgskybox');
         if(sgskybox){
-          console.log(`sgskybox actor found`);
-          console.log(`Array.isArray(sgskybox.material) = ${Array.isArray(sgskybox.material)}`);
-          console.log(`sgskybox.material.length = ${sgskybox.material.length}`);
+          //console.log(`sgskybox actor found`);
+          //console.log(`Array.isArray(sgskybox.material) = ${Array.isArray(sgskybox.material)}`);
+          //console.log(`sgskybox.material.length = ${sgskybox.material.length}`);
           sgskybox_materials = [];
           for(let i=0; i<sgskybox.material.length; i++){
             sgskybox_materials[i] = (<THREE.Material[]>sgskybox.material)[i];
@@ -1005,7 +1004,7 @@ class Narrative implements Cast{
 
   // following two functions are for sgscene-actor management (by actor name)
   addActor(scene:THREE.Scene, name:string, actor:THREE.Object3D):void{
-    console.log(`\n@@@ narrative.addActor ${name} actor=${actor}:`);
+    //console.log(`\n@@@ narrative.addActor ${name} actor=${actor}:`);
     //console.dir(actor);
     //console.log(`addActor: et = ${devclock.getElapsedTime()}`);
     if(scene && actor && name && name.length > 0){
@@ -1014,7 +1013,7 @@ class Narrative implements Cast{
       }
       actor.name = name;  // possible diagnostic use
       cast[name] = actor;
-      console.log(`addActor: et = ${devclock.getElapsedTime()}`);
+      //console.log(`addActor: et = ${devclock.getElapsedTime()}`);
 
       //prevent sglens and vrlens from becoming children of sgscene/vrscene
       //NOTE: if exp vrlens is child of vrscene vrcontrols FAIL!
