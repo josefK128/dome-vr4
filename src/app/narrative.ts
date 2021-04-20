@@ -230,12 +230,11 @@ class Narrative implements Cast{
   }
 
   foo():string{
-    console.log(`narrative.foo() with revised render`);
+    console.log(`narrative.foo()`);
     //diagnostics
     for(const [name,actor] of Object.entries(cast)){
-      console.log(`actor w name = ${name} is ${actor}:`);
-      console.dir(actor);
-      console.log(`actor['animate'] = ${actor['animate']}`);
+      console.log(`cast has actor  ${name}`);
+      //console.dir(actor);
     }
     //narrative.reportActors(true);
 //    console.log(`vrscene.children:`);
@@ -626,16 +625,22 @@ class Narrative implements Cast{
         renderer.setRenderTarget(sgTarget);
         renderer.render(sgscene, sglens);
 
-        //rmquad_tDiffuse['value'] = sgTarget.texture;
-        //rmquad_tDiffuse['needsUpdate'] = true;
-        //rmhud_tDiffuse['value'] = moon;
-        //rmhud_tDiffuse['needsUpdate'] = true;
-        if(_rmpost){  // FAILS
-          rmhud_tDiffuse['value'] = rmTarget.texture;
-          rmhud_tDiffuse['needsUpdate'] = true;
-          renderer.setRenderTarget(rmTarget);
-          renderer.render(rmscene, rmlens);
+        //sgTargetNames - 'rmquad' a/o 'rmhud'
+        for(const actorname of sgTargetNames){
+          if(actorname === 'rmquad'){
+            rmquad_tDiffuse['value'] = sgTarget.texture;  // both WORK!
+            rmquad_tDiffuse['needsUpdate'] = true;
+          }
+          if(actorname === 'rmhud'){
+            rmhud_tDiffuse['value'] = sgTarget.texture;  
+            rmhud_tDiffuse['needsUpdate'] = true;
+          }
         }
+
+//        if(_rmpost){  // FAILS BADLY - DO NOT set true !!!
+//          rmhud_tDiffuse['value'] = rmTarget.texture;
+//          rmhud_tDiffuse['needsUpdate'] = true;
+//        }
         renderer.setRenderTarget(rmTarget);
         renderer.render(rmscene, rmlens);
 
@@ -808,33 +813,40 @@ class Narrative implements Cast{
 
 
       case 3:     // sg-rm
-        renderer.xr.enabled = false;  //3f always - rm is mono
-        if(_rmpost){  // FAILS
-          //rmhud_tDiffuse['value'] = rmTarget.texture;
-          //rmhud_tDiffuse['needsUpdate'] = true;
-          rmhud.material.uniforms.tDiffusePost['value'] = rmTarget.texture;
-          rmhud.material.uniforms.tDiffusePost['needsUpdate'] = true;
-        }
+//        if(_rmpost){  // FAILS
+//          //rmhud_tDiffuse['value'] = rmTarget.texture;
+//          //rmhud_tDiffuse['needsUpdate'] = true;
+//          rmhud.material.uniforms.tDiffusePost['value'] = rmTarget.texture;
+//          rmhud.material.uniforms.tDiffusePost['needsUpdate'] = true;
+//        }
 
+        //sgTargetNames - 'rmquad' a/o 'rmhud'
+        renderer.xr.enabled = false;  //3f always - rm is mono
         renderer.setRenderTarget(sgTarget);
         renderer.render(sgscene, sglens);
+        for(const actorname of sgTargetNames){
+          if(actorname === 'rmquad'){
+            rmquad_tDiffuse['value'] = sgTarget.texture;  // both WORK!
+            rmquad_tDiffuse['needsUpdate'] = true;
+          }
+          if(actorname === 'rmhud'){
+            rmhud_tDiffuse['value'] = sgTarget.texture;  
+            rmhud_tDiffuse['needsUpdate'] = true;
+          }
+        }
 
-        rmquad_tDiffuse['value'] = sgTarget.texture;
-        rmquad_tDiffuse['needsUpdate'] = true;
-        rmhud_tDiffuse['value'] = moon;
-        rmhud_tDiffuse['needsUpdate'] = true;
         renderer.setRenderTarget(null);
         renderer.render(rmscene, rmlens);
 
-        if(_rmpost){  // FAILS
-          renderer.setRenderTarget(rmTarget);
-          renderer.render(rmscene, rmlens);
-        }
+//        if(_rmpost){  // FAILS BADLY - DO NOT set true !!!
+//          renderer.setRenderTarget(rmTarget);
+//          renderer.render(rmscene, rmlens);
+//        }
 
         //TEMP test !!!
         //rmplane.rotation.z = 50*Math.sin(et);
         //rmplane.rotation.z += 0.4;
-        rmplane.position.x = 0.6*Math.sin(4.0*et);
+        //rmplane.position.x = 0.6*Math.sin(4.0*et);
 //        if(frame%100 === 0){
 //          console.log(`rmplane.rotatation.z = ${rmplane.rotation.z}`);
 //        }
@@ -843,12 +855,13 @@ class Narrative implements Cast{
 
       case 2:     // rm:  k shader-layers (in this case k=2)
         renderer.xr.enabled = false;  //3f always - rm is mono
-        //_rmpost=false;
-        if(_rmpost){  //cannot read from and write to the same texture
-          rmhud.material.uniforms.tDiffusePost['value'] = rmTarget.texture;
-          rmhud.material.uniforms.tDiffusePost['needsUpdate'] = true;
-        }
-        if(frame%120 < 60){
+
+//        if(_rmpost){  //cannot read from and write to the same texture
+//          rmhud.material.uniforms.tDiffusePost['value'] = rmTarget.texture;
+//          rmhud.material.uniforms.tDiffusePost['needsUpdate'] = true;
+//        }
+
+        if(frame%1200 < 600){
           rmquad_tDiffuse['value'] = glad;
           rmquad_tDiffuse['needsUpdate'] = true;
           if(_rmpost){
@@ -866,10 +879,10 @@ class Narrative implements Cast{
         renderer.setRenderTarget(null);
         renderer.render(rmscene, rmlens);
 
-        if(_rmpost){  //cannot read from and write to the same texture
-          renderer.setRenderTarget(rmTarget);
-          renderer.render(rmscene, rmlens);
-        }
+//        if(_rmpost){  //cannot read from and write to the same texture
+//          renderer.setRenderTarget(rmTarget);
+//          renderer.render(rmscene, rmlens);
+//        }
 
         //TEMP test !!!
         //rmplane.rotation.z = 50*Math.sin(et);
@@ -887,7 +900,7 @@ class Narrative implements Cast{
 
 
       default:    // error
-        console.log(`unrecgnized topology ${topology}`);
+        console.log(`unrecognized topology ${topology}`);
     }    
 
     //track rendered frames for diagnostics etc.
