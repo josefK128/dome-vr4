@@ -55,8 +55,6 @@ const config:Config = {
       // render vrscene - which implies displayed_scene = 'vr'
       _vr:false,
 
-      //use frame n-1 vrTarget.tex ('vr') in sghud frame n
-      _vrpost: false,
 
     },//topology
 

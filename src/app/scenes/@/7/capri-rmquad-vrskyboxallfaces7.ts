@@ -59,8 +59,6 @@ const config:Config = {
       // render vrscene - which implies displayed_scene = 'vr'
       _vr:true,
 
-      //use frame n-1 vrTarget.tex ('vr') in sghud frame n
-      _vrpost: false,
 
     },//topology
 
@@ -278,21 +276,21 @@ const state:State = {
                   } 
                 },
 
-                'unitsphere':{ 
-                  factory:'Unitsphere',
-                  url:'../models/stage/actors/objects/unitsphere.js',
-                  options:{
-                        wireframe:false,
-                        material:'phong',  //default basic
-                        radius:1.0,
-                        widthSegments: 10,    // default = 32
-                        heightSegments: 10,  // default = 32
-                        color:'green', 
-                        opacity:0.4, 
-                        map:'./app/media/images/glad.png',
-                        transform:{t:[0.0,2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
-                  } 
-                },
+//                'unitsphere':{ 
+//                  factory:'Unitsphere',
+//                  url:'../models/stage/actors/objects/unitsphere.js',
+//                  options:{
+//                        wireframe:false,
+//                        material:'phong',  //default basic
+//                        radius:1.0,
+//                        widthSegments: 10,    // default = 32
+//                        heightSegments: 10,  // default = 32
+//                        color:'green', 
+//                        opacity:0.4, 
+//                        map:'./app/media/images/glad.png',
+//                        transform:{t:[0.0,2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
+//                  } 
+//                },
 
                 'vrskybox':{ 
                   factory:'Skybox',

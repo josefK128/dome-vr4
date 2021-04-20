@@ -29,6 +29,7 @@ export interface Config {
     _sg:boolean;                  // render to sgTarget
     _sgpost?:boolean;            //post-pr with prv frame 
                                 //use frame n-1 sgTarget.tex ('sg') 
+                           //always set false !!! (commented out in n.render())
     sgTargetNames?:string[]; //actor names to be textured by sgTarget.texture
                             //these can be in vrscene or sgscene
     sgvrSkyboxFaces?:string[];  // if 'vrskybox' is in sgTargetNames then
@@ -41,7 +42,8 @@ export interface Config {
     // NOTE! true=>must define rmquad and if texturing - define rmTargetName(s)
     // raymarch - via fragment shader in rmquad ShaderMaterial
     _rm:boolean;             
-    _rmpost?:boolean;         //post-pr with prv frame 
+    _rmpost?:boolean;       //post-pr with prv frame - 
+                           //always set false !!! (commented out in n.render())
     rmTargetNames?:string[]; //actor names to be textured by rmTarget.texture
                             //these can be in vrscene or sgscene
     rmvrSkyboxFaces?:string[];  // if 'vrskybox' is in rmTargetNames then
@@ -51,10 +53,7 @@ export interface Config {
 
     // render vrscene - which implies displayed_scene = 'vr'
     _vr:boolean;
-    _vrpost?:boolean;             //post-pr with prv frame 
-                                 //use frame n-1 vrTarget.tex in vrhud frame n
-    vrTargetNames?:string[]; //actor names to be textured by vrTarget.texture
-                            //these must be in vrscene such as vrhud
+
   },//topology
   
 

@@ -80,7 +80,6 @@ let narrative:Narrative,
     _vr:boolean,
     _sgpost = false,
     _rmpost = false,
-    _vrpost = false,
     renderer:THREE.WebGLRenderer, // NOTE:renderer.render(sgscene,lens)
     displayed_scene:string,
 
@@ -124,7 +123,6 @@ let narrative:Narrative,
     vrscene:THREE.Scene,
     vrlens:THREE.PerspectiveCamera,   // separate camera for rendering vrscene,
     vrorbit:OrbitControls,
-    vrTargetNames:string[],
 
     //bg
     vrskybox:THREE.Mesh,
@@ -331,7 +329,6 @@ class Narrative implements Cast{
     _vr = config.topology._vr;
     _sgpost = config.topology._sgpost;
     _rmpost = config.topology._rmpost;
-    _vrpost = config.topology._vrpost;
     topology = config.topology.topology;  //topology=_sg + _rm*2 + _vr*4
     //console.log(`rendering topology type = ${topology}`);
 
@@ -385,7 +382,6 @@ class Narrative implements Cast{
 
       nvr['lens'] = vrlens;
       nvr['orbit'] = vrorbit;
-      vrTargetNames = config.topology.vrTargetNames;
     }
 
     // returns to bootstrap()
@@ -532,6 +528,9 @@ class Narrative implements Cast{
         }
         if(rmhud){
           rmhud_tDiffuse = rmhud.material.uniforms.tDiffuse;
+          if(rmhud_tDiffuse === undefined){
+            rmhud_tDiffuse = rmhud.material.uniforms.tDiffusePost;
+          }
           transform3d.apply({s:[initial_width, initial_height, 1.0]},rmhud);
         }
         if(!rmquad && !rmhud){
@@ -621,6 +620,10 @@ class Narrative implements Cast{
     // render config-defined topology using defined rendering functions
     switch(topology){
       case 7:     // sg-rm-vr
+//        if(_sgpost){  // FAILS BADLY - DO NOT set true !!!
+//          sghud_tDiffuse['value'] = sgTarget.texture;
+//          sghud_tDiffuse['needsUpdate'] = true;
+//        }
         renderer.xr.enabled = false;  //7f
         renderer.setRenderTarget(sgTarget);
         renderer.render(sgscene, sglens);
@@ -628,12 +631,16 @@ class Narrative implements Cast{
         //sgTargetNames - 'rmquad' a/o 'rmhud'
         for(const actorname of sgTargetNames){
           if(actorname === 'rmquad'){
-            rmquad_tDiffuse['value'] = sgTarget.texture;  // both WORK!
-            rmquad_tDiffuse['needsUpdate'] = true;
+            if(rmquad_tDiffuse){
+              rmquad_tDiffuse['value'] = sgTarget.texture;  // both WORK!
+              rmquad_tDiffuse['needsUpdate'] = true;
+            }
           }
           if(actorname === 'rmhud'){
-            rmhud_tDiffuse['value'] = sgTarget.texture;  
-            rmhud_tDiffuse['needsUpdate'] = true;
+            if(rmhud_tDiffuse){
+              rmhud_tDiffuse['value'] = sgTarget.texture;  
+              rmhud_tDiffuse['needsUpdate'] = true;
+            }
           }
         }
 
@@ -701,6 +708,10 @@ class Narrative implements Cast{
 
 
       case 6:     // rm-vr
+//        if(_rmpost){  // FAILS
+//          //rmhud_tDiffuse['value'] = rmTarget.texture;
+//          //rmhud_tDiffuse['needsUpdate'] = true;
+//        }
         renderer.xr.enabled = false;  //6f
         renderer.setRenderTarget(rmTarget);
         renderer.render(rmscene, rmlens);
@@ -761,6 +772,10 @@ class Narrative implements Cast{
 
 
       case 5:     // sg-vr
+//        if(_sgpost){  // FAILS BADLY - DO NOT set true !!!
+//          sghud_tDiffuse['value'] = sgTarget.texture;
+//          sghud_tDiffuse['needsUpdate'] = true;
+//        }
         renderer.xr.enabled = false;  //5f
         renderer.setRenderTarget(sgTarget);
         renderer.render(sgscene, sglens);
@@ -813,11 +828,14 @@ class Narrative implements Cast{
 
 
       case 3:     // sg-rm
+//        if(_sgpost){  // FAILS BADLY - DO NOT set true !!!
+//          sghud_tDiffuse['value'] = sgTarget.texture;
+//          sghud_tDiffuse['needsUpdate'] = true;
+//        }
+
 //        if(_rmpost){  // FAILS
 //          //rmhud_tDiffuse['value'] = rmTarget.texture;
 //          //rmhud_tDiffuse['needsUpdate'] = true;
-//          rmhud.material.uniforms.tDiffusePost['value'] = rmTarget.texture;
-//          rmhud.material.uniforms.tDiffusePost['needsUpdate'] = true;
 //        }
 
         //sgTargetNames - 'rmquad' a/o 'rmhud'
@@ -826,12 +844,16 @@ class Narrative implements Cast{
         renderer.render(sgscene, sglens);
         for(const actorname of sgTargetNames){
           if(actorname === 'rmquad'){
-            rmquad_tDiffuse['value'] = sgTarget.texture;  // both WORK!
-            rmquad_tDiffuse['needsUpdate'] = true;
+            if(rmquad_tDiffuse){
+              rmquad_tDiffuse['value'] = sgTarget.texture;  // both WORK!
+              rmquad_tDiffuse['needsUpdate'] = true;
+            }
           }
           if(actorname === 'rmhud'){
-            rmhud_tDiffuse['value'] = sgTarget.texture;  
-            rmhud_tDiffuse['needsUpdate'] = true;
+            if(rmhud_tDiffuse){
+              rmhud_tDiffuse['value'] = sgTarget.texture;  
+              rmhud_tDiffuse['needsUpdate'] = true;
+            }
           }
         }
 
@@ -842,14 +864,6 @@ class Narrative implements Cast{
 //          renderer.setRenderTarget(rmTarget);
 //          renderer.render(rmscene, rmlens);
 //        }
-
-        //TEMP test !!!
-        //rmplane.rotation.z = 50*Math.sin(et);
-        //rmplane.rotation.z += 0.4;
-        //rmplane.position.x = 0.6*Math.sin(4.0*et);
-//        if(frame%100 === 0){
-//          console.log(`rmplane.rotatation.z = ${rmplane.rotation.z}`);
-//        }
         break;
 
 
@@ -857,8 +871,8 @@ class Narrative implements Cast{
         renderer.xr.enabled = false;  //3f always - rm is mono
 
 //        if(_rmpost){  //cannot read from and write to the same texture
-//          rmhud.material.uniforms.tDiffusePost['value'] = rmTarget.texture;
-//          rmhud.material.uniforms.tDiffusePost['needsUpdate'] = true;
+//          rmhud_tDiffuse['value'] = rmTarget.texture;
+//          rmhud_tDiffuse['needsUpdate'] = true;
 //        }
 
         if(frame%1200 < 600){
@@ -883,18 +897,14 @@ class Narrative implements Cast{
 //          renderer.setRenderTarget(rmTarget);
 //          renderer.render(rmscene, rmlens);
 //        }
-
-        //TEMP test !!!
-        //rmplane.rotation.z = 50*Math.sin(et);
-        //rmplane.rotation.z += 0.4;
-        //rmplane.position.x = 0.6*Math.sin(4.0*et);
-//        if(frame%100 === 0){
-//          console.log(`rmplane.rotatation.z = ${rmplane.rotation.z}`);
-//        }
         break;
 
 
       case 1:     // sg
+//        if(_sgpost){  // FAILS BADLY - DO NOT set true !!!
+//          sghud_tDiffuse['value'] = sgTarget.texture;
+//          sghud_tDiffuse['needsUpdate'] = true;
+//        }
         renderer.render(sgscene, sglens);
         break;
 
