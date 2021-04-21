@@ -36,7 +36,7 @@ const config:Config = {
       _sgpost: false,
   
       // rmstage or vrstage actors 
-      sgTargetNames: ['rmquad'],  //['rmquad', 'rmhud'],
+      sgTargetNames: [],  // ['rmquad'],  //['rmquad', 'rmhud'],
   
   
       // render rmscene to display, or to rmTarget offscreen for texturing 
@@ -191,14 +191,14 @@ const state:State = {
 //                        transform: { t: [0, 0, -2], e: [0.0, 0.0, 0.0], s: [0.5, 1, 0.5] }
 //                    }
 //                },
-                'panorama':{
-                    factory:'Panorama',
-                    url:'../models/stage/actors/environment/panorama.js',
-                    options:{
-                      texture_url:'./app/media/images/cube/sun_temple_stripe_stereo.jpg',
-                      ntextures:12
-                    }
-                }
+//                'panorama':{
+//                    factory:'Panorama',
+//                    url:'../models/stage/actors/environment/panorama.js',
+//                    options:{
+//                      texture_url:'./app/media/images/cube/sun_temple_stripe_stereo.jpg',
+//                      ntextures:12
+//                    }
+//                }
             } //actors
         }, //sgscene
 
