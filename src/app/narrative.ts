@@ -593,9 +593,34 @@ class Narrative implements Cast{
   // render current frame - frame holds current frame number
   render():void {
 
+    //TEMP! get displayed_scene lens worldPosition - after 'enterVR'
+    //the headset worldPosition/Orientation is written into the 
+    //displayed_scene lens worldPosition, i.e. in this case sglens.matrixWorld
+    //since topology for test was 1 - for {4,5,6,7} it is vrlens.matrixWorld.
+    //see: https://stackoverflow.com/questions/64639081/how-do-you-get-the-position-of-the-vr-headset-in-three-js
+//    if(frame%6000 === 0){   //10sec period
+//      //test is using topology1 and hence sglens - {4,5,6,7} would use vrlens
+//      const p = new THREE.Vector3(),
+//            q = new THREE.Quaternion(),
+//            s = new THREE.Vector3();
+//
+//      //p.setFromMatrixPosition(sglens.matrixWorld );
+//      sglens.matrixWorld.decompose(p,q,s);
+//      console.log(`p.x=${p.x}  p.y=${p.y}  p.z=${p.z}`);
+//      //console.log(`q.x=${q.x}  q.y=${q.y}  q.z=${q.z}  q.w=${q.w}`);
+//      //console.log(`s.x=${s.x}  s.y=${s.y}  s.z=${s.z}`);
+//      console.log(`------------------------`);
+//      
+////      //test is using topology1 and hence sglens - {4,5,6,7} would use vrlens
+////      //FAILS - sglens is not the correct arg for 'camera'
+////      const vp = renderer.xr.getCamera(sglens).getWorldPosition(wvp);
+////      console.log(`wvp = ${wvp.x}  ${wvp.y}  ${wvp.z}`);
+//    }
+
+
     // time-ms, check msgs
     et = 1000.*clock.getElapsedTime();
-    if(frame%10 === 0){      // period is approximately 160ms 
+    if(frame%10 === 0){     //check for pending msgs - period is approx 160ms 
       director.look(et);
     }
     // fps

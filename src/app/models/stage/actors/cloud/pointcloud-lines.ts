@@ -67,7 +67,8 @@ export const Pointcloudlines:ActorFactory = class {
           maxConnections = options['maxConnections'] || 20,  //1,  
           minDistance = options['minDistance'] || 250, //90,  //150,    
           limitConnections = options['limitConnections'] || true,  //false,  
-          r = 800,
+          transform = options['transform'],
+          r = 1600, //r = 800,
           rHalf = r / 2,
           group = new THREE.Group(),
           helper = new THREE.BoxHelper( new THREE.Mesh( new THREE.BoxGeometry( r, r, r ) ) );
@@ -242,8 +243,16 @@ export const Pointcloudlines:ActorFactory = class {
        
           pcloudlines.geometry.attributes.position.needsUpdate = true;
     
-        };//render
+        };//group['animate']
     
+
+        //transform
+        if(transform){
+          transform3d.apply(transform, group);
+        }
+
+
+        //return actor
         resolve(group);
       });//return new Promise
 

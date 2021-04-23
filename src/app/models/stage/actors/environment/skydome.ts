@@ -51,6 +51,7 @@ export const Skydome:ActorFactory = class {
           color:string = <string>options['color'] || 'black',
           opacity:number = <number>options['opacity'] || 1.0,
           url = <string[]>options['texture'] || '',
+          transparent = <boolean>options['transparent'] || true,
           rotate = <boolean>options['rotate'] || true,
           transform = <Record<string,number[]>>(options['transform'] || {}),
           textureLoader = new THREE.TextureLoader(); 
@@ -60,14 +61,14 @@ export const Skydome:ActorFactory = class {
         dome:THREE.Mesh;
 
     //diagnostics
-    console.log(`\n\n&&& Skydome.create():`);
-    console.log(`width = ${width}`);
-    console.log(`height = ${height}`);
-    console.log(`color = ${color}`);
-    console.log(`opacity = ${opacity}`);
-    console.log(`url = ${url}`);
-    console.log(`transform = ${transform}:`);
-    console.dir(transform);
+//    console.log(`\n\n&&& Skydome.create():`);
+//    console.log(`width = ${width}`);
+//    console.log(`height = ${height}`);
+//    console.log(`color = ${color}`);
+//    console.log(`opacity = ${opacity}`);
+//    console.log(`url = ${url}`);
+//    console.log(`transform = ${transform}:`);
+//    console.dir(transform);
 
 
     return new Promise((resolve, reject) => {
