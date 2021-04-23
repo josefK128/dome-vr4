@@ -1,4 +1,4 @@
-// topology2/capri-rmcantor-vrskybox7.ts
+// topology7/empty-rmcantor-vrskyboxanim7.ts
 // webGL2, es300 three.js ==0.125.2
  
 
@@ -36,7 +36,7 @@ const config:Config = {
       _sgpost: false,
   
       // rmstage or vrstage actors 
-      sgTargetNames: [],  // ['rmquad'],  //['rmquad', 'rmhud'],
+      sgTargetNames: [], // ['rmhud'],  //possible: ['rmquad', 'rmhud'],
   
   
       // render rmscene to display, or to rmTarget offscreen for texturing 
@@ -45,7 +45,7 @@ const config:Config = {
       _rm: true,
 
       // rmstage or vrstage actors 
-      _rmpost: false,
+      _rmpost: false,  //true => FAILS BADLY!
 
       rmTargetNames: ['vrskybox'],
       //skyfaces:string[];  //used if actor 'skyfaces' exists and is rmTgtName
@@ -214,26 +214,32 @@ const state:State = {
                     factory: 'Rmquad',
                     url: '../models/stage/actors/raymarch/rmquad.js',
                     options: {
-                      opacity:1.0,
+                      opacity:0.5,
+                      transparent:true,
                       vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
                       fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_rm_mengersponge-nav.glsl.js',
+                      //texture CAN be seen even if fsh creates image
+                      //Of course opacity must be <1.0
                       //texture:'./app/media/images/cloud/moon_256.png'
+                      //texture:'./app/media/images/glad.png'
+                    }
+                },
+
+                'rmhud': {
+                    factory: 'Rmquad',
+                    url: '../models/stage/actors/raymarch/rmquad.js',
+                    options: {
+                      opacity:0.3,
+                      transparent:true,
+//                      vsh:'../../../stage/shaders/webgl2/vertex/vsh_default.glsl.js',
+//                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_color.glsl.js',
+                      vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
+                      fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_tDiffuse.glsl.js',
+                      //texture cannot be seen if sgTargetNames includes 'rmhud'
+                      //texture:'./app/media/images/glad.png',
+                      transform:{t:[0.0,0.0,-0.001]}
                     }
                 }
-
-//                'rmhud': {
-//                    factory: 'Rmquad',
-//                    url: '../models/stage/actors/raymarch/rmquad.js',
-//                    options: {
-//                        opacity:0.5,
-////                      vsh:'../../../stage/shaders/webgl2/vertex/vsh_default.glsl.js',
-////                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_color.glsl.js',
-//                      vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
-//                      fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_tDiffuse.glsl.js',
-//                      //texture:'./app/media/images/glad.png',
-//                      transform:{t:[0.0,0.0,0.001]}
-//                    }
-//                }
 
             }//actors
 
@@ -289,6 +295,28 @@ const state:State = {
 //                        transform:{t:[0.0,2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
 //                  } 
 //                },
+
+                // spritecloud
+                'vrcloud':{ 
+                  factory:'Spritecloud',
+                  url:'../models/stage/actors/cloud/spritecloud.js',
+                  options:{ 
+                    N:4,
+                    urls:["./app/media/images/cloud/sprite_redlight.png",
+                      "./app/media/images/illusions_transparent/necker_cube2.png" ,
+                      "./app/media/images/cloud/lotus_64.png" ,
+                      "./app/media/images/sprites/ball.png" ],
+                    transparent:true,
+                    opacity:0.6,
+                    cloudRadius:1000,
+                    //translateZ:-3500,  //does nothing ?! used to translate ?!
+                    morphtargets:[], //all                     //options
+                    positions:[], //positions.len = particles*mTargets.len*3
+                    particles:160,  // 128,  // 256    //options
+                    duration:10000,  // 2000           //options
+                    transform:{t:[0.0,0.0,-300.0]}
+                  }
+                },
 
                 'vrskybox':{ 
                   factory:'Skybox',
