@@ -158,14 +158,14 @@ const state:State = {
         sgscene: {
             _actors: true,
             actors: {
-                'axes': {
-                    factory: 'Axes',
-                    url: '../models/stage/actors/objects/axes.js',
-                    options: {
-                        length: 10000
-                        //transform: { t: [0.0, 0.0, 0.0] }
-                    }
-                },
+//                'axes': {
+//                    factory: 'Axes',
+//                    url: '../models/stage/actors/objects/axes.js',
+//                    options: {
+//                        length: 10000
+//                        //transform: { t: [0.0, 0.0, 0.0] }
+//                    }
+//                },
 
 //                'unitcube': {
 //                    factory: 'Unitcube',
@@ -184,7 +184,7 @@ const state:State = {
                     options:{
                       showDots: true,  // no effect ?!
                       showLines: true,     // no effect ?!
-                      minDistance: 256, //90,  //150,    
+                      minDistance:160, //60-few lines,500-too slow,256,90,150,    
                       limitConnections: false, //false, 
                       maxConnections: 20,  //20,  // *
                       particleCount: 512,   // 500 // no effect ?!
@@ -198,8 +198,8 @@ const state:State = {
                   factory:'Skydome',
                   url:'../models/stage/actors/environment/skydome.js',
                   options:{
-                     width:8000,    //4000,       // default=10000
-                     height:12000,    //4800,       // default=10000
+                     width:6000,    //8000, //4000       // default=10000
+                     height:9000,  //12000  //4800,       // default=10000
                      color:'white',
                      opacity: 1.0,    // default 1.0
                      transparent:true,

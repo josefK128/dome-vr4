@@ -224,7 +224,29 @@ const state:State = {
 //                       './app/media/images/cloud/sprite_redlight.png'
 //                     ]
 //                  }
-//                }
+//                },
+
+                // spritecloud
+                'sgcloud':{ 
+                  factory:'Spritecloud',
+                  url:'../models/stage/actors/cloud/spritecloud.js',
+                  options:{ 
+                    N:4,
+                    urls:["./app/media/images/cloud/sprite_redlight.png",
+                      "./app/media/images/moon_tr.png" ,
+                      "./app/media/images/cloud/lotus_64.png" ,
+                      "./app/media/images/sprites/ball.png" ],
+                    transparent:true,
+                    opacity:1.0,
+                    cloudRadius:1000,  //1000
+                    //translateZ:-3500,  //does nothing ?! used to translate ?!
+                    morphtargets:[], //all                     //options
+                    positions:[], //positions.len = particles*mTargets.len*3
+                    particles:128,  // 128,  // 256    //options
+                    duration:10000,  // 2000           //options
+                    transform:{t:[0.0,0.0,-300.0]}
+                  }
+                }
 
             } //actors
         }, //sgscene
