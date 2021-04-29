@@ -1,11 +1,11 @@
-// sghud.ts
-// Actor is a Factory interface - so Sghud 'creates' instances using the
-// options Record<string,unknown> as variations, i.e. Sghud is a factory and NOT a singleton
+// hud.ts
+// Actor is a Factory interface - so Hud 'creates' instances using the
+// options Record<string,unknown> as variations, i.e. Hud is a factory and NOT a singleton
 //
-// Sghud implements ActorFactory interface:
+// Hud implements ActorFactory interface:
 // export interface ActorFactory {
-//   create(Record<string,unknown>): Promise<Actor>;   //static=> Sghud.create(options)
-// Sghud instances implement Actor interface:
+//   create(Record<string,unknown>): Promise<Actor>;   //static=> Hud.create(options)
+// Hud instances implement Actor interface:
 // export interface Actor {
 //   delta(Record<string,unknown>):void;   
 //
@@ -17,12 +17,12 @@
 // NOTE: options properties which are modifiable (case _actors undefined)
 // are preceded by *:
 //
-// NOTE! sghud creation is controlled by config.sgpost:string whose values are
+// NOTE! hud creation is controlled by config.sgpost:string whose values are
 //   'sg'|'rm'|'texture'|undefined where...
 //   'sg' => use webGLRenderTarget sgTarget.texture
 //   'rm' => use webGLRenderTarget rmTarget.texture
 //   'texture' => use image url (probably for test ONLY)
-//   undefined => NO sgpost, sghud
+//   undefined => NO sgpost, hud
 //
 // NOTE: default shaders are provided below in static create method
 //
@@ -37,9 +37,9 @@
 //
 //      _actors:true,   // true=>create; false=>remove; undefined=>modify
 //      actors:{
-//        'sghud':{ 
-//          factory:'Sghud',
-//          url:'./app/models/stage/actors/hud/sghud',
+//        'hud':{ 
+//          factory:'Hud',
+//          url:'../models/stage/actors/post/hud.js',
 //          options:{
 //               *color:'red', 
 //               *opacity:0.9, 
@@ -58,47 +58,49 @@ import {transform3d} from '../../../../services/transform3d.js';
 
 
 
-// class Sghud - Factory
-export const Sghud:ActorFactory = class {
+// class Hud - Factory
+export const Hud:ActorFactory = class {
 
   static create(options:Record<string,unknown>={}):Promise<Actor>{
     // options
-    const color = options['color'] || 'white',
-          opacity = options['opacity'] || 0.5,
-          vsh = <string>options['vsh'] || './app/models/stage/shaders/webgl/vertex/vsh_tex_default.glsl', 
-          fsh = <string>options['fsh'] || './app/models/stage/shaders/webgl/fragment/fsh_tex_default.glsl',
-          texture = options['texture'],
-          scaleX = options['scaleX'] || 1.0,
-          scaleY = options['scaleY'] || 1.0,
-          transform = options['transform'];
+    const color = <string>options['color'] || 'white',
+          opacity = <number>options['opacity'] || 0.5,
+          vsh = <string>options['vsh'] || '../../shaders/webgl1/quad_vsh/vsh_default.glsl.js', 
+          fsh = <string>options['fsh'] || '../../shaders/webgl1/quad_fsh/fsh_default.glsl.js',
+          texture = <string>options['texture'],
+          scaleX = <number>options['scaleX'] || 1.0,
+          scaleY = <number>options['scaleY'] || 1.0,
+          transform = <Record<string,number[]>>options['transform'];
 
 
 
     return new Promise((resolve, reject) => {    
-      let sghud_g:THREE.PlaneBufferGeometry,
-          sghud_m:THREE.ShaderMaterial,
+      let hud_g:THREE.PlaneBufferGeometry,
+          hud_m:THREE.ShaderMaterial,
           vshader:string,
           fshader:string,
           uniforms:string,
-          sghud:THREE.Mesh;
+          hud:THREE.Mesh;
 
       const loader:THREE.TextureLoader = new THREE.TextureLoader();
 
 
       async function load() {
-        const a = await Promise.all([
-          import(vsh),
-          import(fsh)
-        ]).catch((e) => {
-          console.error(`error loading module: ${e}`);
-        });
+        const w = 2.0*scaleX,
+              h = 2.0*scaleY,
+              a = await Promise.all([
+                import(vsh),
+                import(fsh)
+              ]).catch((e) => {
+                console.error(`error loading module: ${e}`);
+              });
 
         vshader = a[0].vsh;
         fshader = a[1].fsh;
         uniforms = a[1].uniforms;
 
-        sghud_g = new THREE.PlaneBufferGeometry(1,1,1,1);
-        sghud_m = new THREE.ShaderMaterial({
+        hud_g = new THREE.PlaneBufferGeometry(w,h,1,1);
+        hud_m = new THREE.ShaderMaterial({
                 vertexShader: vshader,
                 uniforms: uniforms, 
                 fragmentShader: fshader,
@@ -108,33 +110,30 @@ export const Sghud:ActorFactory = class {
 
         // blending
         // check: need gl.enable(gl.BLEND)
-        sghud_m.blendSrc = THREE.SrcAlphaFactor; // default
-        sghud_m.blendDst = THREE.OneMinusSrcAlphaFactor; //default
+        hud_m.blendSrc = THREE.SrcAlphaFactor; // default
+        hud_m.blendDst = THREE.OneMinusSrcAlphaFactor; //default
         //grid_m.depthTest = false;  //default
 
-        // sghud
-        sghud = new THREE.Mesh(sghud_g, sghud_m);
+        // hud
+        hud = new THREE.Mesh(hud_g, hud_m);
 
         // transform
         if(transform && Object.keys(<Record<string,number[]>>transform).length >0){
-          transform3d.apply(transform, sghud);
+          transform3d.apply(transform, hud);
         }
-
-        //scale
-        sghud.scale.set(scaleX, scaleY, 1.0);
 
 
         // test ONLY!!!
         if(texture){
           loader.load(texture, (t) => {
-            console.log(`\n\n\n\n!!!!!!!!!loaded texture t=${t}`);
-            console.log(`scaleX = ${scaleX} scaleY = ${scaleY}`);
-            sghud_m.uniforms.tDiffuse.value = t;
-            sghud_m.uniforms.tDiffuse.needsUpdate = true;
-            resolve(sghud);
+            //console.log(`\n\n\n\n!!!!!!!!!loaded texture t=${t}`);
+            //console.log(`scaleX = ${scaleX} scaleY = ${scaleY}`);
+            hud_m.uniforms.tDiffuse.value = t;
+            hud_m.uniforms.tDiffuse.needsUpdate = true;
+            resolve(hud);
           });
         }else{
-          resolve(sghud);
+          resolve(hud);
         }
 
 
@@ -142,18 +141,18 @@ export const Sghud:ActorFactory = class {
 
         // ACTOR.INTERFACE method
         // delta method for modifying properties
-        sghud['delta'] = (options:Record<string,unknown>={}) => {
-          //console.log(`sghud.delta: options = ${options}:`);
+        hud['delta'] = (options:Record<string,unknown>={}) => {
+          //console.log(`hud.delta: options = ${options}:`);
           //console.dir(options);
   
           const color = options['color'],
                 opacity = options['opacity'];
               
           if(color !== undefined){
-            sghud_m.color = color;
+            hud_m.color = color;
           }
           if(opacity !== undefined){
-            sghud_m.opacity = opacity;
+            hud_m.opacity = opacity;
           }
         };
 
@@ -164,4 +163,4 @@ export const Sghud:ActorFactory = class {
     });//return new Promise
   }//create
 
-};//Sghud;
+};//Hud;

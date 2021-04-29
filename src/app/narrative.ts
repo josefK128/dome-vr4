@@ -26,8 +26,6 @@ import TWEEN from '../external/tween.js/tween.esm.js';
 
 // make exterior modules available globally 
 window['THREE'] = THREE;
-//window['VRButton'] = VRButton;
-//window['Stats'] = Stats;
 window['TWEEN'] = TWEEN;
 
 
@@ -142,11 +140,11 @@ let narrative:Narrative,
   
 
 // const - initialized
-      // dictionary of all scenes
 const initial_width:number = window.innerWidth,
       initial_height:number = window.innerHeight,
-      scenes:Record<string, THREE.Scene> = {},
-    
+      dpr = window.devicePixelRatio,
+      tVector = new THREE.Vector2(),
+      
       // dictionary of all actors.
       cast:Record<string, THREE.Object3D> = {},
            //state/stage creates name-actor entries & registers them in cast 
@@ -165,6 +163,8 @@ const initial_width:number = window.innerWidth,
 
       // renderTargets
       sgTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight),
+      //causes three.module.js:24784 WebGL: INVALID_OPERATION: readPixels: no PIXEL_PACK buffer bound
+      //sgTarget = new THREE.WebGLRenderTarget(window.innerWidth*dpr, window.innerHeight*dpr),
       rmTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight),
       vrTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight),
 
@@ -204,7 +204,11 @@ const initial_width:number = window.innerWidth,
 
 
 //dynamic
-let _stats = false,
+let tw = window.innerWidth * dpr,
+    th = window.innerHeight * dpr,
+    tData = new Uint8Array(tw*th*4),  //RGBA => 4
+    dTexture = new THREE.DataTexture(tData, tw, th, THREE.RGBAFormat),
+    _stats = false,
     aspect = 1.0,             // dynamic measure of window.innerW/window.innerH
     animating = false,       // animation => render-loop running
     et = 0,                 // elapsed time - clock starts at render start
@@ -344,6 +348,18 @@ class Narrative implements Cast{
 
     // create WebGLRenderer for all scenes
     renderer = create_renderer();
+    //EXPT!
+    renderer.setPixelRatio(dpr);  // critically important for post!!
+    //renderer.autoClear = false;
+
+    //DataTexture filters
+    dTexture.minFilter = THREE.NearestFilter;
+    dTexture.magFilter = THREE.NearestFilter;
+
+    //initial center (x,y) of DataTexture 
+    tVector.x = 0.0; //0.5*tw;
+    tVector.y = 0.0; //0.5*th;
+    //console.log(`dpr = ${dpr} tVector.x = ${tVector.x} tVector.y = ${tVector.y}`);
 
     // populate Narrative instance for use in state modules
     narrative['devclock'] = devclock;
@@ -486,8 +502,12 @@ class Narrative implements Cast{
   
         // build rendering components, actors
         sghud = narrative.findActor('sghud');
+        //console.log(`_sgpost = ${_sgpost}`);
         if(sghud){
           sghud_tDiffuse = sghud.material.uniforms.tDiffuse;
+          sghud_tDiffuse['value'] = dTexture;
+          sghud_tDiffuse['needsUpdate'] = true;
+          console.log(`sghud_tDiffuse = ${sghud_tDiffuse}`);
         }else{
           _sgpost = false;
         }
@@ -589,7 +609,6 @@ class Narrative implements Cast{
 
 
 
-  // render- without post !!!!!!
   // render current frame - frame holds current frame number
   render():void {
 
@@ -608,7 +627,7 @@ class Narrative implements Cast{
 //      sglens.matrixWorld.decompose(p,q,s);
 //      console.log(`p.x=${p.x}  p.y=${p.y}  p.z=${p.z}`);
 //      //console.log(`q.x=${q.x}  q.y=${q.y}  q.z=${q.z}  q.w=${q.w}`);
-//      //console.log(`s.x=${s.x}  s.y=${s.y}  s.z=${s.z}`);
+//      //console.log(`s.x=${s.x}  s.y=${s.y} `r s.z=${s.z}`);
 //      console.log(`------------------------`);
 //      
 ////      //test is using topology1 and hence sglens - {4,5,6,7} would use vrlens
@@ -645,7 +664,7 @@ class Narrative implements Cast{
     switch(topology){
       case 7:     // sg-rm-vr
 //        if(_sgpost){  // FAILS BADLY - DO NOT set true !!!
-//          sghud_tDiffuse['value'] = sgTarget.texture;
+//          sghud_tDiffuse['value'] = sgTarget.clone().texture;
 //          sghud_tDiffuse['needsUpdate'] = true;
 //        }
         renderer.xr.enabled = false;  //7f
@@ -796,14 +815,38 @@ class Narrative implements Cast{
 
 
       case 5:     // sg-vr
-//        if(_sgpost){  // FAILS BADLY - DO NOT set true !!!
-//          sghud_tDiffuse['value'] = sgTarget.texture;
-//          sghud_tDiffuse['needsUpdate'] = true;
-//        }
-        renderer.xr.enabled = false;  //5f
-        renderer.setRenderTarget(sgTarget);
-        renderer.render(sgscene, sglens);
+        let rtTexture:THREE.Texture,
+            image:unknown;
+        if(_sgpost){  
+          renderer.xr.enabled = false;
+          renderer.setRenderTarget(sgTarget);
+          renderer.render(sgscene, sglens);
+          let image = sgTarget.texture.image;
+          const w = image.width,
+                h = image.height,
+			    iData = new Uint8Array(w * h * 4 );
+          //renderer.readRenderTargetPixels(sgTarget, 0,0,tw,th, dTexture);
+          //tData = new Uint8Array(tw*th*4),  //RGBA => 4
+          //dTexture = new THREE.DataTexture(tData, tw, th, THREE.RGBAFormat),
+          //renderer.readRenderTargetPixels(sgTarget, 0,0,tw,th, tData);
+          //renderer.readRenderTargetPixels(sgTarget, 0,0,w,h, tData);
+          //rtTexture = new THREE.DataTexture(tData, tw, th, THREE.RGBAFormat);
+          renderer.readRenderTargetPixels(sgTarget, 0,0,w,h, iData);
+          rtTexture = new THREE.DataTexture(iData, w, h, THREE.RGBAFormat);
 
+//          if(frame%6000 === 0){
+//            console.log(`rtTexture:`);
+//            console.dir(rtTexture);
+//          }
+          sghud_tDiffuse['value'] = rtTexture;
+          sghud_tDiffuse['needsUpdate'] = true;
+        }else{
+          renderer.xr.enabled = false;  //5f
+          renderer.setRenderTarget(sgTarget);
+          renderer.render(sgscene, sglens);
+        }
+
+        //possibly map (post) sgTarget.texture to vrskybox
         for(const actorname of sgTargetNames){
           if(actorname === 'vrskybox'){
             const faces:string[] = <string[]>config.topology.sgvrSkyboxFaces;
@@ -924,12 +967,44 @@ class Narrative implements Cast{
         break;
 
 
+      //webxf:f - working
+      //webxf:t - working - but not viewable in VR since flat sghud is on
+                            //the near camera plane
       case 1:     // sg
-//        if(_sgpost){  // FAILS BADLY - DO NOT set true !!!
-//          sghud_tDiffuse['value'] = sgTarget.texture;
-//          sghud_tDiffuse['needsUpdate'] = true;
-//        }
+        renderer.setRenderTarget(null);
         renderer.render(sgscene, sglens);
+        if(_sgpost){  
+          //works!!!
+          renderer.copyFramebufferToTexture(tVector, dTexture);
+
+          //EXPT!!!  FAILS!!!
+          //renderer.xr.enabled = false;
+          //renderer.setRenderTarget(sgTarget);
+          //renderer.render(sgscene, sglens);
+
+          //WebGL:error
+          //three.module.js:24784 
+          //WebGL: INVALID_OPERATION: readPixels: no PIXEL_PACK buffer bound 
+          //FIX - don't multiply sgTarget w,h by dpr !!!
+          //sgTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight),
+          //sgTarget = new THREE.WebGLRenderTarget(window.innerWidth*dpr, window.innerHeight*dpr),
+
+          //renderer.readRenderTargetPixels(sgTarget, 0,0,window.innerWidth,window.innerHeight, dTexture); - re-causes error!
+          //renderer.readRenderTargetPixels(sgTarget, 0,0,tw,th, dTexture);
+
+
+          if(frame%6000 === 0){
+            console.log(`dTexture.center = (${dTexture.center.x},${dTexture.center.y})`);
+            console.log(`dTexture (w,h) = (${dTexture.image.width},${dTexture.image.height})`);
+            console.log(`tV.x=${tVector.x} tV.y=${tVector.y}`);
+            console.dir(dTexture);
+          }
+          sghud_tDiffuse['value'] = dTexture;
+          sghud_tDiffuse['needsUpdate'] = true;
+          //sghud.material.map = dTexture;
+          //sghud.material.needsUpdate = true;
+          renderer.xr.enabled = true;
+        }//if(_sgpost)
         break;
 
 
@@ -969,6 +1044,16 @@ class Narrative implements Cast{
 //      const t = {s:[ratiow, ratioh, 1.0]};
 //      transform3d.apply(t, rmhud);
 //    }
+    
+    if(_sgpost || _rmpost){
+      console.log(`_sgpost || _rmpost true!!!`);
+      tw = width_ * dpr;
+      th = height_ * dpr;
+      tData = new Uint8Array(tw*th*4);
+      dTexture = new THREE.DataTexture(tData, tw, th, THREE.RGBAFormat);
+      dTexture.minFilter = THREE.NearestFilter;
+      dTexture.magFilter = THREE.NearestFilter;
+    }
 
     canvas.width = width_;
     canvas.height = height_;
