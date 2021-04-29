@@ -667,21 +667,13 @@ class Narrative implements Cast{
     // render config-defined topology using defined rendering functions
     switch(topology){
       case 7:     // sg-rm-vr
-        renderer.xr.enabled = false;  //5f
+//        if(_sgpost){  // FAILS BADLY - DO NOT set true !!!
+//          sghud_tDiffuse['value'] = sgTarget.clone().texture;
+//          sghud_tDiffuse['needsUpdate'] = true;
+//        }
+        renderer.xr.enabled = false;  //7f
         renderer.setRenderTarget(sgTarget);
         renderer.render(sgscene, sglens);
-
-        if(_sgpost){  
-          image = sgTarget.texture.image;
-          const w = image.width,
-                h = image.height;
-          iData = new Uint8Array(w * h * 4 );
-          renderer.readRenderTargetPixels(sgTarget, 0,0,w,h, iData);
-          rtTexture = new THREE.DataTexture(iData, w, h, THREE.RGBAFormat);
-
-          sghud_tDiffuse['value'] = rtTexture;
-          sghud_tDiffuse['needsUpdate'] = true;
-        }
 
         //sgTargetNames - 'rmquad' a/o 'rmhud'
         for(const actorname of sgTargetNames){
@@ -699,13 +691,12 @@ class Narrative implements Cast{
           }
         }
 
+//        if(_rmpost){  // FAILS BADLY - DO NOT set true !!!
+//          rmhud_tDiffuse['value'] = rmTarget.texture;
+//          rmhud_tDiffuse['needsUpdate'] = true;
+//        }
         renderer.setRenderTarget(rmTarget);
         renderer.render(rmscene, rmlens);
-        if(_rmpost){  
-          renderer.copyFramebufferToTexture(tVector, dTexture);
-          rmhud_tDiffuse['value'] = dTexture;
-          rmhud_tDiffuse['needsUpdate'] = true;
-        }//if(_rmpost)
 
         for(const actorname of rmTargetNames){
           if(actorname === 'vrskybox'){
@@ -764,16 +755,13 @@ class Narrative implements Cast{
 
 
       case 6:     // rm-vr
+//        if(_rmpost){  // FAILS
+//          //rmhud_tDiffuse['value'] = rmTarget.texture;
+//          //rmhud_tDiffuse['needsUpdate'] = true;
+//        }
         renderer.xr.enabled = false;  //6f
         renderer.setRenderTarget(rmTarget);
         renderer.render(rmscene, rmlens);
-
-        if(_rmpost){  
-          renderer.copyFramebufferToTexture(tVector, dTexture);
-          rmhud_tDiffuse['value'] = dTexture;
-          rmhud_tDiffuse['needsUpdate'] = true;
-        }//if(_rmpost)
-       
         for(const actorname of rmTargetNames){
           if(actorname === 'vrskybox'){
             const faces:string[] = <string[]>config.topology.rmvrSkyboxFaces;
@@ -831,20 +819,33 @@ class Narrative implements Cast{
 
 
       case 5:     // sg-vr
-        renderer.xr.enabled = false;  //5f
-        renderer.setRenderTarget(sgTarget);
-        renderer.render(sgscene, sglens);
-
         if(_sgpost){  
+          renderer.xr.enabled = false;
+          renderer.setRenderTarget(sgTarget);
+          renderer.render(sgscene, sglens);
           image = sgTarget.texture.image;
           const w = image.width,
                 h = image.height;
           iData = new Uint8Array(w * h * 4 );
+          //renderer.readRenderTargetPixels(sgTarget, 0,0,tw,th, dTexture);
+          //tData = new Uint8Array(tw*th*4),  //RGBA => 4
+          //dTexture = new THREE.DataTexture(tData, tw, th, THREE.RGBAFormat),
+          //renderer.readRenderTargetPixels(sgTarget, 0,0,tw,th, tData);
+          //renderer.readRenderTargetPixels(sgTarget, 0,0,w,h, tData);
+          //rtTexture = new THREE.DataTexture(tData, tw, th, THREE.RGBAFormat);
           renderer.readRenderTargetPixels(sgTarget, 0,0,w,h, iData);
           rtTexture = new THREE.DataTexture(iData, w, h, THREE.RGBAFormat);
 
+//          if(frame%6000 === 0){
+//            console.log(`rtTexture:`);
+//            console.dir(rtTexture);
+//          }
           sghud_tDiffuse['value'] = rtTexture;
           sghud_tDiffuse['needsUpdate'] = true;
+        }else{
+          renderer.xr.enabled = false;  //5f
+          renderer.setRenderTarget(sgTarget);
+          renderer.render(sgscene, sglens);
         }
 
         //possibly map (post) sgTarget.texture to vrskybox
@@ -890,35 +891,21 @@ class Narrative implements Cast{
         break;
 
 
-      //no '_vrpost' - framebuffer is stereo - cannot use to render renderTgt
       case 4:     // vr
         renderer.render(vrscene, vrlens);
         break;
 
 
-      //_webxr:false - rmscene output is on near plane - flat and mono
       case 3:     // sg-rm
-        renderer.xr.enabled = false;  //5f
-        renderer.setRenderTarget(sgTarget);
-        renderer.render(sgscene, sglens);
+//        if(_sgpost){  // FAILS BADLY - DO NOT set true !!!
+//          sghud_tDiffuse['value'] = sgTarget.texture;
+//          sghud_tDiffuse['needsUpdate'] = true;
+//        }
 
-        if(_sgpost){  
-          image = sgTarget.texture.image;
-          const w = image.width,
-                h = image.height;
-          iData = new Uint8Array(w * h * 4 );
-          renderer.readRenderTargetPixels(sgTarget, 0,0,w,h, iData);
-          rtTexture = new THREE.DataTexture(iData, w, h, THREE.RGBAFormat);
-
-          sghud_tDiffuse['value'] = rtTexture;
-          sghud_tDiffuse['needsUpdate'] = true;
-        }
-
-        if(_rmpost){  
-          renderer.copyFramebufferToTexture(tVector, dTexture);
-          rmhud_tDiffuse['value'] = dTexture;
-          rmhud_tDiffuse['needsUpdate'] = true;
-        }//if(_rmpost)
+//        if(_rmpost){  // FAILS
+//          //rmhud_tDiffuse['value'] = rmTarget.texture;
+//          //rmhud_tDiffuse['needsUpdate'] = true;
+//        }
 
         //sgTargetNames - 'rmquad' a/o 'rmhud'
         renderer.xr.enabled = false;  //3f always - rm is mono
@@ -939,49 +926,86 @@ class Narrative implements Cast{
           }
         }
 
-        renderer.xr.enabled = true;  //should be false always - rm is mono
         renderer.setRenderTarget(null);
         renderer.render(rmscene, rmlens);
-        break;
 
-
-      //_webxr:false - rmscene output is on near plane - flat and mono
-      case 2:     // rm:  k shader-layers (in this case k=2)
-        //TEMP!!!
-//        if(frame%1200 < 600){
-//          rmquad_tDiffuse['value'] = glad;
-//          rmquad_tDiffuse['needsUpdate'] = true;
-//          if(_rmpost){
-//            rmhud_tDiffuse['value'] = moon;
-//            rmhud_tDiffuse['needsUpdate'] = true;
-//          }
-//        }else{
-//          rmquad_tDiffuse['value'] = moon;
-//          rmquad_tDiffuse['needsUpdate'] = true;
-//          if(_rmpost){
-//            rmhud_tDiffuse['value'] = glad;
-//            rmhud_tDiffuse['needsUpdate'] = true;
-//          }
+//        if(_rmpost){  // FAILS BADLY - DO NOT set true !!!
+//          renderer.setRenderTarget(rmTarget);
+//          renderer.render(rmscene, rmlens);
 //        }
-        renderer.render(rmscene, rmlens);
-        if(_rmpost){  
-          renderer.copyFramebufferToTexture(tVector, dTexture);
-          rmhud_tDiffuse['value'] = dTexture;
-          rmhud_tDiffuse['needsUpdate'] = true;
-        }//if(_rmpost)
         break;
 
 
-      //if _sgpost then _webxr:false - sghud is on near plane - flat and mono
+      case 2:     // rm:  k shader-layers (in this case k=2)
+        renderer.xr.enabled = false;  //3f always - rm is mono
+
+//        if(_rmpost){  //cannot read from and write to the same texture
+//          rmhud_tDiffuse['value'] = rmTarget.texture;
+//          rmhud_tDiffuse['needsUpdate'] = true;
+//        }
+
+        if(frame%1200 < 600){
+          rmquad_tDiffuse['value'] = glad;
+          rmquad_tDiffuse['needsUpdate'] = true;
+          if(_rmpost){
+            rmhud_tDiffuse['value'] = moon;
+            rmhud_tDiffuse['needsUpdate'] = true;
+          }
+        }else{
+          rmquad_tDiffuse['value'] = moon;
+          rmquad_tDiffuse['needsUpdate'] = true;
+          if(_rmpost){
+            rmhud_tDiffuse['value'] = glad;
+            rmhud_tDiffuse['needsUpdate'] = true;
+          }
+        }
+        renderer.setRenderTarget(null);
+        renderer.render(rmscene, rmlens);
+
+//        if(_rmpost){  //cannot read from and write to the same texture
+//          renderer.setRenderTarget(rmTarget);
+//          renderer.render(rmscene, rmlens);
+//        }
+        break;
+
+
       //webxf:f - working
       //webxf:t - working - but not viewable in VR since flat sghud is on
                             //the near camera plane
       case 1:     // sg
+        renderer.setRenderTarget(null);
         renderer.render(sgscene, sglens);
         if(_sgpost){  
+          //works!!!
           renderer.copyFramebufferToTexture(tVector, dTexture);
+
+          //EXPT!!!  FAILS!!!
+          //renderer.xr.enabled = false;
+          //renderer.setRenderTarget(sgTarget);
+          //renderer.render(sgscene, sglens);
+
+          //WebGL:error
+          //three.module.js:24784 
+          //WebGL: INVALID_OPERATION: readPixels: no PIXEL_PACK buffer bound 
+          //FIX - don't multiply sgTarget w,h by dpr !!!
+          //sgTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight),
+          //sgTarget = new THREE.WebGLRenderTarget(window.innerWidth*dpr, window.innerHeight*dpr),
+
+          //renderer.readRenderTargetPixels(sgTarget, 0,0,window.innerWidth,window.innerHeight, dTexture); - re-causes error!
+          //renderer.readRenderTargetPixels(sgTarget, 0,0,tw,th, dTexture);
+
+
+          if(frame%6000 === 0){
+            console.log(`dTexture.center = (${dTexture.center.x},${dTexture.center.y})`);
+            console.log(`dTexture (w,h) = (${dTexture.image.width},${dTexture.image.height})`);
+            console.log(`tV.x=${tVector.x} tV.y=${tVector.y}`);
+            console.dir(dTexture);
+          }
           sghud_tDiffuse['value'] = dTexture;
           sghud_tDiffuse['needsUpdate'] = true;
+          //sghud.material.map = dTexture;
+          //sghud.material.needsUpdate = true;
+          renderer.xr.enabled = true;
         }//if(_sgpost)
         break;
 
