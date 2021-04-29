@@ -166,7 +166,6 @@ const initial_width:number = window.innerWidth,
       //causes three.module.js:24784 WebGL: INVALID_OPERATION: readPixels: no PIXEL_PACK buffer bound
       //sgTarget = new THREE.WebGLRenderTarget(window.innerWidth*dpr, window.innerHeight*dpr),
       rmTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight),
-      vrTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight),
 
 
       // test-textures
@@ -206,8 +205,13 @@ const initial_width:number = window.innerWidth,
 //dynamic
 let tw = window.innerWidth * dpr,
     th = window.innerHeight * dpr,
-    tData = new Uint8Array(tw*th*4),  //RGBA => 4
+    tData = new Uint8Array(tw*th*4),  //RGBA => 4  NOTE- dpr scale NEEDED
+                                     //since creating from Framebuffer
     dTexture = new THREE.DataTexture(tData, tw, th, THREE.RGBAFormat),
+    iData = new Uint8Array(tw*th*4),  //RGBA => 4 NOTE-dpr scale not needed
+                                     //since creating from sgTarget.texture
+    rtTexture:THREE.Texture,
+    image:HTMLImageElement,   //HTMLImageElement? - as returned by ImageLoader
     _stats = false,
     aspect = 1.0,             // dynamic measure of window.innerW/window.innerH
     animating = false,       // animation => render-loop running
@@ -815,16 +819,14 @@ class Narrative implements Cast{
 
 
       case 5:     // sg-vr
-        let rtTexture:THREE.Texture,
-            image:unknown;
         if(_sgpost){  
           renderer.xr.enabled = false;
           renderer.setRenderTarget(sgTarget);
           renderer.render(sgscene, sglens);
-          let image = sgTarget.texture.image;
+          image = sgTarget.texture.image;
           const w = image.width,
-                h = image.height,
-			    iData = new Uint8Array(w * h * 4 );
+                h = image.height;
+          iData = new Uint8Array(w * h * 4 );
           //renderer.readRenderTargetPixels(sgTarget, 0,0,tw,th, dTexture);
           //tData = new Uint8Array(tw*th*4),  //RGBA => 4
           //dTexture = new THREE.DataTexture(tData, tw, th, THREE.RGBAFormat),
@@ -1022,16 +1024,35 @@ class Narrative implements Cast{
   // reset params based on window resize event
   onWindowResize():void {
     const width_:number = window.innerWidth,
-          height_:number = window.innerHeight,
-          ratiow:number = width_/initial_width,
-          ratioh:number = height_/initial_height;
+          height_:number = window.innerHeight;
+          //ratiow:number = width_/initial_width,
+          //ratioh:number = height_/initial_height;
  
 
-    console.log(`resize: initial_width=${initial_width}`);
-    console.log(`resize: initial_height=${initial_height}`);
+    //diagnostics
+    //console.log(`resize: init_w=${initial_width} init_h=${initial_height}`);
     console.log(`resize: width=${width_} height=${height_}`);
-    console.log(`resize: ratiow=${ratiow}`);
-    console.log(`resize: ratioh=${ratioh}`);
+
+    
+    // renderTargets
+    sgTarget.setSize(width_, height_);
+    rmTarget.setSize(width_, height_);
+
+
+    //diagnostics for post textures from renderer.copyRenderTargetToTexture
+////          image = sgTarget.texture.image;
+////          const w = image.width,
+////                h = image.height,
+////                iData = new Uint8Array(w * h * 4 );
+////          renderer.readRenderTargetPixels(sgTarget, 0,0,w,h, iData);
+////          rtTexture = new THREE.DataTexture(iData, w, h, THREE.RGBAFormat);
+//    console.log(`sgTg.w=${sgTarget.width} sgTg.h=${sgTarget.height}`);
+//    console.log(`sgT.tex.im.w=${sgTarget.texture.image.width}`); 
+//    console.log(`sgT.tex.im.h=${sgTarget.texture.image.height}`);
+//    console.log(`iData.length=${iData.length}`);
+//    if(rtTexture){
+//      console.log(`rtTx.im.w=${rtTexture.image.width} rtTx.im.h=${rtTexture.image.height}`);
+//    }
 
 
     //rmquad
@@ -1044,9 +1065,11 @@ class Narrative implements Cast{
 //      const t = {s:[ratiow, ratioh, 1.0]};
 //      transform3d.apply(t, rmhud);
 //    }
-    
+
+
+    //post textures from renderer.copyFramebufferToTexture
     if(_sgpost || _rmpost){
-      console.log(`_sgpost || _rmpost true!!!`);
+      //console.log(`_sgpost || _rmpost true!!!`);
       tw = width_ * dpr;
       th = height_ * dpr;
       tData = new Uint8Array(tw*th*4);
@@ -1055,18 +1078,12 @@ class Narrative implements Cast{
       dTexture.magFilter = THREE.NearestFilter;
     }
 
+    //canvas
     canvas.width = width_;
     canvas.height = height_;
+
+    //cameras
     aspect = width_/height_;
-
-    // renderTargets
-    sgTarget.width = width_;
-    rmTarget.width = width_;
-    vrTarget.width = width_;
-    sgTarget.height = height_;
-    rmTarget.height = height_;
-    vrTarget.height = height_;
-
     if(sglens){
       sglens.aspect = aspect;
       sglens.updateProjectionMatrix();
@@ -1079,8 +1096,11 @@ class Narrative implements Cast{
       vrlens.aspect = aspect;
       vrlens.updateProjectionMatrix();
     }
+
+    //renderer
     renderer.setSize(width_, height_);
   }
+
 
 
   // method to allow infinite seq-loop mainly for music sequence playing
@@ -1094,7 +1114,7 @@ class Narrative implements Cast{
    ms:15000}
   */
   sequence(sequence_url:string):void{
-    console.log(`\n\n****** narrative.sequence seq_url = ${sequence_url}`);
+    console.log(`\n*** narrative.sequence sequence_url = ${sequence_url}`);
 //    if(sequence_url){
 //      import(sequence_url).then((seq) => {
 //        console.log(`****** narrative.sequence seq = ${seq}:`);
