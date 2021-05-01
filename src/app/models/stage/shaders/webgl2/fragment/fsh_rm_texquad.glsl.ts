@@ -10,7 +10,7 @@ const uniforms:Record<string,unknown> = {
 };
 
 const fsh = `
-      #version 300 es
+      /* #version 300 es */ 
 
       #ifdef GL_ES
       precision mediump float;
@@ -18,14 +18,14 @@ const fsh = `
       uniform sampler2D tDiffuse; 
       uniform float uTime; 
       in vec2 vuv;
-      out vec4 out_FragColor;
+      /* out vec4 pc_fragColor; */
 
       void main() {
         // map texture pixels to [-1,1]x[-1,1] near plane of fsh-eye fov=90
         vec3 fwd = normalize(vec3(2.0*vuv.s-1.0, 2.0*vuv.t-1.0,-1.0));
 
         // paint
-        out_FragColor = texture2D(tDiffuse, vuv); 
+        pc_fragColor = texture2D(tDiffuse, vuv); 
       }`;
 
 

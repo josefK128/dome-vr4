@@ -46,8 +46,8 @@ export const Rmquad:ActorFactory = class {
   static create(options:Record<string,unknown>={}):Promise<Actor>{
     // options
     const opacity = <number>options['opacity'] || 1.0,
-          vsh = <string>options['vsh'] || '../models/stage/shaders/webgl2/vertex/vsh_default.glsl.js',
-          fsh = <string>options['fsh'] || '../models/stage/shaders/webgl2/fragment/fsh_rm_texquad.glsl.js',
+          vsh = <string>options['vsh'] || '../../shaders/webgl2/vertex/vsh_default.glsl.js',
+          fsh = <string>options['fsh'] || '../../shaders/webgl2/fragment/fsh_rm_texquad.glsl.js',
           texture = <THREE.Texture>options['texture'],
           transform = <Record<string,number[]>>options['transform']; 
 

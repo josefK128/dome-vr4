@@ -1,4 +1,4 @@
-// topology1/pointcloudlinespost1.ts
+// topology2/rmexpt1post2.ts
 // webGL2, es300 three.js ==0.125.2
  
 
@@ -21,35 +21,37 @@ const config:Config = {
     // rendering topology
     topology:{
       // webxr?
-      topology:1,
       _webxr: false,
+      topology: 2,
      
       // displayed_scene = 'sg|rm|vr'
-      displayed_scene: 'sg', 
+      displayed_scene: 'rm', 
 
 
       // render sgscene either to display, or to sgTarget offscreen for 
       // bg texturing in rmscene or texturing in vrscene
-      _sg: true,
+      _sg: false,
       
       //use frame n-1 sgTarget.tex ('sg') 
-      _sgpost: true,
+      _sgpost: false,
   
       // rmstage or vrstage actors 
-      sgTargetNames: ['sghud'],
+      sgTargetNames: [],  //['rmquad', 'rmhud'],
   
   
       // render rmscene to display, or to rmTarget offscreen for texturing 
-      // in vrscene - either vrskybox/vrskydome/etc. or actors
+      // in vrscene - either skybox/skydome/etc. or actors
       // NOTE! true=>must define rmquad and rmTargetName(s)
-      _rm: false,
-      _rmpost: false,
-      rmTargetNames: [],
+      _rm: true,
+      _rmpost: true,
+
+      rmTargetNames: [], //['vrskybox'],
       //skyfaces:string[];  //used if actor 'skyfaces' exists and is rmTgtName
-      //value is some subset of ['f','b','l','r','t','g']
+      //value is some subset of ['px','nx','py','ny','pz','nz']
       //order-independent: front,back,left,right,top,ground
       // raymarch - via fragment shader in rmquad ShaderMaterial
       // NOTE! obviously requires rm:t and a vr-actor name in rmTargetNames
+      rmvrSkyboxFaces: ['px','nx','py','ny', 'pz', 'nz'],
     
 
       // render vrscene - which implies displayed_scene = 'vr'
@@ -122,134 +124,76 @@ const state:State = {
     // since sgscene,vrscene are translated by 1.6 in y, in all
     // cases the scene and camera coincide at camera coords (0,0,0)
     camera: {
-        sg:{
-          lens: {
-            _lens: true,
-            _orbit:true,
-            fov: 90,
-            near: 0.01,
-            far: 100000,
-//            transform: {'t':[0,1.6,0]}   //y=.01 allows blue z-axis to be seen
-//            transform: {'t':[0,-60,0]}  //y=.01 allows blue z-axis to be seen
-//            transform: {'t':[0,1.6, 20]} //y=.01 allows blue z-axis to be seen
-            transform: {'t':[0,.01,1]}    //y=.01 allows blue z-axis to be seen
-          },
-//          fog: {
-//            _fog: true,
-//            color: 'white', //0x00ff00,
-//            near: 0.1,
-//            far: 1000 //default:100
-//          }
-          //controls: {
-          //  _controls: true,
-          //  controls: 'vr'
-          //},
-          //csphere: {
-          //}
-        }
     },
 
     // stage - initialization and management of stats performance meter,
     // and actors in one of two possible scenes, sgscene and/or vrscene
     stage: {
+        sgscene:{
+        }, //sgscene
+
+
         // each scene the has two properties:
         // _actors:true=>create actors; false=>remove actors, undefined=>modify 
         // actors:Record<string,Actor>[] => iterate through actors by 'name'
-        sgscene: {
+        rmscene: {
             _actors: true,
             actors: {
-                'axes': {
-                    factory: 'Axes',
-                    url: '../models/stage/actors/objects/axes.js',
+              
+                'rmquad': {
+                    factory: 'Rmquad',
+                    url: '../models/stage/actors/raymarch/rmquad.js',
                     options: {
-                        length: 10000
-                        //transform: { t: [0.0, 0.0, 0.0] }
+                        color:'white',
+                        transparent:true,
+                        opacity:0.6,
+//                      vsh:'../../../stage/shaders/webgl2/vertex/vsh_default.glsl.js',
+//                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_color.glsl.js',
+                      vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
+                      //fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_rm_mengersponge.glsl.js',
+                      fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_rm_expt1.glsl.js',
+                      //fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_rm_expt2.glsl.js',
+                      //texture:'./app/media/images/cloud/moon_256.png'
                     }
                 },
 
-                'sghud':{ 
-                  factory:'Hud',
-                  url:'../models/stage/actors/post/hud.js',
-                  options:{
+//                'rmhud': {
+//                    factory: 'Rmquad',
+//                    url: '../models/stage/actors/raymarch/rmquad.js',
+//                    options: {
+//                        opacity:1.0,
+////                      vsh:'../../../stage/shaders/webgl2/vertex/vsh_default.glsl.js',
+////                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_color.glsl.js',
+//                      vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
+//                      fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_tDiffuse.glsl.js',
+//                      //texture:'./app/media/images/glad.png',
+//                      transform:{t:[0.0,0.0,-0.001]}
+//                    }
+//                }
+
+                'rmhud': {
+                    factory: 'Hud',
+                    url: '../models/stage/actors/post/hud.js',
+                    options:{
                        color:'white', 
+                       transparent:true,
                        opacity:0.99,//0.5, 
                        //texture:'./app/media/images/hexagonal_tr.png',
                             // test ONLY! - not for production use!
                        scaleX:1.01,  //1.01, //default=1
                        scaleY:1.01,  //1.03, //default=1
                        //transform:{}
-                  } 
-                },
+                      transform:{t:[0.0,0.0,-0.001]}
+                    } 
+                }
+            }//actors
 
-                'unitcube': {
-                    factory: 'Unitcube',
-                    url: '../models/stage/actors/objects/unitcube.js',
-                    options: { wireframe: false,
-                        color: 'white',
-                        opacity: 0.7,
-                        map: './app/media/images/glad.png',
-                        transform: { t: [0, 0, -2], e: [0.0, 0.0, 0.0], s: [0.5, 1, 0.5] }
-                    }
-                },
-
-                'sgpointcloudlines':{   //default center is origin
-                    factory:'Pointcloudlines',
-                    url:'../models/stage/actors/cloud/pointcloud-lines.js',
-                    options:{
-                      showDots: true,  // no effect ?!
-                      showLines: true,     // no effect ?!
-                      minDistance:160, //60-few lines,500-too slow,256,90,150,    
-                      limitConnections: false, //false, 
-                      maxConnections: 20,  //20,  // *
-                      particleCount: 512,   // 500 // no effect ?!
-                      //transform:{t:[0.0,0.0, -800.0001], s:[2.0,12.0, 2.0]}    // -300 
-                      //transform:{t:[1, 1, -1]}    
-                      transform:{t:[-1, 1, -1]}    
-                    }
-                },
-
-//                'vrskydome':{ 
-//                  factory:'Skydome',
-//                  url:'../models/stage/actors/environment/skydome.js',
-//                  options:{
-//                     width:6000,    //8000, //4000       // default=10000
-//                     height:9000,  //12000  //4800,       // default=10000
-//                     color:'white',
-//                     opacity: 1.0,    // default 1.0
-//                     transparent:true,
-//                     texture:'./app/media/images/cloud/vasarely_512.png'
-//                  }
-//                },
-
-//                'vrskybox':{ 
-//                  factory:'Skybox',
-//                  url:'../models/stage/actors/environment/skybox.js',
-//                  options:{
-//                     size:10000,       // default=10000
-//                     color:'white',
-//                     opacity: 1.0,    // default 1.0
-////                     textures:[     // url | null for each of 6 
-////                       './app/media/images/skybox/sky/sky_posX.jpg',
-////                       './app/media/images/skybox/sky/sky_negX.jpg',
-////                       './app/media/images/skybox/sky/sky_posY.jpg',
-////                       './app/media/images/skybox/sky/sky_negY.jpg',
-////                       './app/media/images/skybox/sky/sky_posZ.jpg',
-////                       './app/media/images/skybox/sky/sky_negZ.jpg'
-////                     ]
-//                     textures:[     // url | null for each of 6 
-//                       './app/media/images/skybox/MilkyWay/dark-s_px.jpg',
-//                       './app/media/images/skybox/MilkyWay/dark-s_nx.jpg',
-//                       './app/media/images/skybox/MilkyWay/dark-s_py.jpg',
-//                       './app/media/images/skybox/MilkyWay/dark-s_ny.jpg',
-//                       './app/media/images/skybox/MilkyWay/dark-s_pz.jpg',
-//                       './app/media/images/skybox/MilkyWay/dark-s_nz.jpg'
-//                     ]
-//                  }
-//                }
+        },//rmscene
 
 
-            } //actors
-        } //sgscene
+        vrscene: {
+        } //vrscene
+
     },
 
 

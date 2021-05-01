@@ -104,6 +104,7 @@ export const Hud:ActorFactory = class {
                 vertexShader: vshader,
                 uniforms: uniforms, 
                 fragmentShader: fshader,
+                opacity:opacity,
                 transparent:true,
                 side:THREE.DoubleSide,
               });

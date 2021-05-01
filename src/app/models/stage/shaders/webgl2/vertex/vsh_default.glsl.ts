@@ -2,11 +2,14 @@
 // model coords to perspective-view coords - allows model sharing
 // webGL2 Vertex shader program 
 
-export const vsh = `#version 300 es
+export const vsh = `
+  /* #version 300 es */
 
-  in vec3 position;
+  in vec4 a_position;
+  out vec2 vuv;
   
   void main(){
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+    vuv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * a_position;
   }
 `;

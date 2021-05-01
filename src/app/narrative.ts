@@ -418,6 +418,7 @@ class Narrative implements Cast{
       // stage prepares scenes - all actors and associated media
       // actions prepares sequences - music, animation and changes
       try{
+        //console.log('\n\n ######## camera-stage-actions');
         const results:number[] = await Promise.all([
           camera.delta(state['camera'], narrative),
           stage.delta(state['stage'], narrative),
@@ -511,7 +512,7 @@ class Narrative implements Cast{
           sghud_tDiffuse = sghud.material.uniforms.tDiffuse;
           sghud_tDiffuse['value'] = dTexture;
           sghud_tDiffuse['needsUpdate'] = true;
-          console.log(`sghud_tDiffuse = ${sghud_tDiffuse}`);
+          //console.log(`sghud_tDiffuse = ${sghud_tDiffuse}`);
         }else{
           _sgpost = false;
         }
@@ -555,6 +556,7 @@ class Narrative implements Cast{
             rmhud_tDiffuse = rmhud.material.uniforms.tDiffusePost;
           }
           transform3d.apply({s:[initial_width, initial_height, 1.0]},rmhud);
+          //console.log(`rmhud_tDiffuse = ${rmhud_tDiffuse}`);
         }
         if(!rmquad && !rmhud){
           _rm = false;
@@ -664,6 +666,7 @@ class Narrative implements Cast{
     }
    
 
+
     // render config-defined topology using defined rendering functions
     switch(topology){
       case 7:     // sg-rm-vr
@@ -672,6 +675,7 @@ class Narrative implements Cast{
         renderer.render(sgscene, sglens);
 
         if(_sgpost){  
+          //if(frame%600===0){console.log(`_sgpost:rtTexture to sghud`);}
           image = sgTarget.texture.image;
           const w = image.width,
                 h = image.height;
@@ -686,12 +690,14 @@ class Narrative implements Cast{
         //sgTargetNames - 'rmquad' a/o 'rmhud'
         for(const actorname of sgTargetNames){
           if(actorname === 'rmquad'){
+            //if(frame%600===0){console.log(`sgTarget to rmquad`);}
             if(rmquad_tDiffuse){
               rmquad_tDiffuse['value'] = sgTarget.texture;  // both WORK!
               rmquad_tDiffuse['needsUpdate'] = true;
             }
           }
           if(actorname === 'rmhud'){
+            if(frame%600===0){console.log(`sgTarget to rmhud`);}
             if(rmhud_tDiffuse){
               rmhud_tDiffuse['value'] = sgTarget.texture;  
               rmhud_tDiffuse['needsUpdate'] = true;
@@ -702,13 +708,21 @@ class Narrative implements Cast{
         renderer.setRenderTarget(rmTarget);
         renderer.render(rmscene, rmlens);
         if(_rmpost){  
-          renderer.copyFramebufferToTexture(tVector, dTexture);
-          rmhud_tDiffuse['value'] = dTexture;
+          //if(frame%600===0){console.log(`_rmpost:rtTexture to rmhud`);}
+          image = rmTarget.texture.image;
+          const w = image.width,
+                h = image.height;
+          iData = new Uint8Array(w * h * 4 );
+          renderer.readRenderTargetPixels(rmTarget, 0,0,w,h, iData);
+          rtTexture = new THREE.DataTexture(iData, w, h, THREE.RGBAFormat);
+
+          rmhud_tDiffuse['value'] = rtTexture;
           rmhud_tDiffuse['needsUpdate'] = true;
         }//if(_rmpost)
 
         for(const actorname of rmTargetNames){
           if(actorname === 'vrskybox'){
+            //if(frame%600===0){console.log(`rmTarget.tex to vrskybox`);}
             const faces:string[] = <string[]>config.topology.rmvrSkyboxFaces;
             //console.log(`faces = ${faces} faces.length = ${faces.length}`)
             if(faces && faces.length > 0){
@@ -763,14 +777,21 @@ class Narrative implements Cast{
         break;
 
 
+
       case 6:     // rm-vr
         renderer.xr.enabled = false;  //6f
         renderer.setRenderTarget(rmTarget);
         renderer.render(rmscene, rmlens);
 
         if(_rmpost){  
-          renderer.copyFramebufferToTexture(tVector, dTexture);
-          rmhud_tDiffuse['value'] = dTexture;
+          image = rmTarget.texture.image;
+          const w = image.width,
+                h = image.height;
+          iData = new Uint8Array(w * h * 4 );
+          renderer.readRenderTargetPixels(rmTarget, 0,0,w,h, iData);
+          rtTexture = new THREE.DataTexture(iData, w, h, THREE.RGBAFormat);
+
+          rmhud_tDiffuse['value'] = rtTexture;
           rmhud_tDiffuse['needsUpdate'] = true;
         }//if(_rmpost)
        
@@ -828,6 +849,7 @@ class Narrative implements Cast{
         renderer.setRenderTarget(null);
         renderer.render(vrscene, vrlens);
         break;
+
 
 
       case 5:     // sg-vr
@@ -890,18 +912,22 @@ class Narrative implements Cast{
         break;
 
 
+
       //no '_vrpost' - framebuffer is stereo - cannot use to render renderTgt
       case 4:     // vr
         renderer.render(vrscene, vrlens);
         break;
 
 
+
       //_webxr:false - rmscene output is on near plane - flat and mono
       case 3:     // sg-rm
-        renderer.xr.enabled = false;  //5f
+        renderer.xr.enabled = false;  //5f top3 cannot be webxr:t - rm is FLAT
         renderer.setRenderTarget(sgTarget);
         renderer.render(sgscene, sglens);
 
+        //if(frame%600===0){console.log(`\nrendered to sgTarget`);}
+        //_sgpost=f => only fsh-rmquad as rmscene
         if(_sgpost){  
           image = sgTarget.texture.image;
           const w = image.width,
@@ -913,17 +939,10 @@ class Narrative implements Cast{
           sghud_tDiffuse['value'] = rtTexture;
           sghud_tDiffuse['needsUpdate'] = true;
         }
+        //if(frame%600===0){console.log(`wrote rtTexture to sghud`);}
 
-        if(_rmpost){  
-          renderer.copyFramebufferToTexture(tVector, dTexture);
-          rmhud_tDiffuse['value'] = dTexture;
-          rmhud_tDiffuse['needsUpdate'] = true;
-        }//if(_rmpost)
-
-        //sgTargetNames - 'rmquad' a/o 'rmhud'
-        renderer.xr.enabled = false;  //3f always - rm is mono
-        renderer.setRenderTarget(sgTarget);
-        renderer.render(sgscene, sglens);
+        //texture map rmquad a/o rmhud with sgTarget.texture
+        if(frame%600===0){console.log(`sgTNames.l=${sgTargetNames.length}`);}
         for(const actorname of sgTargetNames){
           if(actorname === 'rmquad'){
             if(rmquad_tDiffuse){
@@ -938,11 +957,23 @@ class Narrative implements Cast{
             }
           }
         }
+        if(frame%600===0){console.log(`rmq_tD['v']===sgT.tex=${rmquad_tDiffuse['value']===sgTarget.texture}`);}
+        //if(frame%600===0){console.log(`wrote sgTarget.tex to rmquad`);}
 
-        renderer.xr.enabled = true;  //should be false always - rm is mono
+        //render rmscene to framebuffer
+        renderer.clear();
         renderer.setRenderTarget(null);
         renderer.render(rmscene, rmlens);
+        //if(frame%600===0){console.log(`rendered rmscene to framebuffer`);}
+
+        if(_rmpost){  
+          renderer.copyFramebufferToTexture(tVector, dTexture);
+          rmhud_tDiffuse['value'] = dTexture;
+          rmhud_tDiffuse['needsUpdate'] = true;
+        }//if(_rmpost)
+        //if(frame%600===0){console.log(`wrote dTexture to rmhud`);}
         break;
+
 
 
       //_webxr:false - rmscene output is on near plane - flat and mono
@@ -972,6 +1003,7 @@ class Narrative implements Cast{
         break;
 
 
+
       //if _sgpost then _webxr:false - sghud is on near plane - flat and mono
       //webxf:f - working
       //webxf:t - working - but not viewable in VR since flat sghud is on
@@ -984,6 +1016,7 @@ class Narrative implements Cast{
           sghud_tDiffuse['needsUpdate'] = true;
         }//if(_sgpost)
         break;
+
 
 
       default:    // error
