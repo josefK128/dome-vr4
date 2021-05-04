@@ -1,4 +1,4 @@
-// topology3/pointcloudlines-rmexpt1post3.ts
+// topology7/pointcloudlines-rmexpt1post-vrskybox7.ts
 // webGL2, es300 three.js ==0.125.2
  
 
@@ -21,11 +21,11 @@ const config:Config = {
     // rendering topology
     topology:{
       // webxr?
-      _webxr: false,
-      topology: 3,
+      _webxr: true,
+      topology: 7,
      
       // displayed_scene = 'sg|rm|vr'
-      displayed_scene: 'rm', 
+      displayed_scene: 'vr', 
 
 
       // render sgscene either to display, or to sgTarget offscreen for 
@@ -36,18 +36,16 @@ const config:Config = {
       _sgpost: false,
   
       // rmstage or vrstage actors 
-      sgTargetNames:['rmquad'],  //['rmhud'],
+      sgTargetNames: ['rmquad'],
   
   
       // render rmscene to display, or to rmTarget offscreen for texturing 
       // in vrscene - either skybox/skydome/etc. or actors
       // NOTE! true=>must define rmquad and rmTargetName(s)
       _rm: true,
-
-      // rmstage or vrstage actors 
       _rmpost: true,
 
-      rmTargetNames: [], //['vrskybox'],
+      rmTargetNames: ['vrskybox'],
       //skyfaces:string[];  //used if actor 'skyfaces' exists and is rmTgtName
       //value is some subset of ['px','nx','py','ny','pz','nz']
       //order-independent: front,back,left,right,top,ground
@@ -57,7 +55,7 @@ const config:Config = {
     
 
       // render vrscene - which implies displayed_scene = 'vr'
-      _vr:false,
+      _vr:true,
 
 
     },//topology
@@ -129,14 +127,10 @@ const state:State = {
         sg:{
           lens: {
             _lens: true,
-            _orbit:true,
             fov: 90,
             near: 0.01,
             far: 100000,
-//            transform: {'t':[0,1.6,0]}   //y=.01 allows blue z-axis to be seen
-//            transform: {'t':[0,-60,0]}  //y=.01 allows blue z-axis to be seen
-//            transform: {'t':[0,1.6, 20]} //y=.01 allows blue z-axis to be seen
-            transform: {'t':[0,.01,1]}    //y=.01 allows blue z-axis to be seen
+            transform: {'t':[0,0.01,2]}  //y=.01 allows blue z-axis to be seen
           },
 //          fog: {
 //            _fog: true,
@@ -150,7 +144,25 @@ const state:State = {
           //},
           //csphere: {
           //}
+        },
+
+        vr:{
+          lens: {
+            _lens: true,
+            _orbit:true,
+            fov: 90,
+            near: 0.01,
+            far: 100000,
+            transform: {'t':[0,0.01,2]} //y=.01 allows blue z-axis to be seen
+          },
+          //controls: {
+          //  _controls: true,
+          //  controls: 'vr'
+          //},
+          //csphere: {
+          //}
         }
+
     },
 
     // stage - initialization and management of stats performance meter,
@@ -163,8 +175,8 @@ const state:State = {
                     factory: 'Axes',
                     url: '../models/stage/actors/objects/axes.js',
                     options: {
-                        length: 10000
-                        //transform: { t: [0.0, 0.0, 0.0] }
+                        length: 10000,
+                        transform: { t: [0.0, 0.0, 0.0] }
                     }
                 },
 
@@ -173,7 +185,7 @@ const state:State = {
                   url:'../models/stage/actors/post/hud.js',
                   options:{
                        color:'white', 
-                       opacity:0.5, //0.99,//0.5, 
+                       opacity:0.99,//0.5, 
                        //texture:'./app/media/images/hexagonal_tr.png',
                             // test ONLY! - not for production use!
                        scaleX:1.01,  //1.01, //default=1
@@ -189,7 +201,7 @@ const state:State = {
                         color: 'white',
                         opacity: 0.7,
                         map: './app/media/images/glad.png',
-                        transform: { t: [0, 0, -2], e: [0.0, 0.0, 0.0], s: [.5, 1, .5] }
+                        transform: { t: [0, 0, -2], e: [0.0, 0.0, 0.0], s: [0.5, 1, 0.5] }
                     }
                 },
 
@@ -207,8 +219,8 @@ const state:State = {
                       //transform:{t:[1, 1, -1]}    
                       transform:{t:[-1, 1, -1]}    
                     }
-                }
-            }
+                },
+            } //actors
         }, //sgscene
 
 
@@ -218,35 +230,35 @@ const state:State = {
         rmscene: {
             _actors: true,
             actors: {
-              
                 'rmquad': {
                     factory: 'Rmquad',
                     url: '../models/stage/actors/raymarch/rmquad.js',
                     options: {
-                        color:'white',
-                        opacity:0.5, //mimic post7_1 //0.9,
-//                      vsh:'../../../stage/shaders/webgl2/vertex/vsh_default.glsl.js',
-//                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_color.glsl.js',
+                      color:'white',
+                      transparent:true,
+                      opacity:0.6,
                       vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
                       fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_rm_expt1.glsl.js',
-                      //fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_rm_expt2.glsl.js',
                       //texture:'./app/media/images/cloud/moon_256.png'
                     }
                 },
 
                 'rmhud': {
-                    factory: 'Hud',
-                    url: '../models/stage/actors/post/hud.js',
+                    factory: 'Rmquad',
+                    //factory: 'Hud',
+                    url: '../models/stage/actors/raymarch/rmquad.js',
+                    //url: '../models/stage/actors/post/hud.js',
                     options: {
-                      color:'white', 
-                      transparent:true,
-                      opacity:0.5, //0.99,//0.5, 
-                      //texture:'./app/media/images/hexagonal_tr.png',
-                            // test ONLY! - not for production use!
+                      color:'white',
+                      opacity:.99, // 0.5
                       scaleX:1.001, //1.0015,  //1.01, //default=1
                       scaleY:1.001,  //1.03, //default=1
-                      //transform:{}
-                      //transform:{t:[0.0,0.0,0.001]}
+                      vsh:'../../../stage/shaders/webgl2/vertex/vsh_default.glsl.js',
+                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_rm_texquad.glsl.js',
+//                      vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
+//                      fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_tDiffuse.glsl.js',
+                      //texture:'./app/media/images/glad.png',
+                      transform:{t:[0.0,0.0,0.001]}
                     }
                 }
 
@@ -255,6 +267,55 @@ const state:State = {
         },//rmscene
 
         vrscene: {
+            _actors: true,
+            actors: {
+                'vraxes': {
+                    factory: 'Axes',
+                    url: '../models/stage/actors/objects/axes.js',
+                    options: {
+                        length: 10000,
+                        transform: { t: [0.0, 0.0, 0.0] }
+                    }
+                },
+                'vrunitcube': {
+                    factory: 'Unitcube',
+                    url: '../models/stage/actors/objects/unitcube.js',
+                    options: { wireframe: false,
+                        color: 'white',
+                        opacity: 0.7,
+                        map: './app/media/images/glad.png',
+                        transform: { t: [0, 0, -2], e: [0.0, 0.0, 0.0], s: [0.5, 1, 0.5] }
+                    }
+                },
+
+//                'ground':{ 
+//                  factory:'GridXZ',
+//                  url:'../models/stage/actors/environment/gridXZ.js',
+//                  options:{
+//                        size:1000,
+//                        divisions:100,
+//                        colorGrid:'red', 
+//                        colorCenterLine:'green', 
+//                        opacity:0.9, 
+//                        transform:{t:[0.0,-2.0,-3.0001],e:[0.0,1.0,0.0],s:[1.0,3.0,1.0]}
+//                  } 
+//                },
+
+                'vrskybox':{ 
+                  factory:'Skybox',
+                  url:'../models/stage/actors/environment/skybox.js',
+                  options:{
+                     size:1000,       // default=10000
+                     color:'white',
+                     opacity: 1.0,    // default 1.0
+                     textures:[     // url | null for each of 6 
+                       null,null,null,null,null,null
+                     ]
+                  }
+                }
+
+            } //actors
+
         } //vrscene
 
     },

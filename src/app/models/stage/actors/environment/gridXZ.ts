@@ -83,6 +83,7 @@ export const GridXZ:ActorFactory = class {
       // check: need gl.enable(gl.BLEND)
       //console.log(`blending of grid`);
       grid.material = grid_m;
+      grid_m.blending = THREE.CustomBlending;
       grid_m.blendSrc = THREE.SrcAlphaFactor; // default
       grid_m.blendDst = THREE.OneMinusSrcAlphaFactor; //default
       //grid_m.depthTest = false;  //default

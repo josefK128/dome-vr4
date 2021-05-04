@@ -244,23 +244,39 @@ const state:State = {
                 },
 
                 'rmhud': {
-                    factory: 'Rmquad',
-                    //factory: 'Hud',
-                    url: '../models/stage/actors/raymarch/rmquad.js',
-                    //url: '../models/stage/actors/post/hud.js',
-                    options: {
-                      color:'white',
-                      opacity:.99, // 0.5
-                      scaleX:1.001, //1.0015,  //1.01, //default=1
-                      scaleY:1.001,  //1.03, //default=1
-                      vsh:'../../../stage/shaders/webgl2/vertex/vsh_default.glsl.js',
-                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_rm_texquad.glsl.js',
-//                      vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
-//                      fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_tDiffuse.glsl.js',
-                      //texture:'./app/media/images/glad.png',
-                      transform:{t:[0.0,0.0,0.001]}
-                    }
+                    factory: 'Hud',
+                    url: '../models/stage/actors/post/hud.js',
+                    options:{
+                       color:'white', 
+                       transparent:true,
+                       opacity:0.99,//0.5, 
+                       //texture:'./app/media/images/hexagonal_tr.png',
+                            // test ONLY! - not for production use!
+                       scaleX:1.01,  //1.01, //default=1
+                       scaleY:1.01,  //1.03, //default=1
+                       //transform:{}
+                      transform:{t:[0.0,0.0,-0.001]}
+                    } 
                 }
+
+//                'rmhud': {
+//                    factory: 'Rmquad',
+//                    //factory: 'Hud',
+//                    url: '../models/stage/actors/raymarch/rmquad.js',
+//                    //url: '../models/stage/actors/post/hud.js',
+//                    options: {
+//                      color:'white',
+//                      opacity:.99, // 0.5
+//                      scaleX:1.001, //1.0015,  //1.01, //default=1
+//                      scaleY:1.001,  //1.03, //default=1
+//                      vsh:'../../../stage/shaders/webgl2/vertex/vsh_default.glsl.js',
+//                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_rm_texquad.glsl.js',
+////                      vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
+////                      fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_tDiffuse.glsl.js',
+//                      //texture:'./app/media/images/glad.png',
+//                      transform:{t:[0.0,0.0,0.001]}
+//                    }
+//                }
 
             }//actors
 

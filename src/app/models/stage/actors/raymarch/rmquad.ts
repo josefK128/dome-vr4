@@ -24,11 +24,10 @@
 //          url:'../models/stage/actors/objects/rmquad.js',
 //          options:{
 //               *opacity:0.9, 
-//                uniforms:
 //                fsh:'../models/stage/shaders/webgl2/fragment/fsh_rm_texquad.glsl.js'
 //                vsh:'../models/stage/shaders/webgl2/fragment/vsh_default.glsl.js'
 //                texture?:url   // test ONLY! - not for production use!
-//                transform:{s:[1,1,1]}  //effect depends on shader also
+//               *transform:{s:[1,1,1]}  //effect depends on shader also
 //                            //raymarch fsh NOT effected by grid transform
 //          } 
 //        }
@@ -89,6 +88,7 @@ export const Rmquad:ActorFactory = class {
               });
 
         // blending - check: need gl.enable(gl.BLEND)
+        plane_m.blending = THREE.CustomBlending;
         plane_m.blendSrc = THREE.SrcAlphaFactor; // default
         plane_m.blendDst = THREE.OneMinusSrcAlphaFactor; //default
         //plane_m.depthTest = true;  //default is f
@@ -132,10 +132,16 @@ export const Rmquad:ActorFactory = class {
         plane['delta'] = (options:Record<string,unknown>={}) => {
           //console.log(`rmquad.delta: options = ${options}:`);
           //console.dir(options); 
-          const opacity = <number>options['opacity'] || 0.0;
-
+         const opacity = <number>options['opacity'],
+               transform = <Record<string,number[]>>options['transform'];
+            
           if(opacity !== undefined){
             plane_m.opacity = opacity;
+          }
+  
+          //transform
+          if(transform && Object.keys(<Record<string,number[]>>transform).length > 0){
+            transform3d.apply(transform, plane);
           }
         };
 

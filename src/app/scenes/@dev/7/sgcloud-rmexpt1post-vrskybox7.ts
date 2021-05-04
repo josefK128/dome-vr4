@@ -1,4 +1,4 @@
-// topology7/empty-rmcantor-vrskybox7.ts
+// topology7/sgcloud-rmexpt1-vrskybox7.ts
 // webGL2, es300 three.js ==0.125.2
  
 
@@ -36,15 +36,13 @@ const config:Config = {
       _sgpost: false,
   
       // rmstage or vrstage actors 
-      sgTargetNames: ['rmquad'],   // ['rmquad', 'rmhud'],
+      sgTargetNames: ['rmquad'],  //['rmquad', 'rmhud'],
   
   
       // render rmscene to display, or to rmTarget offscreen for texturing 
       // in vrscene - either skybox/skydome/etc. or actors
       // NOTE! true=>must define rmquad and rmTargetName(s)
       _rm: true,
-
-      // rmstage or vrstage actors 
       _rmpost: true,
 
       rmTargetNames: ['vrskybox'],
@@ -181,15 +179,22 @@ const state:State = {
 //                        transform: { t: [0.0, 0.0, 0.0] }
 //                    }
 //                },
-
 //                'unitcube': {
-//                   factory: 'Unitcube',
-//                   url: '../models/stage/actors/objects/unitcube.js',
+//                    factory: 'Unitcube',
+//                    url: '../models/stage/actors/objects/unitcube.js',
 //                    options: { wireframe: false,
 //                        color: 'white',
 //                        opacity: 0.7,
 //                        map: './app/media/images/glad.png',
 //                        transform: { t: [0, 0, -2], e: [0.0, 0.0, 0.0], s: [0.5, 1, 0.5] }
+//                    }
+//                },
+//                'panorama':{
+//                    factory:'Panorama',
+//                    url:'../models/stage/actors/environment/panorama.js',
+//                    options:{
+//                      texture_url:'./app/media/images/cube/sun_temple_stripe_stereo.jpg',
+//                      ntextures:12
 //                    }
 //                },
 
@@ -200,25 +205,54 @@ const state:State = {
 //                     size:1000,       // default=10000
 //                     color:'white',
 //                     opacity: 1.0,    // default 1.0
+////                     textures:[     // url | null for each of 6 
+////                       './app/media/images/cloud/circle.gif',
+////                       './app/media/images/cloud/circle.gif',
+////                       './app/media/images/cloud/circle.gif',
+////                       './app/media/images/cloud/circle.gif',
+////                       './app/media/images/cloud/circle.gif',
+////                       './app/media/images/cloud/circle.gif'
+////                     ]
 //                     textures:[     // url | null for each of 6 
-//                       './app/media/images/skybox/grimnight/grimnight_posX.png',
-//                       './app/media/images/skybox/grimnight/grimnight_negX.png',
-//                       './app/media/images/skybox/grimnight/grimnight_posY.png',
-//                       './app/media/images/skybox/grimnight/grimnight_negY.png',
-//                       './app/media/images/skybox/grimnight/grimnight_posZ.png',
-//                       './app/media/images/skybox/grimnight/grimnight_negZ.png'
+//                       './app/media/images/cloud/sprite_redlight.png',
+//                       './app/media/images/cloud/sprite_redlight.png',
+//                       './app/media/images/cloud/sprite_redlight.png',
+//                       './app/media/images/cloud/sprite_redlight.png',
+//                       './app/media/images/cloud/sprite_redlight.png',
+//                       './app/media/images/cloud/sprite_redlight.png'
 //                     ]
 //                  }
-//                }
+//                },
 
-//                'panorama':{
-//                    factory:'Panorama',
-//                    url:'../models/stage/actors/environment/panorama.js',
-//                    options:{
-//                      texture_url:'./app/media/images/cube/sun_temple_stripe_stereo.jpg',
-//                      ntextures:12
-//                    }
-//                }
+                // spritecloud
+                'sgcloud':{ 
+                  factory:'Spritecloud',
+                  url:'../models/stage/actors/cloud/spritecloud.js',
+                  options:{ 
+                    N:4,
+                    urls:["./app/media/images/cloud/sprite_redlight.png",
+                      "./app/media/images/cloud/sprite_redlight.png" ,
+                      "./app/media/images/cloud/sprite_redlight.png" ,
+                      "./app/media/images/cloud/sprite_redlight.png" 
+                    ],
+//                    urls:["./app/media/images/cloud/sprite_redlight.png",
+//                      //"./app/media/images/sprites/circle.png" ,
+//                      "./app/media/images/sprites/blueshadow.png" ,
+//                      "./app/media/images/cloud/lotus_64.png" ,
+//                      "./app/media/images/sprites/ball.png" 
+//                    ],
+                    transparent:true,
+                    opacity:0.3,
+                    cloudRadius:1000,  //1000
+                    //translateZ:-3500,  //does nothing ?! used to translate ?!
+                    morphtargets:[], //all                     //options
+                    positions:[], //positions.len = particles*mTargets.len*3
+                    particles:64,  // 128,  // 256    //options
+                    duration:10000,  // 2000           //options
+                    transform:{t:[0.0,0.0,-200.0]}
+                  }
+                }
+
             } //actors
         }, //sgscene
 
@@ -249,7 +283,7 @@ const state:State = {
                     factory: 'Rmquad',
                     url: '../models/stage/actors/raymarch/rmquad.js',
                     options: {
-                        opacity:1.0,
+                        opacity:0.5,
 //                      vsh:'../../../stage/shaders/webgl2/vertex/vsh_default.glsl.js',
 //                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_color.glsl.js',
                       vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
@@ -321,21 +355,42 @@ const state:State = {
                      size:1000,       // default=10000
                      color:'white',
                      opacity: 1.0,    // default 1.0
-                     textures:[     // url | null for each of 6 
-                       './app/media/images/skybox/sky/sky_posX.jpg',
-                       './app/media/images/skybox/sky/sky_negX.jpg',
-                       './app/media/images/skybox/sky/sky_posY.jpg',
-                       './app/media/images/skybox/sky/sky_negY.jpg',
-                       './app/media/images/skybox/sky/sky_posZ.jpg',
-                       './app/media/images/skybox/sky/sky_negZ.jpg'
-                     ]
+                     textures:[null,null,null,null,null,null]  
+//                     textures:[     // url | null for each of 6 
+//                       './app/media/images/skybox/sky/sky_posX.jpg',
+//                       './app/media/images/skybox/sky/sky_negX.jpg',
+//                       './app/media/images/skybox/sky/sky_posY.jpg',
+//                       './app/media/images/skybox/sky/sky_negY.jpg',
+//                       './app/media/images/skybox/sky/sky_posZ.jpg',
+//                       './app/media/images/skybox/sky/sky_negZ.jpg'
+//                     ]
                   }
-                }
+                },
+
+                // spritecloud
+//                'vrcloud':{ 
+//                  factory:'Spritecloud',
+//                  url:'../models/stage/actors/cloud/spritecloud.js',
+//                  options:{ 
+//                    N:4,
+//                    urls:["./app/media/images/cloud/sprite_redlight.png",
+//                      "./app/media/images/sprites/snowflake2.png" ,
+//                      "./app/media/images/cloud/sprite_quantum.png" ,
+//                      "./app/media/images/sprites/snowflake3.png" ],
+//                    transparent:true,
+//                    opacity:0.3,
+//                    cloudRadius:1000,  //1000
+//                    //translateZ:-3500,  //does nothing ?! used to translate ?!
+//                    morphtargets:[], //all                     //options
+//                    positions:[], //positions.len = particles*mTargets.len*3
+//                    particles:128,  // 128,  // 256    //options
+//                    duration:10000,  // 2000           //options
+//                    transform:{t:[0.0,0.0,-100.0]}
+//                  }
+//                }
 
             } //actors
-
         } //vrscene
-
     },
 
 

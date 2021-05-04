@@ -29,6 +29,8 @@
 //               *opacity:0.9, 
 //                vsh_url:url
 //                fsh_url:url,
+//                texture:url,
+//               *transform:{t:[0,0,0,], e:[0,0,0], s:[1,1,1]}
 //          } 
 //        }
 //      }//actors
@@ -49,7 +51,9 @@ export const Quad:ActorFactory = class {
           color = <string>options['color'] || 'white',
           opacity = <number>options['opacity'] || 1.0,
           vsh_url = <string>options['vsh'], 
-          fsh_url = <string>options['fsh']; 
+          fsh_url = <string>options['fsh'], 
+          texture = <string>options['texture'],
+          transform = <Record<string,number[]>>options['transform'];
 
     // const but unassigned
     let vsh:string,
@@ -96,6 +100,7 @@ export const Quad:ActorFactory = class {
 
       // blending
       // check: need gl.enable(gl.BLEND)
+      plane_m.blending = THREE.CustomBlending;
       plane_m.blendSrc = THREE.SrcAlphaFactor; // default
       plane_m.blendDst = THREE.OneMinusSrcAlphaFactor; //default
       //grid_m.depthTest = false;  //default
@@ -104,6 +109,10 @@ export const Quad:ActorFactory = class {
       // plane
       const plane = new THREE.Mesh(plane_g, plane_m);
  
+      //transform
+      if(transform && Object.keys(<Record<string,number[]>>transform).length > 0){
+          transform3d.apply(transform, plane);
+      }
 
       // ACTOR.INTERFACE method
       // delta method for modifying properties
@@ -112,13 +121,19 @@ export const Quad:ActorFactory = class {
         //console.dir(options);
 
         const color = <string>options['color'],
-              opacity = <number>options['opacity'];
+              opacity = <number>options['opacity'],
+              transform = <Record<string,number[]>>options['transform'];
             
         if(color !== undefined){
           plane_m.color = color;
         }
         if(opacity !== undefined){
           plane_m.opacity = opacity;
+        }
+
+        //transform
+        if(transform && Object.keys(<Record<string,number[]>>transform).length > 0){
+          transform3d.apply(transform, plane);
         }
       };
 

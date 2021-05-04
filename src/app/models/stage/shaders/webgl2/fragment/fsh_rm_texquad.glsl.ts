@@ -9,8 +9,7 @@ const uniforms:Record<string,unknown> = {
   uResolution:{type: 'v2', value: new THREE.Vector2(960,1080)}
 };
 
-const fsh = `
-      /* #version 300 es */ 
+const fsh = `//#version 300 es     //written in by three.js compiler 
 
       #ifdef GL_ES
       precision mediump float;
@@ -18,7 +17,8 @@ const fsh = `
       uniform sampler2D tDiffuse; 
       uniform float uTime; 
       in vec2 vuv;
-      /* out vec4 pc_fragColor; */
+      /* out vec4 pc_fragColor; */    //pre-defined by three.js compiler 
+
 
       void main() {
         // map texture pixels to [-1,1]x[-1,1] near plane of fsh-eye fov=90

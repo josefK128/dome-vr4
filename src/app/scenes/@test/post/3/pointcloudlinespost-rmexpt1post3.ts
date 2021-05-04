@@ -159,7 +159,7 @@ const state:State = {
         sgscene:{
             _actors: true,
             actors: {
-                'axes': {
+                'sgaxes': {
                     factory: 'Axes',
                     url: '../models/stage/actors/objects/axes.js',
                     options: {
@@ -182,14 +182,14 @@ const state:State = {
                   } 
                 },
 
-                'unitcube': {
+                'sgunitcube': {
                     factory: 'Unitcube',
                     url: '../models/stage/actors/objects/unitcube.js',
                     options: { wireframe: false,
                         color: 'white',
                         opacity: 0.7,
                         map: './app/media/images/glad.png',
-                        transform: { t: [0, 0, -2], e: [0.0, 0.0, 0.0], s: [0.5, 1, 0.5] }
+                        transform: { t: [0, 0, -2], e: [0.0, 0.0, 0.0], s: [2.5, 5, 2.5] }
                     }
                 },
 
@@ -228,7 +228,6 @@ const state:State = {
 //                      vsh:'../../../stage/shaders/webgl2/vertex/vsh_default.glsl.js',
 //                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_color.glsl.js',
                       vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
-                      //fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_rm_mengersponge.glsl.js',
                       fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_rm_expt1.glsl.js',
                       //fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_rm_expt2.glsl.js',
                       //texture:'./app/media/images/cloud/moon_256.png'
@@ -239,13 +238,14 @@ const state:State = {
                     factory: 'Hud',
                     url: '../models/stage/actors/post/hud.js',
                     options: {
-                       color:'white', 
-                       opacity:0.5,//0.5, 
-                       //texture:'./app/media/images/hexagonal_tr.png',
-                            // test ONLY! - not for production use!
-                       scaleX:1.01,  //1.01, //default=1
-                       scaleY:1.01,  //1.03, //default=1
-                       //transform:{}
+                      color:'white', 
+                      opacity:0.5,//0.5, 
+                      //texture:'./app/media/images/hexagonal_tr.png',
+                           // test ONLY! - not for production use!
+                      scaleX:1.01,  //1.01, //default=1
+                      scaleY:1.01,  //1.03, //default=1
+                      //transform:{}
+                      //transform:{t:[0.0,0.0,-0.001]}
                     }
                 }
 

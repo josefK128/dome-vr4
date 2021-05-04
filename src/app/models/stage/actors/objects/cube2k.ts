@@ -77,6 +77,7 @@ export const Cube2k:ActorFactory = class {
                 opacity:opacity,
                 side:THREE.DoubleSide
               });
+            cube_m.blending = THREE.CustomBlending;
             cube_m.blendSrc = THREE.SrcAlphaFactor; // default
             cube_m.blendDst = THREE.OneMinusSrcAlphaFactor; //default
             //cube_m.depthTest = false;

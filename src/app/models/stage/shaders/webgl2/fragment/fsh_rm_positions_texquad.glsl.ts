@@ -12,8 +12,7 @@ const uniforms:Record<string,unknown> = {
     THREE.Vector2(window.innerWidth,window.innerHeight)} 
 };
 
-const fsh = `
-#version 300 es
+const fsh = `//#version 300 es     //written in by three.js compiler 
 
 #ifdef GL_ES
 precision mediump float;
@@ -26,7 +25,8 @@ uniform vec2 uResolution;
 uniform vec3 positions[N];  // manage this array on cpu!
 uniform int n_positions; // cannot use non-const var to regulate for-loop ?!
 in vec2 vuv;
-out vec4 out_FragColor;
+/* out vec4 pc_fragColor; */    //pre-defined by three.js compiler 
+//out vec4 out_FragColor;      //replaced by provided pc_fragColor
 
 
 // distance of ray-point from sphere surface (negative if inside sphere)
@@ -75,9 +75,9 @@ void main( void ) {
         vec3 color = march(eye, ray);
 
     if(color.rgb == vec3(0.0,0.0,0.0)){
-          out_FragColor = texture2D(tDiffuse, vuv);  // needs vertex shader definition !  
+          pc_fragColor = texture2D(tDiffuse, vuv);  // needs vertex shader definition !  
     }else{
-      out_FragColor = vec4(color, 1.0);
+      pc_fragColor = vec4(color, 1.0);
     }
 }`;
 

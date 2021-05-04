@@ -70,6 +70,7 @@ export const Pointcloud:ActorFactory = class {
 
 
     //blend
+    pcloud_m.blending = THREE.CustomBlending;
     pcloud_m.blendSrc = THREE.SrcAlphaFactor; // default
     pcloud_m.blendDst = THREE.OneMinusSrcAlphaFactor; //default
 

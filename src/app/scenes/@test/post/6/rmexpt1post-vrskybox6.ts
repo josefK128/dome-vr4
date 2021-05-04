@@ -171,6 +171,22 @@ const state:State = {
                       //texture:'./app/media/images/cloud/moon_256.png'
                     }
                 },
+              
+                'rmhud': {
+                    factory: 'Hud',
+                    url: '../models/stage/actors/post/hud.js',
+                    options:{
+                      color:'white', 
+                      transparent:true,
+                      opacity:0.99,//0.5, 
+                      //texture:'./app/media/images/hexagonal_tr.png',
+                           // test ONLY! - not for production use!
+                      scaleX:1.01,  //1.01, //default=1
+                      scaleY:1.01,  //1.03, //default=1
+                      //transform:{}
+                      transform:{t:[0.0,0.0,-0.001]}
+                    } 
+                }
 
 //                'rmhud': {
 //                    factory: 'Rmquad',
@@ -186,21 +202,6 @@ const state:State = {
 //                    }
 //                }
 
-                'rmhud': {
-                    factory: 'Hud',
-                    url: '../models/stage/actors/post/hud.js',
-                    options:{
-                       color:'white', 
-                       transparent:true,
-                       opacity:0.99,//0.5, 
-                       //texture:'./app/media/images/hexagonal_tr.png',
-                            // test ONLY! - not for production use!
-                       scaleX:1.01,  //1.01, //default=1
-                       scaleY:1.01,  //1.03, //default=1
-                       //transform:{}
-                      transform:{t:[0.0,0.0,-0.001]}
-                    } 
-                }
             }//actors
 
         },//rmscene

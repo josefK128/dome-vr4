@@ -697,7 +697,7 @@ class Narrative implements Cast{
             }
           }
           if(actorname === 'rmhud'){
-            if(frame%600===0){console.log(`sgTarget to rmhud`);}
+            //if(frame%600===0){console.log(`sgTarget to rmhud`);}
             if(rmhud_tDiffuse){
               rmhud_tDiffuse['value'] = sgTarget.texture;  
               rmhud_tDiffuse['needsUpdate'] = true;
@@ -942,7 +942,7 @@ class Narrative implements Cast{
         //if(frame%600===0){console.log(`wrote rtTexture to sghud`);}
 
         //texture map rmquad a/o rmhud with sgTarget.texture
-        if(frame%600===0){console.log(`sgTNames.l=${sgTargetNames.length}`);}
+        //if(frame%600===0){console.log(`sgTNames.l=${sgTargetNames.length}`);}
         for(const actorname of sgTargetNames){
           if(actorname === 'rmquad'){
             if(rmquad_tDiffuse){
@@ -957,7 +957,7 @@ class Narrative implements Cast{
             }
           }
         }
-        if(frame%600===0){console.log(`rmq_tD['v']===sgT.tex=${rmquad_tDiffuse['value']===sgTarget.texture}`);}
+        //if(frame%600===0){console.log(`rmq_tD['v']===sgT.tex=${rmquad_tDiffuse['value']===sgTarget.texture}`);}
         //if(frame%600===0){console.log(`wrote sgTarget.tex to rmquad`);}
 
         //render rmscene to framebuffer

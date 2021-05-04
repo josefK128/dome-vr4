@@ -43,8 +43,6 @@ const config:Config = {
       // in vrscene - either skybox/skydome/etc. or actors
       // NOTE! true=>must define rmquad and rmTargetName(s)
       _rm: true,
-
-      // rmstage or vrstage actors 
       _rmpost: true,
 
       rmTargetNames: ['vrskybox'],
@@ -237,34 +235,52 @@ const state:State = {
                     factory: 'Rmquad',
                     url: '../models/stage/actors/raymarch/rmquad.js',
                     options: {
-                        opacity:1.0,
+                      opacity:1.0,
 //                      vsh:'../../../stage/shaders/webgl2/vertex/vsh_default.glsl.js',
-//                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_color.glsl.js',
+//                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_rm_texquad.glsl.js',
+
                       vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
-                      //fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_rm_mengersponge.glsl.js',
                       fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_rm_expt1.glsl.js',
-                      //fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_rm_expt2.glsl.js',
                       //texture:'./app/media/images/cloud/moon_256.png'
                     }
                 },
 
                 'rmhud': {
-                    factory: 'Rmquad',
-                    url: '../models/stage/actors/raymarch/rmquad.js',
-                    options: {
-                      color:'white',
+                    factory: 'Hud',
+                    url: '../models/stage/actors/post/hud.js',
+                    options:{
+                      color:'white', 
                       transparent:true,
-                      opacity:.99,
-                      scaleX:1.001,
-                      scaleY:1.001,
-                      vsh:'../../../stage/shaders/webgl2/vertex/vsh_default.glsl.js',
-                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_rm_texquad.glsl.js',
-//                      vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
-//                      fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_tDiffuse.glsl.js',
-                      //texture:'./app/media/images/glad.png',
-                      transform:{t:[0.0,0.0,0.001]}
-                    }
+                      opacity:0.99,//0.5, 
+                      //texture:'./app/media/images/hexagonal_tr.png',
+                           // test ONLY! - not for production use!
+                      scaleX:1.01,  //1.01, //default=1
+                      scaleY:1.01,  //1.03, //default=1
+                       //transform:{}
+                      //vsh:'../../../stage/shaders/webgl2/vertex/vsh_default.glsl.js',
+                      //fsh:'../../../stage/shaders/webgl2/fragment/fsh_rm_texquad.glsl.js',
+                      transform:{t:[0.0,0.0,-0.001]}
+                    } 
                 }
+
+//                  'rmhud': {
+//                    factory: 'Rmquad',
+//                    //factory: 'Hud',
+//                    url: '../models/stage/actors/raymarch/rmquad.js',
+//                    //url: '../models/stage/actors/post/hud.js',
+//                    options: {
+//                      color:'white',
+//                      opacity:.99, // 0.5
+//                      scaleX:1.001, //1.0015,  //1.01, //default=1
+//                      scaleY:1.001,  //1.03, //default=1
+//                      vsh:'../../../stage/shaders/webgl2/vertex/vsh_default.glsl.js',
+//                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_rm_texquad.glsl.js',
+////                      vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
+////                      fsh:'../../../stage/shaders/webgl1/quad_fsh/fsh_tDiffuse.glsl.js',
+//                      texture:'./app/media/images/glad.png',
+//                      transform:{t:[0.0,0.0,0.001]}
+//                    }
+//                  }
 
             }//actors
 

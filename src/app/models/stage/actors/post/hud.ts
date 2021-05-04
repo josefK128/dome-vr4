@@ -48,6 +48,8 @@
 //                texture?:url,   // test ONLY! - not for production use!
 //                scaleX?:number, //default=1
 //                scaleY?:number; //default=1
+//               *transform:{s:[1,1,1]}  //effect depends on shader also
+//                            //raymarch fsh NOT effected by grid transform
 //          } 
 //        }
 //      }//actors
@@ -111,6 +113,7 @@ export const Hud:ActorFactory = class {
 
         // blending
         // check: need gl.enable(gl.BLEND)
+        hud_m.blending = THREE.CustomBlending;
         hud_m.blendSrc = THREE.SrcAlphaFactor; // default
         hud_m.blendDst = THREE.OneMinusSrcAlphaFactor; //default
         //grid_m.depthTest = false;  //default
@@ -147,13 +150,19 @@ export const Hud:ActorFactory = class {
           //console.dir(options);
   
           const color = options['color'],
-                opacity = options['opacity'];
+                opacity = options['opacity'],
+                transform = <Record<string,number[]>>options['transform'];
               
           if(color !== undefined){
             hud_m.color = color;
           }
           if(opacity !== undefined){
             hud_m.opacity = opacity;
+          }
+
+          //transform
+          if(transform && Object.keys(<Record<string,number[]>>transform).length > 0){
+            transform3d.apply(transform, hud);
           }
         };
 
