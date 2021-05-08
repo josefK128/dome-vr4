@@ -1,4 +1,4 @@
-// fsh_rm_expt1b.glsl.ts
+// fsh_rm_expt1z.glsl.ts
 // fragment shader
 // raymarch - expt1-fogcubes
 
@@ -111,7 +111,7 @@ const fsh =`
 
        // map texture pixels to [-1,1]x[-1,1] near plane of fsh-eye fov=90
        //vec3 fwd = normalize(vec3(2.0*vuv.s-1.0, 2.0*vuv.t-1.0, -1.0));
-       vec3 fwd = normalize(vec3(4.0*vuv.s-2.0, 4.0*vuv.t-2.0, -1.0));
+       vec3 fwd = normalize(vec3(2.0*vuv.s-1.0, 2.0*vuv.t-1.0, -.01));
 
        // paint
        gl_FragColor = blend(color(march(eye,fwd), fwd));

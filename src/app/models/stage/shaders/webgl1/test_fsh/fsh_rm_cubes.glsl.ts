@@ -33,7 +33,7 @@ const fsh =`
    
 
 
-     // distance - used by march
+     // modular_distance - used by march
      float distance(vec3 p, vec3 v, vec3 b){
        vec3 p_v = p - v;
        //return length(max(abs(p_v)-b, 0.0));  // single-cube
@@ -81,10 +81,10 @@ const fsh =`
      }
 
 
-     // color(march(), fwd)
-     vec4 color(float d, vec3 fwd){
-         d *= 2.0;
-         float fog = 50.0/(d*d + 2.0);  // 50.0/ +2.0/
+     // color(march(), fwd) - fwd NOT USED ?!
+     vec4 color(float t, vec3 fwd){
+         t *= 2.0;
+         float fog = 50.0/(t*t + 2.0);  // 50.0/ +2.0/
          return vec4(0.8*fog, 0.5*fog, 2.0*fog, 0.9);
      }
  
@@ -95,7 +95,7 @@ const fsh =`
        float alpha = 0.1 * pixel.a;  // 0.5
        vec4 blnd = (1.0-alpha)*texture2D(tDiffuse, vuv) + alpha*pixel;
 
-       // color mix
+       // color animation
        //blnd.r *= 1.2;
        blnd.r *= 0.5 + 0.5 * sin(0.2*uTime);
        blnd.g *= 0.5 + 0.4 * (sin(0.1*uTime)); // 2.0

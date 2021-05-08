@@ -645,6 +645,10 @@ class Narrative implements Cast{
 
     // time-ms, check msgs
     et = 1000.*clock.getElapsedTime();
+//    if(rmquad && rmquad.material.uniforms.uTime){
+//      rmquad.material.uniforms.uTime.value = et;
+//      rmquad.material.uniforms.uTime.needsUpdate = true;
+//    }
     if(frame%10 === 0){     //check for pending msgs - period is approx 160ms 
       director.look(et);
     }
