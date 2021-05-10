@@ -1,19 +1,20 @@
-// fsh_rm_minimal.glsl.ts
+// fsh_rm_spheres.glsl.ts
 // fragment shader
-// raymarch - rm_minimal
+// raymarch - sphere(s)
 
 
 const uniforms:Record<string,unknown> = {
               tDiffuse: {type: 't', value: null},
-              uVertex: {type: 'v3', value: new THREE.Vector3()}, //rm_point.getWorldPosition(),
+//              uVertex: {type: 'v3', value: new THREE.Vector3()}, //rm_point.getWorldPosition(),
               uAspect: {type: 'f', value: 1.0}, //aspect,
               uFovscale: {type: 'f', value: 1.0}, //fov_initial/lens.fov,
-              uCam_fwd: {type: 'v3', value: new THREE.Vector3(0,0,-1)}, //cam_fwd,
-              uCam_up: {type: 'v3', value: new THREE.Vector3(0,1,0)},  //cam_up,
-              uCam_right: {type: 'v3', value: new THREE.Vector3(1,0,0)}, //cam_right
+//              uCam_fwd: {type: 'v3', value: new THREE.Vector3(0,0,-1)}, //cam_fwd,
+//              uCam_up: {type: 'v3', value: new THREE.Vector3(0,1,0)},  //cam_up,
+//              uCam_right: {type: 'v3', value: new THREE.Vector3(1,0,0)}, //cam_right
               uRed:{type: 'f', value: 0.0},
               uTime:{type: 'f', value: 0.0},
-              uResolution:{type: 'v2', value: new THREE.Vector2(960,1080)}
+//              uResolution:{type: 'v2', value: new THREE.Vector2(960,1080)}
+              uResolution:{type: 'v2', value: null}
             };
 
 const fsh =`
@@ -29,6 +30,7 @@ const fsh =`
      uniform vec3 uCam_right;    // custom R-vector to modify rm objects.xyz
      uniform float uRed;         // test scalar for uniform animation
      uniform float uTime;        // scalar for ellapsed time - for animation
+     uniform vec2 uResolution;   // screen width and height
      varying vec2 vuv;
    
 
@@ -94,12 +96,14 @@ const fsh =`
 
      // main uses march, color and blend
      void main() {
-       // eye and fwd
-       vec3 eye = vec3(0.0, 0.0, 1.0);       // fov=pi/2 => z=1
+       // eye 
+       vec3 eye = vec3(0.0, 0.0, 1.0);       // fov=pi/2 <=> eye.z=1
 
-       // map texture pixels to [-1,1]x[-1,1] near plane of fsh-eye fov=90
-       //vec3 fwd = normalize(vec3(2.0*vuv.s-1.0, 2.0*vuv.t-1.0, -1.0));
-       vec3 fwd = normalize(vec3(2.0*vuv.s-1.0, 2.0*vuv.t-1.0, -1.0));
+       // fwd - map texture pixels to [-1,1]x[-1,1] of z=0 plane of fsh
+       // fwd - also normalize for aspect asymmetry
+       vec2 uv = 2.0*vuv - 1.0;
+       uv.s *= uAspect;
+       vec3 fwd = normalize(vec3(uv, -1.0));
 
        // paint
        gl_FragColor = blend(color(march(eye,fwd), fwd));
