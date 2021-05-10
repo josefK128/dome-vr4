@@ -12,7 +12,7 @@
              padding: 0;
              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 
                'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 
-               'Droid Sans', 'Helvetica Neue', 'neuropol', sans-serif;
+               'Droid Sans', 'Helvetica Neue', sans-serif;
                -webkit-font-smoothing: antialiased;
                -moz-osx-font-smoothing: grayscale;
       }
@@ -49,7 +49,7 @@ import {uniforms} from './app/models/stage/shaders/webgl1/test_fsh/fsh_rm_sphere
 
 
 
-console.log(`\n*** src/@test/genshaders/<name>.html starting`);
+console.log(`\n*** src/@test/genshaders/*.html starting`);
 console.log(`*** NOTE: <base href='/dist/'> so src/*.html imports ./dist/**/*.js\n\n`);
 
 let   stats,
@@ -105,8 +105,8 @@ let   stats,
         }
 
         //rmquad aspect ratio
-        rmquad.material.uniforms.uResolution.value = new THREE.Vector2(w_,h_);
-        rmquad.material.uniforms.uResolution.needsUpdate = true;
+        //rmquad.material.uniforms.uResolution.value = new THREE.Vector2(w_,h_);
+        //rmquad.material.uniforms.uResolution.needsUpdate = true;
         rmquad.material.uniforms.uAspect.value = aspect;
         rmquad.material.uniforms.uAspect.needsUpdate = true;
         //console.log(`\nresize: aspect = ${aspect}`);
@@ -159,7 +159,6 @@ const init = () => {
   //texture = glad;
   opacity = 0.5;
 
-
   //actors
   rmquad_g = new THREE.PlaneBufferGeometry(2,2);
   rmquad_m = new THREE.ShaderMaterial({
@@ -190,13 +189,28 @@ const init = () => {
   //rmquad.scale.set(aspect,1.0,1.0);
 
   //set resolution (not used!) and aspect ratio
-  rmquad.material.uniforms.uResolution.value = new THREE.Vector2(w,h);
-  rmquad.material.uniforms.uResolution.needsUpdate = true;
+  //rmquad.material.uniforms.uResolution.value = new THREE.Vector2(w,h);
+  //rmquad.material.uniforms.uResolution.needsUpdate = true;
   rmquad.material.uniforms.uAspect.value = aspect;
   rmquad.material.uniforms.uAspect.needsUpdate = true;
 
   //add rmquad to scene
   rmscene.add(rmquad)
+
+
+  //add cube to scene
+  cube_g = new THREE.BoxBufferGeometry(1.0, 1.0, 0.05);
+  cube_m = new THREE.MeshBasicMaterial({
+       wireframe: false,
+       color:new THREE.Color('red'),            
+       transparent: true,
+       opacity:0.3,
+       side:THREE.DoubleSide
+  });
+  cube = new THREE.Mesh(cube_g, cube_m);
+  cube.position.x = 0.0;
+  cube.position.z = 0.0;
+  rmscene.add(cube);
 
   //add axes
   const axes = new THREE.AxesHelper(10000);
@@ -216,10 +230,10 @@ const animate = () => {
 
   // time-ms
   let et = 1000.*clock.getElapsedTime();
-  if(rmquad && rmquad.material.uniforms.uTime){
-    rmquad.material.uniforms.uTime.value = et;
-    rmquad.material.uniforms.uTime.needsUpdate = true;
-  }
+//  if(rmquad && rmquad.material.uniforms.uTime){
+//    rmquad.material.uniforms.uTime.value = et;
+//    rmquad.material.uniforms.uTime.needsUpdate = true;
+//  }
 
   // fps
   stats.update();
@@ -227,7 +241,11 @@ const animate = () => {
   //orbitcontrols
   controls.update();
 
-  //render to display framebuffer
+  //clouds - use TWEEN
+//  if(sgcloud || vrcloud){
+//    TWEEN.update();
+//  }
+
   renderer.render(rmscene, rmlens);
 }
 

@@ -1,5 +1,5 @@
-// vsh_default.glsl.ts 
-// texture map
+// vsh_points.glsl.ts 
+// synthesize points for use in fsh
 // Vertex shader program 
 
 export const vsh = `
