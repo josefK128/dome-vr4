@@ -196,16 +196,16 @@ const state:State = {
                   } 
                 },
 
-                'sgunitcube': {
-                    factory: 'Unitcube',
-                    url: '../models/stage/actors/objects/unitcube.js',
-                    options: { wireframe: false,
-                        color: 'white',
-                        opacity: 0.7,
-                        map: './app/media/images/glad.png',
-                        transform: { t: [0, 0, -2], e: [0.0, 0.0, 0.0], s: [0.5, 1, 0.5] }
-                    }
-                },
+//                'sgunitcube': {
+//                    factory: 'Unitcube',
+//                    url: '../models/stage/actors/objects/unitcube.js',
+//                    options: { wireframe: false,
+//                        color: 'white',
+//                        opacity: 0.7,
+//                        map: './app/media/images/glad.png',
+//                        transform: { t: [0, 0, -2], e: [0.0, 0.0, 0.0], s: [0.5, 1, 0.5] }
+//                    }
+//                },
 
                 'sgpointcloudlines':{   //default center is origin
                     factory:'Pointcloudlines',
@@ -286,9 +286,10 @@ const state:State = {
                     url: '../models/stage/actors/objects/unitcube.js',
                     options: { wireframe: false,
                         color: 'white',
-                        opacity: 0.7,
-                        map: './app/media/images/glad.png',
-                        transform: { t: [0, 0, -2], e: [0.0, 0.0, 0.0], s: [0.5, 1, 0.5] }
+                        transparent:true,
+                        opacity: 0.5,
+                        map: './app/media/images/cloud/sprite_redlight.png',
+                        transform: { t: [0, 0, -2], e: [0.0, 0.0, 0.0], s: [0.5, 8.0, 0.5] }
                     }
                 },
 
