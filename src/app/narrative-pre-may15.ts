@@ -338,7 +338,6 @@ class Narrative implements Cast{
     _rmpost = config.topology._rmpost;
     topology = config.topology.topology;  //topology=_sg + _rm*2 + _vr*4
     //console.log(`rendering topology type = ${topology}`);
-    //console.log(`!!! config.top._sgpost = ${config.topology._sgpost}`);
 
 
     // canvas needed in camera.delta for vrcontrols and possibly others
@@ -489,7 +488,7 @@ class Narrative implements Cast{
 
   // prepare actors and components for render()
   prerender(state:State):Promise<number> {
-    //console.log(`\n@@@ narrative.prerender() _sgpost = ${_sgpost}`);
+    //console.log(`\n@@@ narrative.prerender()`);
 
     return new Promise((resolve, reject) => {
 
@@ -721,14 +720,8 @@ class Narrative implements Cast{
           renderer.readRenderTargetPixels(rmTarget, 0,0,w,h, iData);
           rtTexture = new THREE.DataTexture(iData, w, h, THREE.RGBAFormat);
 
-          if(rmhud_tDiffuse){
-            rmhud_tDiffuse['value'] = rtTexture;
-            rmhud_tDiffuse['needsUpdate'] = true;
-          }
-          if(rmquad_tDiffuse){
-            rmquad_tDiffuse['value'] = rtTexture;
-            rmquad_tDiffuse['needsUpdate'] = true;
-          }
+          rmhud_tDiffuse['value'] = rtTexture;
+          rmhud_tDiffuse['needsUpdate'] = true;
         }//if(_rmpost)
 
         for(const actorname of rmTargetNames){
@@ -802,14 +795,8 @@ class Narrative implements Cast{
           renderer.readRenderTargetPixels(rmTarget, 0,0,w,h, iData);
           rtTexture = new THREE.DataTexture(iData, w, h, THREE.RGBAFormat);
 
-          if(rmhud_tDiffuse){
-            rmhud_tDiffuse['value'] = rtTexture;
-            rmhud_tDiffuse['needsUpdate'] = true;
-          }
-          if(rmquad_tDiffuse){
-            rmquad_tDiffuse['value'] = rtTexture;
-            rmquad_tDiffuse['needsUpdate'] = true;
-          }
+          rmhud_tDiffuse['value'] = rtTexture;
+          rmhud_tDiffuse['needsUpdate'] = true;
         }//if(_rmpost)
        
         for(const actorname of rmTargetNames){
@@ -985,14 +972,8 @@ class Narrative implements Cast{
 
         if(_rmpost){  
           renderer.copyFramebufferToTexture(tVector, dTexture);
-          if(rmhud_tDiffuse){
-            rmhud_tDiffuse['value'] = dTexture;
-            rmhud_tDiffuse['needsUpdate'] = true;
-          }
-          if(rmquad_tDiffuse){
-            rmquad_tDiffuse['value'] = dTexture;
-            rmquad_tDiffuse['needsUpdate'] = true;
-          }
+          rmhud_tDiffuse['value'] = dTexture;
+          rmhud_tDiffuse['needsUpdate'] = true;
         }//if(_rmpost)
         //if(frame%600===0){console.log(`wrote dTexture to rmhud`);}
         break;
@@ -1020,14 +1001,8 @@ class Narrative implements Cast{
         renderer.render(rmscene, rmlens);
         if(_rmpost){  
           renderer.copyFramebufferToTexture(tVector, dTexture);
-          if(rmhud_tDiffuse){
-            rmhud_tDiffuse['value'] = dTexture;
-            rmhud_tDiffuse['needsUpdate'] = true;
-          }
-          if(rmquad_tDiffuse){
-            rmquad_tDiffuse['value'] = dTexture;
-            rmquad_tDiffuse['needsUpdate'] = true;
-          }
+          rmhud_tDiffuse['value'] = dTexture;
+          rmhud_tDiffuse['needsUpdate'] = true;
         }//if(_rmpost)
         break;
 

@@ -178,13 +178,13 @@ const state:State = {
                     options:{
                       color:'white', 
                       transparent:true,
-                      opacity:0.99,//0.5, 
+                      opacity:0.7,//0.5, 
                       //texture:'./app/media/images/hexagonal_tr.png',
                            // test ONLY! - not for production use!
-                      scaleX:1.01,  //1.01, //default=1
-                      scaleY:1.01,  //1.03, //default=1
+                      scaleX:1.005, //1.01,  //1.01, //default=1
+                      scaleY:1.005, //1.01,  //1.03, //default=1
                       //transform:{}
-                      transform:{t:[0.0,0.0,-0.001]}
+                      transform:{t:[0.0,0.0, 0.001]}
                     } 
                 }
 

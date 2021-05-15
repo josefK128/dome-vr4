@@ -41,7 +41,7 @@
 //          factory:'Hud',
 //          url:'../models/stage/actors/post/hud.js',
 //          options:{
-//               *color:'red', 
+//                //transparent:true,  //set true by hud.ts by default
 //               *opacity:0.9, 
 //                fsh?:url,
 //                vsh?:url,
@@ -65,8 +65,7 @@ export const Hud:ActorFactory = class {
 
   static create(options:Record<string,unknown>={}):Promise<Actor>{
     // options
-    const color = <string>options['color'] || 'white',
-          opacity = <number>options['opacity'] || 0.5,
+    const opacity = <number>options['opacity'] || 0.5,
           vsh = <string>options['vsh'] || '../../shaders/webgl1/quad_vsh/vsh_default.glsl.js', 
           fsh = <string>options['fsh'] || '../../shaders/webgl1/quad_fsh/fsh_default.glsl.js',
           texture = <string>options['texture'],
@@ -149,13 +148,9 @@ export const Hud:ActorFactory = class {
           //console.log(`hud.delta: options = ${options}:`);
           //console.dir(options);
   
-          const color = options['color'],
-                opacity = options['opacity'],
+          const opacity = options['opacity'],
                 transform = <Record<string,number[]>>options['transform'];
               
-          if(color !== undefined){
-            hud_m.color = color;
-          }
           if(opacity !== undefined){
             hud_m.opacity = opacity;
           }

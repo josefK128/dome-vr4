@@ -224,7 +224,7 @@ const state:State = {
                     url: '../models/stage/actors/raymarch/rmquad.js',
                     options: {
                         color:'white',
-                        opacity:0.5, //mimic post7_1 //0.9,
+                        opacity:0.8, //mimic post7_1 //0.9,
 //                      vsh:'../../../stage/shaders/webgl2/vertex/vsh_default.glsl.js',
 //                      fsh:'../../../stage/shaders/webgl2/fragment/fsh_color.glsl.js',
                       vsh:'../../../stage/shaders/webgl1/quad_vsh/vsh_default.glsl.js',
@@ -239,14 +239,14 @@ const state:State = {
                     url: '../models/stage/actors/post/hud.js',
                     options: {
                       color:'white', 
-                      transparent:true,
-                      opacity:0.5, //0.99,//0.5, 
+                      transparent:true,  //transparent:true by default
+                      opacity:0.6, //0.99,//0.5, 
                       //texture:'./app/media/images/hexagonal_tr.png',
                             // test ONLY! - not for production use!
-                      scaleX:1.001, //1.0015,  //1.01, //default=1
-                      scaleY:1.001,  //1.03, //default=1
+                      scaleX:1.0012, //1.001 //1.0015,  //1.01, //default=1
+                      scaleY:1.0012, //1.001 //1.03, //default=1
                       //transform:{}
-                      //transform:{t:[0.0,0.0,0.001]}
+                      transform:{t:[0.0,0.0,0.001]}
                     }
                 }
 

@@ -26,6 +26,7 @@
 //                width:2,
 //                height:2,
 //               *color:'red', 
+//                //transparent:true,  //set true by quad.ts by default
 //               *opacity:0.9, 
 //                vsh_url:url
 //                fsh_url:url,

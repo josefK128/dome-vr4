@@ -172,6 +172,7 @@ const state:State = {
                   url:'../models/stage/actors/post/hud.js',
                   options:{
                        color:'white', 
+                       //transparent:true,  //set true by hud.ts by default
                        opacity:0.99,//0.5, 
                        //texture:'./app/media/images/hexagonal_tr.png',
                             // test ONLY! - not for production use!

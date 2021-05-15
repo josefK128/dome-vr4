@@ -23,6 +23,7 @@
 //          factory:'Rmquad',
 //          url:'../models/stage/actors/objects/rmquad.js',
 //          options:{
+//                //transparent:true,  //set true by rmquad.ts by default
 //               *opacity:0.9, 
 //                fsh:'../models/stage/shaders/webgl2/fragment/fsh_rm_texquad.glsl.js'
 //                vsh:'../models/stage/shaders/webgl2/fragment/vsh_default.glsl.js'
@@ -79,11 +80,11 @@ export const Rmquad:ActorFactory = class {
 
         plane_g = new THREE.PlaneBufferGeometry(2,2);
         plane_m = new THREE.ShaderMaterial({
+                transparent:true,
                 opacity:opacity,
                 vertexShader: vshader,
                 uniforms: uniforms, 
                 fragmentShader: fshader,
-                transparent:true,
                 side:THREE.DoubleSide,
               });
 
