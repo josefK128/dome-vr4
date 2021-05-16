@@ -725,10 +725,10 @@ class Narrative implements Cast{
             rmhud_tDiffuse['value'] = rtTexture;
             rmhud_tDiffuse['needsUpdate'] = true;
           }
-//          if(rmquad_tDiffuse){ //do not overwrite sgTarget.texture on rmquad
-//            rmquad_tDiffuse['value'] = rtTexture;
-//            rmquad_tDiffuse['needsUpdate'] = true;
-//          }
+          if(rmquad_tDiffuse){
+            rmquad_tDiffuse['value'] = rtTexture;
+            rmquad_tDiffuse['needsUpdate'] = true;
+          }
         }//if(_rmpost)
 
         for(const actorname of rmTargetNames){
@@ -946,24 +946,21 @@ class Narrative implements Cast{
         //if(frame%600===0){console.log(`\nrendered to sgTarget`);}
         //_sgpost=f => only fsh-rmquad as rmscene
         if(_sgpost){  
-          if(sghud_tDiffuse){
-            image = sgTarget.texture.image;
-            const w = image.width,
-                  h = image.height;
-            iData = new Uint8Array(w * h * 4 );
-            renderer.readRenderTargetPixels(sgTarget, 0,0,w,h, iData);
-            rtTexture = new THREE.DataTexture(iData, w, h, THREE.RGBAFormat);
+          image = sgTarget.texture.image;
+          const w = image.width,
+                h = image.height;
+          iData = new Uint8Array(w * h * 4 );
+          renderer.readRenderTargetPixels(sgTarget, 0,0,w,h, iData);
+          rtTexture = new THREE.DataTexture(iData, w, h, THREE.RGBAFormat);
 
-            sghud_tDiffuse['value'] = rtTexture;
-            sghud_tDiffuse['needsUpdate'] = true;
-          }
+          sghud_tDiffuse['value'] = rtTexture;
+          sghud_tDiffuse['needsUpdate'] = true;
         }
         //if(frame%600===0){console.log(`wrote rtTexture to sghud`);}
 
         //texture map rmquad a/o rmhud with sgTarget.texture
         //if(frame%600===0){console.log(`sgTNames.l=${sgTargetNames.length}`);}
         for(const actorname of sgTargetNames){
-          //if(frame%600===0){console.log(`sgTNames=${sgTargetNames}`);}
           if(actorname === 'rmquad'){
             if(rmquad_tDiffuse){
               rmquad_tDiffuse['value'] = sgTarget.texture;  // both WORK!
@@ -992,10 +989,10 @@ class Narrative implements Cast{
             rmhud_tDiffuse['value'] = dTexture;
             rmhud_tDiffuse['needsUpdate'] = true;
           }
-//          if(rmquad_tDiffuse){ //do not overwrite sgTarget.texture on rmquad
-//            rmquad_tDiffuse['value'] = dTexture;
-//            rmquad_tDiffuse['needsUpdate'] = true;
-//          }
+          if(rmquad_tDiffuse){
+            rmquad_tDiffuse['value'] = dTexture;
+            rmquad_tDiffuse['needsUpdate'] = true;
+          }
         }//if(_rmpost)
         //if(frame%600===0){console.log(`wrote dTexture to rmhud`);}
         break;
@@ -1043,11 +1040,9 @@ class Narrative implements Cast{
       case 1:     // sg
         renderer.render(sgscene, sglens);
         if(_sgpost){  
-          if(sghud_tDiffuse){
-            renderer.copyFramebufferToTexture(tVector, dTexture);
-            sghud_tDiffuse['value'] = dTexture;
-            sghud_tDiffuse['needsUpdate'] = true;
-          }
+          renderer.copyFramebufferToTexture(tVector, dTexture);
+          sghud_tDiffuse['value'] = dTexture;
+          sghud_tDiffuse['needsUpdate'] = true;
         }//if(_sgpost)
         break;
 
