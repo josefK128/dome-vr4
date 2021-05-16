@@ -43,6 +43,8 @@
 //          options:{
 //                //transparent:true,  //set true by hud.ts by default
 //               *opacity:0.9, 
+//                fog:true,     //default=true
+//                glslVersion:THREE.GLSL1, //default - also THREE.GLSL3 for 3.0 
 //                fsh?:url,
 //                vsh?:url,
 //                texture?:url,   // test ONLY! - not for production use!
@@ -66,6 +68,8 @@ export const Hud:ActorFactory = class {
   static create(options:Record<string,unknown>={}):Promise<Actor>{
     // options
     const opacity = <number>options['opacity'] || 0.5,
+          fog = <boolean>options['fog'] || true,
+          glslVersion = <string>options['glslVersion'] || THREE.GLSL1,
           vsh = <string>options['vsh'] || '../../shaders/webgl1/quad_vsh/vsh_default.glsl.js', 
           fsh = <string>options['fsh'] || '../../shaders/webgl1/quad_fsh/fsh_default.glsl.js',
           texture = <string>options['texture'],
@@ -105,8 +109,10 @@ export const Hud:ActorFactory = class {
                 vertexShader: vshader,
                 uniforms: uniforms, 
                 fragmentShader: fshader,
-                opacity:opacity,
                 transparent:true,
+                opacity:opacity,
+                fog:fog,     //default=true
+                glslVersion:glslVersion,  //default THREE.glsl1 (orig.default=null)
                 side:THREE.DoubleSide,
               });
 

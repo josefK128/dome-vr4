@@ -25,9 +25,10 @@
 //          options:{
 //                width:2,
 //                height:2,
-//               *color:'red', 
 //                //transparent:true,  //set true by quad.ts by default
 //               *opacity:0.9, 
+//                fog:true,     //default=true
+//                glslVersion:THREE.GLSL1, //default - also THREE.GLSL3 for 3.0 
 //                vsh_url:url
 //                fsh_url:url,
 //                texture:url,
@@ -49,8 +50,9 @@ export const Quad:ActorFactory = class {
     // const options
     const width = <number>options['width'] || 2,
           height = <number>options['height'] || 2,
-          color = <string>options['color'] || 'white',
           opacity = <number>options['opacity'] || 1.0,
+          fog = <boolean>options['fog'] || true,
+          glslVersion = <string>options['glslVersion'] || THREE.GLSL1,
           vsh_url = <string>options['vsh'], 
           fsh_url = <string>options['fsh'], 
           texture = <string>options['texture'],
@@ -94,6 +96,9 @@ export const Quad:ActorFactory = class {
                 fragmentShader: fsh,
                 uniforms: uniforms, 
                 transparent:true,
+                opacity:opacity,
+                fog:fog,     //default=true
+                glslVersion:glslVersion,  //default THREE.glsl1 (orig.default=null)
                 side:THREE.DoubleSide,
               });
             //plane:THREE.Mesh;

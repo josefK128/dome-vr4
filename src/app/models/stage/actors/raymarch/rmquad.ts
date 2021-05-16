@@ -25,6 +25,8 @@
 //          options:{
 //                //transparent:true,  //set true by rmquad.ts by default
 //               *opacity:0.9, 
+//                fog:true,     //default=true
+//                glslVersion:THREE.GLSL1, //default - also THREE.GLSL3 for 3.0 
 //                fsh:'../models/stage/shaders/webgl2/fragment/fsh_rm_texquad.glsl.js'
 //                vsh:'../models/stage/shaders/webgl2/fragment/vsh_default.glsl.js'
 //                texture?:url   // test ONLY! - not for production use!
@@ -46,6 +48,8 @@ export const Rmquad:ActorFactory = class {
   static create(options:Record<string,unknown>={}):Promise<Actor>{
     // options
     const opacity = <number>options['opacity'] || 1.0,
+          fog = <boolean>options['fog'] || true,
+          glslVersion = <string>options['glslVersion'] || THREE.GLSL1,
           vsh = <string>options['vsh'] || '../../shaders/webgl2/vertex/vsh_default.glsl.js',
           fsh = <string>options['fsh'] || '../../shaders/webgl2/fragment/fsh_rm_texquad.glsl.js',
           texture = <THREE.Texture>options['texture'],
@@ -82,6 +86,8 @@ export const Rmquad:ActorFactory = class {
         plane_m = new THREE.ShaderMaterial({
                 transparent:true,
                 opacity:opacity,
+                fog:fog,     //default=true
+                glslVersion:glslVersion,  //default THREE.glsl1 (orig.default=null)
                 vertexShader: vshader,
                 uniforms: uniforms, 
                 fragmentShader: fshader,
