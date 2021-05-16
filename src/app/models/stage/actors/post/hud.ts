@@ -42,6 +42,13 @@
 //          url:'../models/stage/actors/post/hud.js',
 //          options:{
 //                //transparent:true,  //set true by hud.ts by default
+//                //NOTE: in order to use lights in shaders must set
+//                //ShaderMaterial.lights = true; but then all lights uniforms
+//                //must be added by hand OR for uniforms use:
+//                //var uniforms = THREE.UniformsUtils.merge([
+//                //  THREE.UniformsLib["lights"],
+//                //  etc - other uniforms...
+//                //]);
 //               *opacity:0.9, 
 //                fog:true,     //default=true
 //                glslVersion:THREE.GLSL1, //default - also THREE.GLSL3 for 3.0 

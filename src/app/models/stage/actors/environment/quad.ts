@@ -25,6 +25,13 @@
 //          options:{
 //                width:2,
 //                height:2,
+//                //NOTE: in order to use lights in shaders must set
+//                //ShaderMaterial.lights = true; but then all lights uniforms
+//                //must be added by hand OR for uniforms use:
+//                //var uniforms = THREE.UniformsUtils.merge([
+//                //  THREE.UniformsLib["lights"],
+//                //  etc - other uniforms...
+//                //]);
 //                //transparent:true,  //set true by quad.ts by default
 //               *opacity:0.9, 
 //                fog:true,     //default=true
