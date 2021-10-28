@@ -17,7 +17,8 @@ npm-debug.log*
 *.txt
 
 # images, audio, video, models, etc
-/media
+/media    #production
+@music    #dev
 
 # testing
 /logs

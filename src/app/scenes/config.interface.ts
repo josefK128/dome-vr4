@@ -20,6 +20,7 @@ export interface Config {
   topology:{
     // webxr? true => lens.position=[0, 1.6, 0] - avatar 1.6 meters 'tall'
     _webxr:boolean;  //NOTE:connection of VR headset turns off OrbitControls!!
+    _test?:boolean; //test-assert
     topology:number;                 // {1,...,7}: sg=1;rm=2;vr=4 => rm->vr=6
     displayed_scene:string;         //'sg'|'rm'|'vr'
 

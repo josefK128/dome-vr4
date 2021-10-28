@@ -1,0 +1,492 @@
+2.5Msrc
+4.0K	src/index-cantor-anim.html
+
+120Ksrc/@
+16K	src/@/1
+4.0K	src/@/1/capri1.html
+4.0K	src/@/1/pointcloud1.html
+4.0K	src/@/1/pointcloudlines1.html
+4.0K	src/@/1/sghudproxy1.html
+12K	src/@/2
+4.0K	src/@/2/rmquadfsh2.html
+4.0K	src/@/2/rmquadpost2.html
+4.0K	src/@/2/rmquadtexture2.html
+4.0Ksrc/@/3
+4.0K	src/@/3/capri-rmquadtexture3.html
+52K	src/@/4
+4.0K	src/@/4/audio-vrcloud4.html
+4.0K	src/@/4/audiocycle-vrcloud4.html
+4.0K	src/@/4/capri-vranimations4.html
+4.0K	src/@/4/capri-vrcontrols4.html
+4.0K	src/@/4/capri4.html
+4.0K	src/@/4/pointaudio-pointvrcloud4.html
+4.0K	src/@/4/pointaudio-vrcloud4.html
+4.0K	src/@/4/vrcloud4.html
+4.0K	src/@/4/vrcloudskybox4.html
+4.0K	src/@/4/vrcloudspeeds4.html
+4.0K	src/@/4/vrskybox4.html
+4.0K	src/@/4/vrskydome4.html
+8.0Ksrc/@/5
+4.0K	src/@/5/capri-vrskybox5.html
+4.0K	src/@/5/capri-vrskydome5.html
+4.0Ksrc/@/6
+4.0K	src/@/6/rmquad-vrskybox6.html
+24K	src/@/7
+4.0K	src/@/7/capri-rmcantor-vrskybox7.html
+4.0K	src/@/7/capri-rmexpt1-vrskybox7.html
+4.0K	src/@/7/capri-rmexpt2-vrskybox7.html
+4.0K	src/@/7/capri-rmquad-vrskybox7.html
+4.0K	src/@/7/capri-rmquad-vrskyboxallfaces7.html
+
+
+148Ksrc/@archive
+4.0K	src/@archive/audio-vrcloud4.html
+4.0K	src/@archive/audiocycle-vrcloud4.html
+4.0K	src/@archive/capri-rmcantor-vrskybox7.html
+4.0K	src/@archive/capri-rmexpt1-vrskybox7.html
+4.0K	src/@archive/capri-rmexpt2-vrskybox7.html
+4.0K	src/@archive/capri-rmquad-vrskybox7.html
+4.0K	src/@archive/capri-rmquad-vrskyboxallfaces7.html
+4.0K	src/@archive/capri-rmquadtexture3.html
+4.0K	src/@archive/capri-vranimations4.html
+4.0K	src/@archive/capri-vrcontrols4.html
+4.0K	src/@archive/capri-vrskybox5.html
+4.0K	src/@archive/capri-vrskydome5.html
+4.0K	src/@archive/capri1.html
+4.0K	src/@archive/capri4.html
+4.0K	src/@archive/index.html
+4.0K	src/@archive/pointaudio-pointvrcloud4.html
+4.0K	src/@archive/pointaudio-vrcloud4.html
+4.0K	src/@archive/pointcloud1.html
+4.0K	src/@archive/pointcloudlines1.html
+4.0K	src/@archive/rmquad-vrskybox6.html
+4.0K	src/@archive/rmquadfsh2.html
+4.0K	src/@archive/rmquadpost2.html
+4.0K	src/@archive/rmquadtexture2.html
+4.0K	src/@archive/sghudproxy1.html
+4.0K	src/@archive/test-vrcontrols-vrkeymap.html
+12K	    src/@archive/test_renderTarget.html
+8.0K	src/@archive/test_renderTarget_minimal.html
+4.0K	src/@archive/vrcloud4.html
+4.0K	src/@archive/vrcloudskybox4.html
+4.0K	src/@archive/vrcloudspeeds4.html
+4.0K	src/@archive/vrskybox4.html
+4.0K	src/@archive/vrskydome4.html
+
+
+4.0Ksrc/@current
+4.0Ksrc/@current/1
+4.0K	src/@current/1/pointcloudlinespost1.html
+4.0Ksrc/@current/5
+4.0K	src/@current/5/pointcloudlinespost-vrskybox5.html
+4.0Ksrc/@current/7
+4.0K	src/@current/7/empty-rmcantor-vrskyboxanim7.html
+
+
+48K	src/@dev
+4.0Ksrc/@dev/1
+4.0K	src/@dev/1/pointcloudlines1.html
+4.0Ksrc/@dev/7
+4.0K	src/@dev/7/capri-rmcantor-vrskybox7.html
+4.0K	src/@dev/7/capri-rmexpt1-vrskybox7.html
+4.0K	src/@dev/7/capri-rmexpt2-vrskybox7.html
+4.0K	src/@dev/7/glad-rmcantor-vrskybox7.html
+4.0K	src/@dev/7/moon-rmcantor-vrskybox7.html
+4.0K	src/@dev/7/mtn-rmcantor-vrskybox7.html
+4.0K	src/@dev/7/sgcloud-rmcantor-vrskybox7.html
+4.0K	src/@dev/7/sgcloud-rmexpt1-vrskybox7.html
+4.0K	src/@dev/7/sgcloud-rmexpt1post-vrskybox7.html
+4.0K	src/@dev/7/sgskybox-rmexpt1-vrskybox7.html
+
+
+28K	src/@production
+4.0Ksrc/@production/1
+4.0K	src/@production/1/pointcloudlines1.html
+4.0Ksrc/@production/7
+4.0K	src/@production/7/capri-rmexpt2-vrskybox7.html
+4.0K	src/@production/7/empty-rmexpt1-vrskybox7.html
+4.0K	src/@production/7/grimnight-rmexpt1-vrskybox7.html
+4.0K	src/@production/7/sgcloud-rmcantor-vrskybox7.html
+4.0K	src/@production/7/sgcloudmoon-rmcantor-vrskybox7.html
+
+
+132Ksrc/@test
+4.0K	src/@test/test-vrcontrols-vrkeymap.html
+8.0K	src/@test/test_post.html
+8.0K	src/@test/test_post_orig.html
+12K	    src/@test/test_renderTarget.html
+8.0K	src/@test/test_renderTarget_minimal.html
+8.0K	src/@test/~templates/domeshaders.html
+8.0K	src/@test/~templates
+28K	src/@test/domeshaders
+8.0K	src/@test/domeshaders/sgquad_rmcantor.html
+8.0K	src/@test/domeshaders/sgquad_rmsierpinski.html
+8.0K	src/@test/domeshaders/sgquad_rmsphere.html
+44K	src/@test/post
+4.0K	src/@test/post/post1.html
+4.0K	src/@test/post/post2.html
+4.0K	src/@test/post/post3_1&2.html
+4.0K	src/@test/post/post3_1.html
+4.0K	src/@test/post/post3_2_FAILS.html
+4.0K	src/@test/post/post5.html
+4.0K	src/@test/post/post6.html
+4.0K	src/@test/post/post7_1&2_FAILS.html
+4.0K	src/@test/post/post7_1.html
+4.0K	src/@test/post/post7_2.html
+8.0Ksrc/@test/rm
+4.0K	src/@test/rm/test_rm2x2.html
+4.0K	src/@test/rm/test_rmminimal.html
+
+
+
+
+
+src/app
+1.0K	src/app/cast.interface.ts
+8.0K	src/app/n.prerender.ts.txt
+16K	    src/app/n.render.ts.txt
+44K	    src/app/narrative-may15am.ts
+44K	    src/app/narrative-pre-may15.ts
+44K	    src/app/narrative.ts
+
+
+57K	src/app/models
+57K	src/app/models/actions
+4.0K	src/app/models/actions/action.interface.ts
+53K	src/app/models/actions/sequences
+4.0K	src/app/models/actions/sequences/actions/seq1.ts
+4.0K	src/app/models/actions/sequences/actions
+4.0K	src/app/models/actions/sequences/anim/anim1.ts
+4.0K	src/app/models/actions/sequences/anim
+4.0K	src/app/models/actions/sequences/audio/change-soundfiles.ts
+4.0K	src/app/models/actions/sequences/audio/changes-to-existing.ts
+1.0K	src/app/models/actions/sequences/audio/startonly.ts
+9.0K	src/app/models/actions/sequences/audio
+4.0K	src/app/models/actions/sequences/bezier/actorbezier-circle.ts
+4.0K	src/app/models/actions/sequences/bezier/actorbezier.ts
+8.0K	src/app/models/actions/sequences/bezier/rmbezier-actorbezier.ts
+4.0K	src/app/models/actions/sequences/bezier/rmbezier-circles.ts
+8.0K	src/app/models/actions/sequences/bezier/rmbezier.ts
+28K  	src/app/models/actions/sequences/bezier
+4.0K	src/app/models/actions/sequences/loop/seq-loop-full-length.ts
+4.0K	src/app/models/actions/sequences/loop/seq_loop.ts
+8.0K	src/app/models/actions/sequences/loop
+
+
+22K	src/app/models/camera
+9.0Ksrc/app/models/camera/controls
+1.0K	src/app/models/camera/controls/controls.interface.ts
+4.0K	src/app/models/camera/controls/vrcontrols.ts
+13K	src/app/models/camera/keymaps
+1.0K	src/app/models/camera/keymaps/keymap.interface.ts
+8.0K	src/app/models/camera/keymaps/vrkeymap.ts
+
+
+285Ksrc/app/models/stage
+285Ksrc/app/models/stage/actors
+4.0K	src/app/models/stage/actors/actor.interface.ts
+4.0K	src/app/models/stage/actors/actorfactory.interface.ts
+285Ksrc/app/models/stage/actors/audio
+12K	    src/app/models/stage/actors/audio/globalaudio-cycle.ts
+8.0K	src/app/models/stage/actors/audio/globalaudio.ts
+12K	    src/app/models/stage/actors/audio/pointaudio.ts
+
+53K	src/app/models/stage/actors/cloud
+12K	    src/app/models/stage/actors/cloud/pointcloud-lines.ts
+8.0K	src/app/models/stage/actors/cloud/pointcloud.ts
+12K	    src/app/models/stage/actors/cloud/spritecloud.ts
+17K src/app/models/stage/actors/cloud/generators
+1.0K	src/app/models/stage/actors/cloud/generators/cube.ts
+4.0K	src/app/models/stage/actors/cloud/generators/generators.ts
+1.0K	src/app/models/stage/actors/cloud/generators/helix1.ts
+1.0K	src/app/models/stage/actors/cloud/generators/helix2.ts
+1.0K	src/app/models/stage/actors/cloud/generators/helix3.ts
+1.0K	src/app/models/stage/actors/cloud/generators/plane.ts
+1.0K	src/app/models/stage/actors/cloud/generators/sphere1.ts
+1.0K	src/app/models/stage/actors/cloud/generators/sphere2.ts
+1.0K	src/app/models/stage/actors/cloud/generators/sphere3.ts
+1.0K	src/app/models/stage/actors/cloud/generators/sphere4.ts
+
+48K	src/app/models/stage/actors/environment
+8.0K	src/app/models/stage/actors/environment/gridXZ.ts
+4.0K	src/app/models/stage/actors/environment/notes_on_skybox.txt
+8.0K	src/app/models/stage/actors/environment/panorama.ts
+8.0K	src/app/models/stage/actors/environment/quad.ts
+8.0K	src/app/models/stage/actors/environment/skybox.ts
+8.0K	src/app/models/stage/actors/environment/skydome.ts
+
+40K	src/app/models/stage/actors/lights
+4.0K	src/app/models/stage/actors/lights/ambient.ts
+8.0K	src/app/models/stage/actors/lights/directional.ts
+8.0K	src/app/models/stage/actors/lights/hemisphere.ts
+8.0K	src/app/models/stage/actors/lights/point.ts
+8.0K	src/app/models/stage/actors/lights/spot.ts
+
+80K	src/app/models/stage/actors/objects
+4.0K	src/app/models/stage/actors/objects/axes.ts
+8.0K	src/app/models/stage/actors/objects/cube2k.ts
+4.0K	src/app/models/stage/actors/objects/group_UNFINISHED.ts
+8.0K	src/app/models/stage/actors/objects/multimaterial.ts
+12K	src/app/models/stage/actors/objects/multishader.ts
+8.0K	src/app/models/stage/actors/objects/planeXY.ts
+8.0K	src/app/models/stage/actors/objects/planeXZ.ts
+4.0K	src/app/models/stage/actors/objects/point.ts
+4.0K	src/app/models/stage/actors/objects/points.ts
+8.0K	src/app/models/stage/actors/objects/unitcube.ts
+8.0K	src/app/models/stage/actors/objects/unitsphere.ts
+
+285Ksrc/app/models/stage/actors/post
+8.0K	src/app/models/stage/actors/post/hud.ts
+8.0K	src/app/models/stage/actors/post
+
+285Ksrc/app/models/stage/actors/raymarch
+8.0K	src/app/models/stage/actors/raymarch/rmquad.ts
+
+
+
+245Ksrc/app/models/stage/shaders
+245Ksrc/app/models/stage/shaders/webgl1
+4.0K	src/app/models/stage/shaders/webgl1/cube_fsh/fsh_cube.glsl.ts
+4.0K	src/app/models/stage/shaders/webgl1/cube_fsh/fsh_cube_sin.glsl.ts
+4.0K	src/app/models/stage/shaders/webgl1/cube_fsh/fsh_cube_sin2.glsl.ts
+12K	src/app/models/stage/shaders/webgl1/cube_fsh
+4.0K	src/app/models/stage/shaders/webgl1/quad_fsh/blend-function.txt
+1.0K	src/app/models/stage/shaders/webgl1/quad_fsh/color-functions.txt
+1.0K	src/app/models/stage/shaders/webgl1/quad_fsh/distance-functions.txt
+4.0K	src/app/models/stage/shaders/webgl1/quad_fsh/fsh_default.glsl.ts
+1.0K	src/app/models/stage/shaders/webgl1/quad_fsh/fsh_minimal.glsl.ts
+1.0K	src/app/models/stage/shaders/webgl1/quad_fsh/fsh_pointcloud2.glsl.ts
+4.0K	src/app/models/stage/shaders/webgl1/quad_fsh/fsh_rmquadpost.glsl.ts
+8.0K	src/app/models/stage/shaders/webgl1/quad_fsh/fsh_rm_cubes.glsl.ts
+8.0K	src/app/models/stage/shaders/webgl1/quad_fsh/fsh_rm_expt1.glsl.ts
+8.0K	src/app/models/stage/shaders/webgl1/quad_fsh/fsh_rm_expt1b.glsl.ts
+8.0K	src/app/models/stage/shaders/webgl1/quad_fsh/fsh_rm_expt1z.glsl.ts
+8.0K	src/app/models/stage/shaders/webgl1/quad_fsh/fsh_rm_expt2.glsl.ts
+8.0K	src/app/models/stage/shaders/webgl1/quad_fsh/fsh_rm_expt3.glsl.ts
+8.0K	src/app/models/stage/shaders/webgl1/quad_fsh/fsh_rm_expt_df1.glsl.ts
+8.0K	src/app/models/stage/shaders/webgl1/quad_fsh/fsh_rm_fogcubes.glsl.ts
+8.0K	src/app/models/stage/shaders/webgl1/quad_fsh/fsh_rm_full-infsmoothcubes.glsl.ts
+8.0K	src/app/models/stage/shaders/webgl1/quad_fsh/fsh_rm_infcubes.glsl.ts
+8.0K	src/app/models/stage/shaders/webgl1/quad_fsh/fsh_rm_infsmoothcubes.glsl.ts
+8.0K	src/app/models/stage/shaders/webgl1/quad_fsh/fsh_rm_inftori.glsl.ts
+8.0K	src/app/models/stage/shaders/webgl1/quad_fsh/fsh_rm_inftorimorph.glsl.ts
+8.0K	src/app/models/stage/shaders/webgl1/quad_fsh/fsh_rm_mengersponge-nav.glsl.ts
+8.0K	src/app/models/stage/shaders/webgl1/quad_fsh/fsh_rm_mengersponge.glsl.ts
+4.0K	src/app/models/stage/shaders/webgl1/quad_fsh/fsh_rm_template.glsl.ts
+4.0K	src/app/models/stage/shaders/webgl1/quad_fsh/fsh_tDiffuse.glsl.ts
+1.0K	src/app/models/stage/shaders/webgl1/quad_fsh/fsh_texturemap.glsl.ts
+4.0K	src/app/models/stage/shaders/webgl1/quad_fsh/README-descriptions.txt
+153K	src/app/models/stage/shaders/webgl1/quad_fsh
+1.0K	src/app/models/stage/shaders/webgl1/quad_vsh/vsh_default.glsl.ts
+1.0K	src/app/models/stage/shaders/webgl1/quad_vsh/vsh_pointcloud.glsl.ts
+1.0K	src/app/models/stage/shaders/webgl1/quad_vsh/vsh_pointcloud2.glsl.ts
+7.0K	src/app/models/stage/shaders/webgl1/quad_vsh
+0	src/app/models/stage/shaders/webgl1/test_fsh/@use_vsh_default
+8.0K	src/app/models/stage/shaders/webgl1/test_fsh/fsh_rm_cantor.glsl.ts
+8.0K	src/app/models/stage/shaders/webgl1/test_fsh/fsh_rm_cubes.glsl.ts
+8.0K	src/app/models/stage/shaders/webgl1/test_fsh/fsh_rm_mengersponge-nav.glsl.ts
+4.0K	src/app/models/stage/shaders/webgl1/test_fsh/fsh_rm_minimal.glsl.ts
+8.0K	src/app/models/stage/shaders/webgl1/test_fsh/fsh_rm_sierpinski.glsl.ts
+8.0K	src/app/models/stage/shaders/webgl1/test_fsh/fsh_rm_spheres.glsl.ts
+4.0K	src/app/models/stage/shaders/webgl1/test_fsh/shadertoy_raymarch.glsl.txt
+52K	src/app/models/stage/shaders/webgl1/test_fsh
+1.0K	src/app/models/stage/shaders/webgl1/test_vsh/vsh_points.glsl.ts
+1.0K	src/app/models/stage/shaders/webgl1/test_vsh
+
+245Ksrc/app/models/stage/shaders/webgl2
+13K	src/app/models/stage/shaders/webgl2/fragment
+1.0K	src/app/models/stage/shaders/webgl2/fragment/fsh_color.glsl.ts
+4.0K	src/app/models/stage/shaders/webgl2/fragment/fsh_rm_positions_texquad.glsl.ts
+4.0K	src/app/models/stage/shaders/webgl2/fragment/fsh_rm_texquad.glsl.ts
+7.0Ksrc/app/models/stage/shaders/webgl2/vertex
+1.0K	src/app/models/stage/shaders/webgl2/vertex/vsh_basic.glsl.ts
+1.0K	src/app/models/stage/shaders/webgl2/vertex/vsh_default.glsl.ts
+1.0K	src/app/models/stage/shaders/webgl2/vertex/vsh_rm_texquad.glsl.ts
+
+
+
+
+340Ksrc/app/scenes/@
+4.0K	src/app/scenes/config.interface.ts
+4.0K	src/app/scenes/csphere_values.txt
+8.0K	src/app/scenes/state.interface.ts
+
+48K	src/app/scenes/@/1
+12K	    src/app/scenes/@/1/capri-sgcontrols1.ts.txt
+8.0K	src/app/scenes/@/1/capri1.ts
+8.0K	src/app/scenes/@/1/pointcloud1.ts
+8.0K	src/app/scenes/@/1/pointcloudlines1.ts
+8.0K	src/app/scenes/@/1/sghudproxy1.ts
+
+
+24K	src/app/scenes/@/2
+8.0K	src/app/scenes/@/2/rmquadfsh2.ts
+8.0K	src/app/scenes/@/2/rmquadpost2.ts
+8.0K	src/app/scenes/@/2/rmquadtexture2.ts
+
+
+12K src/app/scenes/@/3
+12K	    src/app/scenes/@/3/capri-rmquadtexture3.ts
+
+
+140Ksrc/app/scenes/@/4
+12K	    src/app/scenes/@/4/audio-vrcloud4.ts
+12K	    src/app/scenes/@/4/audiocycle-vrcloud4.ts
+12K	    src/app/scenes/@/4/capri-vranimations4.ts
+12K	    src/app/scenes/@/4/capri-vrcontrols4.ts
+8.0K	src/app/scenes/@/4/capri4.ts
+12K	    src/app/scenes/@/4/pointaudio-pointvrcloud4.ts
+12K	    src/app/scenes/@/4/pointaudio-vrcloud4.ts
+8.0K	src/app/scenes/@/4/vrcloud4.ts
+12K	    src/app/scenes/@/4/vrcloudskybox4.ts
+12K	    src/app/scenes/@/4/vrcloudspeeds4.ts
+12K	    src/app/scenes/@/4/vrskybox4.ts
+12K	    src/app/scenes/@/4/vrskydome4.ts
+
+
+24K	src/app/scenes/@/5
+12K	    src/app/scenes/@/5/capri-vrskybox5.ts
+12K	    src/app/scenes/@/5/capri-vrskydome5.ts
+
+
+12K	src/app/scenes/@/6
+12K	    src/app/scenes/@/6/rmquad-vrskybox6.ts
+
+
+76K	src/app/scenes/@/7
+12K	    src/app/scenes/@/7/capri-rmcantor-vrskybox7.ts
+16K	    src/app/scenes/@/7/capri-rmexpt1-vrskybox7.ts
+16K	    src/app/scenes/@/7/capri-rmexpt2-vrskybox7.ts
+16K	    src/app/scenes/@/7/capri-rmquad-vrskybox7.ts
+12K	    src/app/scenes/@/7/capri-rmquad-vrskyboxallfaces7.ts
+
+
+40K	src/app/scenes/@current
+12K	src/app/scenes/@current/1
+12K	    src/app/scenes/@current/1/pointcloudlinespost1.ts
+
+12K	src/app/scenes/@current/5
+12K	    src/app/scenes/@current/5/pointcloudlinespost-vrskybox5.ts
+
+16K	src/app/scenes/@current/7
+16K	    src/app/scenes/@current/7/empty-rmcantor-vrskyboxanim7.ts
+
+
+180Ksrc/app/scenes/@dev
+8.0Ksrc/app/scenes/@dev/1
+8.0K	src/app/scenes/@dev/1/pointcloudlines1.ts
+172Ksrc/app/scenes/@dev/7
+16K	    src/app/scenes/@dev/7/capri-rmcantor-vrskybox7.ts
+16K	    src/app/scenes/@dev/7/capri-rmexpt1-vrskybox7.ts
+16K	    src/app/scenes/@dev/7/capri-rmexpt2-vrskybox7.ts
+16K	    src/app/scenes/@dev/7/glad-rmcantor-vrskybox7.ts
+16K	    src/app/scenes/@dev/7/moon-rmcantor-vrskybox7.ts
+16K	    src/app/scenes/@dev/7/mtn-rmcantor-vrskybox7.ts
+16K	    src/app/scenes/@dev/7/sgcloud-rmcantor-vrskybox7.ts
+20K	    src/app/scenes/@dev/7/sgcloud-rmexpt1-vrskybox7.ts
+20K	    src/app/scenes/@dev/7/sgcloud-rmexpt1post-vrskybox7.ts
+16K	    src/app/scenes/@dev/7/sgskybox-rmexpt1-vrskybox7.ts
+
+
+96K	src/app/scenes/@production
+12K	src/app/scenes/@production/1
+12K	    src/app/scenes/@production/1/pointcloudlines1.ts
+16K	    src/app/scenes/@production/7/capri-rmexpt2-vrskybox7.ts
+16K	    src/app/scenes/@production/7/empty-rmexpt1-vrskybox7.ts
+16K	    src/app/scenes/@production/7/grimnight-rmexpt1-vrskybox7.ts
+16K	    src/app/scenes/@production/7/sgcloud-rmcantor-vrskybox7.ts
+16K	    src/app/scenes/@production/7/sgcloudmoon-rmcantor-vrskybox7.ts
+
+
+188Ksrc/app/scenes/@test
+4.0K	src/app/scenes/@test/rmhud_refs.txt
+4.0K	src/app/scenes/@test/rmquad_refs.txt
+
+144Ksrc/app/scenes/@test/post
+4.0K	src/app/scenes/@test/post/hudrefs.txt
+12K	src/app/scenes/@test/post/1
+12K	    src/app/scenes/@test/post/1/pointcloudlinespost1.ts
+8.0K	src/app/scenes/@test/post/2/rmexpt1post2.ts
+8.0K	src/app/scenes/@test/post/2
+40K	src/app/scenes/@test/post/3
+12K	    src/app/scenes/@test/post/3/pointcloudlines-rmexpt1post3.ts
+12K	    src/app/scenes/@test/post/3/pointcloudlinespost-rmexpt13.ts
+12K  	src/app/scenes/@test/post/3/pointcloudlinespost-rmexpt1post3.ts
+16K	src/app/scenes/@test/post/5
+16K	    src/app/scenes/@test/post/5/pointcloudlinespost-vrskybox5.ts
+12K	src/app/scenes/@test/post/6
+12K	    src/app/scenes/@test/post/6/rmexpt1post-vrskybox6.ts
+48K	src/app/scenes/@test/post/7
+12K	    src/app/scenes/@test/post/7/pointcloudlines-rmexpt1post-vrskybox7.ts
+16K	    src/app/scenes/@test/post/7/pointcloudlinespost-rmexpt1-vrskybox7.ts
+16K	    src/app/scenes/@test/post/7/pointcloudlinespost-rmexpt1post-vrskybox7.ts
+
+32K	src/app/scenes/@test/rm
+16K    	src/app/scenes/@test/rm/bridge-rmexpt1_2x2-vrskybox7.ts
+16K 	src/app/scenes/@test/rm/bridge-rmminimal-vrskybox7.ts
+
+
+
+
+48K	src/app/scenes/topology1
+12K	    src/app/scenes/topology1/capri-sgcontrols1.ts.txt
+8.0K	src/app/scenes/topology1/capri1.ts
+8.0K	src/app/scenes/topology1/pointcloud1.ts
+8.0K	src/app/scenes/topology1/pointcloudlines1.ts
+8.0K	src/app/scenes/topology1/sghudproxy1.ts
+
+
+24K	src/app/scenes/topology2
+8.0K	src/app/scenes/topology2/rmquadfsh2.ts
+8.0K	src/app/scenes/topology2/rmquadpost2.ts
+8.0K	src/app/scenes/topology2/rmquadtexture2.ts
+
+
+12K	src/app/scenes/topology3
+12K 	src/app/scenes/topology3/capri-rmquadtexture3.ts
+
+
+140Ksrc/app/scenes/topology4
+12K 	src/app/scenes/topology4/audio-vrcloud4.ts
+12K 	src/app/scenes/topology4/audiocycle-vrcloud4.ts
+12K 	src/app/scenes/topology4/capri-vranimations4.ts
+12K 	src/app/scenes/topology4/capri-vrcontrols4.ts
+8.0K	src/app/scenes/topology4/capri4.ts
+12K 	src/app/scenes/topology4/pointaudio-pointvrcloud4.ts
+12K 	src/app/scenes/topology4/pointaudio-vrcloud4.ts
+8.0K	src/app/scenes/topology4/vrcloud4.ts
+12K 	src/app/scenes/topology4/vrcloudskybox4.ts
+12K 	src/app/scenes/topology4/vrcloudspeeds4.ts
+12K 	src/app/scenes/topology4/vrskybox4.ts
+12K 	src/app/scenes/topology4/vrskydome4.ts
+
+
+28K	src/app/scenes/topology5
+12K 	src/app/scenes/topology5/capri-vrskybox5.ts
+12K 	src/app/scenes/topology5/capri-vrskydome5.ts
+
+
+12K	src/app/scenes/topology6
+12K 	src/app/scenes/topology6/rmquad-vrskybox6.ts
+
+
+76K	src/app/scenes/topology7
+12K 	src/app/scenes/topology7/capri-rmcantor-vrskybox7.ts
+16K 	src/app/scenes/topology7/capri-rmexpt1-vrskybox7.ts
+16K 	src/app/scenes/topology7/capri-rmexpt2-vrskybox7.ts
+16K 	src/app/scenes/topology7/capri-rmquad-vrskybox7.ts
+12K 	src/app/scenes/topology7/capri-rmquad-vrskyboxallfaces7.ts
+
+
+
+44K	src/app/services
+8.0K	src/app/services/actions/director.ts
+4.0K	src/app/services/actions/mediator.ts
+4.0K	src/app/services/actions/queue.ts
+20K	src/app/services/actions
+8.0K	src/app/services/animation.ts
+4.0K	src/app/services/morphtargets.ts
+8.0K	src/app/services/transform3d.ts
+
+
+
