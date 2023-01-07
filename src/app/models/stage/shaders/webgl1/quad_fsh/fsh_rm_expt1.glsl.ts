@@ -34,7 +34,7 @@ const fsh =`
 
 
      // distance - used by march
-     float distance(vec3 p, vec3 v, vec3 b){
+     float _distance(vec3 p, vec3 v, vec3 b){
        vec3 p_v = p - v;
        //return length(max(abs(p_v)-b, 0.0));  // single-cube
 
@@ -74,7 +74,7 @@ const fsh =`
              vec3 b = vec3(ssx*0.1, ssy*0.1, s*0.1);
 
              // distance
-             float d = distance(p, v, b);  
+             float d = _distance(p, v, b);  
              t += d*0.5;
          }
          return t;
